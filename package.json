@@ -1,0 +1,42 @@
+{
+  "name": "prevent",
+  "version": "0.0.0",
+  "author": "Cris <corgidisco@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/corgidisco/prevent.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "rimraf ./dist && tsc -p .",
+    "lint": "./node_modules/.bin/tslint -c ./tslint.json -p tsconfig.json 'src/**/*.ts' --format stylish",
+    "test": "npm run build && jest test"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "./node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "[^/]*\\.(test|spec)\\.(j|t)sx?$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^21.1.5",
+    "jest": "^21.2.1",
+    "rimraf": "^2.6.2",
+    "ts-jest": "^21.1.4",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.7.0",
+    "tslint-language-service": "^0.9.6",
+    "typescript": "^2.5.3"
+  }
+}
