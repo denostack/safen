@@ -1,11 +1,11 @@
 {
-  "name": "prevent",
+  "name": "safen",
   "version": "0.0.0",
   "author": "Cris <corgidisco@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/corgidisco/prevent.git"
+    "url": "git://github.com/corgidisco/safen.git"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
