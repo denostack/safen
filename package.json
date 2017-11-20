@@ -28,9 +28,13 @@
       "json"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
   "devDependencies": {
     "@types/jest": "^21.1.5",
+    "@types/lodash": "^4.14.85",
+    "@types/node": "^8.0.53",
     "jest": "^21.2.1",
     "rimraf": "^2.6.2",
     "ts-jest": "^21.1.4",
