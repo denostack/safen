@@ -1,5 +1,6 @@
 
 export interface Tester {
+  before?(data: any, origin?: any, keys?: string[]): Array<[{new(): Tester}, any[]] | {new(): Tester}>,
   test(data: any, origin?: any, keys?: string[]): boolean
 }
 

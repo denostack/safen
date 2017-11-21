@@ -38,13 +38,13 @@ export default class Validator {
   private checkSingle(rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
       // $dataKeys = array_flip(is_array($data) ? array_keys($data) : [])
     for (const condition of rule[0]) {
-      if (!this.loader.load(condition).test(data, origin, keys)) {
+      const tester = this.loader.load(condition)
+      if (!this.test(tester, data, origin, keys)) {
         thrower.throws(condition, keys)
       }
     }
     for (const [[name, iterators, optional], children] of rule[1]) {
       //     unset($dataKeys[$name]); // remove
-
       // check optional
       if (optional && data[name] === undefined) {
         continue
@@ -79,5 +79,21 @@ export default class Validator {
     } else {
       this.checkSingle(rule, thrower, data, origin, keys)
     }
+  }
+
+  private test(tester: types.Tester, data: any, origin: any, keys: string[]): boolean {
+    if (tester.before) {
+      const deps = tester.before(data, origin, keys)
+      for (let dep of deps) {
+        if (!_.isArray(dep)) {
+          dep = [dep, []]
+        }
+        const [className, args] = dep as [{new(): types.Tester}, any[]]
+        if (!this.test(new className(...args), data, origin, keys)) {
+          return false
+        }
+      }
+    }
+    return tester.test(data, origin, keys)
   }
 }

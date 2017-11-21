@@ -3,6 +3,9 @@ import * as types from "./types"
 
 import AlwaysTrueTester from "./testers/AlwaysTrueTester"
 import AlwaysFalseTester from "./testers/AlwaysFalseTester"
+import BooleanTester from "./testers/BooleanTester"
+import EmailTester from "./testers/EmailTester"
+import StringTester from "./testers/StringTester"
 
 export default class Loader {
 
@@ -13,6 +16,9 @@ export default class Loader {
     this.testers = Object.assign({
       always_false: AlwaysFalseTester,
       always_true: AlwaysTrueTester,
+      boolean: BooleanTester,
+      email: EmailTester,
+      string: StringTester,
     }, testers || {})
     this.caches = {}
   }
