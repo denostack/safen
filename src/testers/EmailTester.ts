@@ -1,6 +1,6 @@
 
 import * as types from "../types"
-import StringTester from "./StringTester"
+import {StringTester} from "./lodash-testers"
 
 // source from. https://github.com/Sembiance/email-validator
 
