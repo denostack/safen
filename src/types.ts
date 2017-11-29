@@ -1,6 +1,8 @@
 
+export type TesterNewable = Array<[{new(): Tester}, any[]] | {new(): Tester}>
+
 export interface Tester {
-  before?(data: any, origin?: any, keys?: string[]): Array<[{new(): Tester}, any[]] | {new(): Tester}>,
+  before?(data: any, origin?: any, keys?: string[]): TesterNewable,
   test(data: any, origin?: any, keys?: string[]): boolean
 }
 

@@ -8,7 +8,7 @@ const EMAIL_REGEX = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-
 
 export default class EmailTester implements types.Tester {
 
-  public before(): Array<[{new(): types.Tester}, any[]] | {new(): types.Tester}> {
+  public before(): types.TesterNewable {
     return [
       StringTester,
     ]
