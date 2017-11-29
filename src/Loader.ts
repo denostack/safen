@@ -4,57 +4,86 @@ import * as types from "./types"
 import AlwaysTrueTester from "./testers/AlwaysTrueTester"
 import AlwaysFalseTester from "./testers/AlwaysFalseTester"
 import EmailTester from "./testers/EmailTester"
+import LengthTester from "./testers/LengthTester"
+import LengthMaxTester from "./testers/LengthMaxTester"
+import LengthMinTester from "./testers/LengthMinTester"
+import MaxTester from "./testers/MaxTester"
+import MinTester from "./testers/MinTester"
+
+export const safenTesters = {
+  always_false: AlwaysFalseTester,
+  always_true: AlwaysTrueTester,
+  email: EmailTester,
+  length: LengthTester,
+  length_max: LengthMaxTester,
+  length_min: LengthMinTester,
+  max: MaxTester,
+  min: MinTester,
+}
+
 import * as _testers from "./testers/lodash-testers"
 
 export const lodashTesters = {
-  arguments: _testers.ArgumentsTester,
-  array: _testers.ArrayTester,
-  array_buffer: _testers.ArrayBufferTester,
-  array_like: _testers.ArrayLikeTester,
-  array_like_object: _testers.ArrayLikeObjectTester,
-
   boolean: _testers.BooleanTester,
   buffer: _testers.BufferTester,
-
-  date: _testers.DateTester,
-
-  element: _testers.ElementTester,
-  empty: _testers.EmptyTester,
-  error: _testers.ErrorTester,
-
   finite: _testers.FiniteTester,
-  function: _testers.FunctionTester,
-
   integer: _testers.IntegerTester,
-
-  length: _testers.LengthTester,
-
   map: _testers.MapTester,
-
   nan: _testers.NanTester,
-  native: _testers.NativeTester,
-  nil: _testers.NilTester,
-  null: _testers.NullTester,
   number: _testers.NumberTester,
-
   object: _testers.ObjectTester,
-  object_like: _testers.ObjectLikeTester,
-
-  plain_object: _testers.PlainObjectTester,
-
-  regexp: _testers.RegExpTester,
-
-  safe_integer: _testers.SafeIntegerTester,
   set: _testers.SetTester,
   string: _testers.StringTester,
   symbol: _testers.SymbolTester,
 
-  typed_array: _testers.TypedArrayTester,
+  _arguments: _testers.ArgumentsTester,
+  _array: _testers.ArrayTester,
+  _array_buffer: _testers.ArrayBufferTester,
+  _array_like: _testers.ArrayLikeTester,
+  _array_like_object: _testers.ArrayLikeObjectTester,
 
-  undefined: _testers.UndefinedTester,
+  _boolean: _testers.BooleanTester,
+  _buffer: _testers.BufferTester,
 
-  weak_map: _testers.WeakMapTester,
-  weak_set: _testers.WeakSetTester,
+  _date: _testers.DateTester,
+
+  _element: _testers.ElementTester,
+  _empty: _testers.EmptyTester,
+  _error: _testers.ErrorTester,
+
+  _finite: _testers.FiniteTester,
+  _function: _testers.FunctionTester,
+
+  _integer: _testers.IntegerTester,
+
+  _length: _testers.LengthTester,
+
+  _map: _testers.MapTester,
+
+  _nan: _testers.NanTester,
+  _native: _testers.NativeTester,
+  _nil: _testers.NilTester,
+  _null: _testers.NullTester,
+  _number: _testers.NumberTester,
+
+  _object: _testers.ObjectTester,
+  _object_like: _testers.ObjectLikeTester,
+
+  _plain_object: _testers.PlainObjectTester,
+
+  _regexp: _testers.RegExpTester,
+
+  _safe_integer: _testers.SafeIntegerTester,
+  _set: _testers.SetTester,
+  _string: _testers.StringTester,
+  _symbol: _testers.SymbolTester,
+
+  _typed_array: _testers.TypedArrayTester,
+
+  _undefined: _testers.UndefinedTester,
+
+  _weak_map: _testers.WeakMapTester,
+  _weak_set: _testers.WeakSetTester,
 }
 
 export default class Loader {
@@ -63,11 +92,7 @@ export default class Loader {
   private caches: types.TesterCacheMap
 
   constructor(testers?: types.TesterMap) {
-    this.testers = testers || Object.assign({
-      always_false: AlwaysFalseTester,
-      always_true: AlwaysTrueTester,
-      email: EmailTester,
-    }, lodashTesters)
+    this.testers = testers || Object.assign({}, safenTesters, lodashTesters)
     this.caches = {}
   }
 
