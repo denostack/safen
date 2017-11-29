@@ -36,6 +36,7 @@ describe("util.parse()", () => {
 describe("util.normalize()", () => {
   const expects: Array<[types.NormalizableRule, types.NormalizedRule]> = [
     ["string", [["string"], []]],
+    ["string | integer", [["string", "integer"], []]],
     [["string", "email"], [["string", "email"], []]],
     [() => "string", [["string"], []]],
     [() => () => ["string", "email"], [["string", "email"], []]],

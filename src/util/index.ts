@@ -27,6 +27,9 @@ export function normalize(rule: types.NormalizableRule): types.NormalizedRule {
     rule = rule()
   }
   if (_.isString(rule)) {
+    if (rule.indexOf("|") > -1) {
+      return [rule.split("|").map(r => _.trim(r)).filter(r => r), []]
+    }
     return [[rule], []]
   }
   if (_.isPlainObject(rule)) {
