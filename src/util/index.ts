@@ -49,3 +49,19 @@ export function normalize(rule: types.NormalizableRule): types.NormalizedRule {
   }
   return normalized
 }
+
+export function testerGenerator(handler: (value: any, ...options: any[]) => boolean): {new(): types.Tester} {
+  class AnonymousTester implements types.Tester {
+
+    private args: string[]
+
+    public constructor(...args: string[]) {
+      this.args = args
+    }
+
+    public test(data: any): boolean {
+      return handler(data, ...this.args)
+    }
+  }
+  return AnonymousTester
+}

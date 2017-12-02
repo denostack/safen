@@ -1,20 +1,18 @@
 
 import * as types from "../types"
 
-export default class LengthMaxTexter implements types.Tester {
+export default class LengthTester implements types.Tester {
 
-  private min: number
-  private max: number
+  private len: number
 
-  constructor(min: string, max: string) {
-    this.min = +min
-    this.max = +max
+  constructor(len: string) {
+    this.len = +len
   }
 
   public test(data: any): boolean {
     if (!data.length) {
       return false
     }
-    return data.length >= this.min && data.length <= this.max
+    return data.length === this.len
   }
 }
