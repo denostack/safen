@@ -20,27 +20,47 @@ export const testers = {
   "validator.isEmail": gen(validator.isEmail), // has options
   "validator.isEmpty": gen(validator.isEmpty),
   "validator.isFQDN": gen(validator.isFQDN), // has options
-  "validator.isFloat": gen(validator.isFloat), // has options, locale?
+  "validator.isFloat": gen(validator.isFloat), // has options
   "validator.isFullWidth": gen(validator.isFullWidth),
   "validator.isHalfWidth": gen(validator.isHalfWidth),
   "validator.isHash": gen((validator as any).isHash),
   "validator.isHexColor": gen(validator.isHexColor),
   "validator.isHexadecimal": gen(validator.isHexadecimal),
-  "validator.isIP": gen(validator.isIP),
-  "validator.isISBN": gen(validator.isISBN),
+  "validator.isIP": gen(validator.isIP, (args: string[]) => {
+    if (args.length) {
+      if (args[0] === "v4") {
+        return [4]
+      }
+      if (args[0] === "v6") {
+        return [6]
+      }
+    }
+    return args
+  }),
+  "validator.isISBN": gen(validator.isISBN, (args: string[]) => {
+    if (args.length) {
+      if (args[0] === "v10") {
+        return [10]
+      }
+      if (args[0] === "v13") {
+        return [13]
+      }
+    }
+    return args
+  }),
   "validator.isISSN": gen((validator as any).isISSN), // has options
   "validator.isISIN": gen(validator.isISIN),
   "validator.isISO8601": gen(validator.isISO8601),
   "validator.isISO31661Alpha2": gen((validator as any).isISO31661Alpha2),
   "validator.isISRC": gen((validator as any).isISRC),
   "validator.isIn": gen(validator.isIn),
-  "validator.isInt": gen(validator.isInt), // prefer lodash.IntegerTester, has options
+  "validator.isInt": gen(validator.isInt), // has options
   "validator.isJSON": gen(validator.isJSON),
   "validator.isLatLong": gen((validator as any).isLatLong),
-  "validator.isLength": gen(validator.isLength), // use default length tester
+  "validator.isLength": gen(validator.isLength),
   "validator.isLowercase": gen(validator.isLowercase),
   "validator.isMACAddress": gen(validator.isMACAddress),
-  "validator.isMD5": gen(validator.isMD5), // prefer validator.HashTester
+  "validator.isMD5": gen(validator.isMD5),
   "validator.isMobilePhone": gen(validator.isMobilePhone),
   "validator.isMongoId": gen(validator.isMongoId),
   "validator.isMultibyte": gen(validator.isMultibyte),

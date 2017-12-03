@@ -3,10 +3,10 @@ import * as types from "../types"
 
 export default class MinTexter implements types.Tester {
 
-  private min: number
+  private min: string
 
   constructor(min: string) {
-    this.min = +min
+    this.min = min
   }
 
   public test(data: any): boolean {
