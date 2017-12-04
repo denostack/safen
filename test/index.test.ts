@@ -51,8 +51,8 @@ describe("safen.create", () => {
       username: "corgidisco",
       areas: {
         lat: 37,
-         lng: 126,
-        },
+        lng: 126,
+      },
     }) // ok
     // endsection
   })
@@ -98,7 +98,7 @@ describe("safen.create", () => {
   })
 
   it("sample array multi dim", () => {
-    expect.assertions(0)
+    expect.assertions(1)
 
     // section:array-multi-dim
     const validator = safen.create({
@@ -120,6 +120,19 @@ describe("safen.create", () => {
         ],
       ],
     }) // ok
+
+    try {
+      validator.assert({
+        areas: [
+          {lat: 37, lng: 126},
+          {lat: 31, lng: 125},
+        ],
+      })
+    } catch (e) {
+      if (e instanceof InvalidValueError) {
+        expect(e.getErrors()).toEqual(["array@areas[0]", "array@areas[1]"])
+      }
+    }
     // endsection
   })
 })

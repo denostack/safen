@@ -55,7 +55,7 @@ export default class Validator {
       } else if (iterators.length && !_.isArray(data[name])) {
         thrower.throws("array", keys)
       } else {
-        this.checkChild(iterators.slice(), children, thrower, data[name], origin, keys)
+        this.checkChild(iterators.slice(), children, thrower, data[name], origin, keys.slice())
       }
       keys.pop()
     }
@@ -73,11 +73,17 @@ export default class Validator {
       }
       for (const index of Object.keys(data)) {
         keys.push(index)
-        this.checkChild(iterators.slice(), rule, thrower, data[index], origin, keys)
+        if (data[index] === undefined) {
+          thrower.throws("required", keys)
+        } else if (iterators.length && !_.isArray(data[index])) {
+          thrower.throws("array", keys)
+        } else {
+          this.checkChild(iterators.slice(), rule, thrower, data[index], origin, keys.slice())
+        }
         keys.pop()
       }
     } else {
-      this.checkSingle(rule, thrower, data, origin, keys)
+      this.checkSingle(rule, thrower, data, origin, keys.slice())
     }
   }
 

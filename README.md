@@ -57,8 +57,8 @@ validator.assert({
   username: "corgidisco",
   areas: {
     lat: 37,
-     lng: 126,
-    },
+    lng: 126,
+  },
 }) // ok
 ```
 
@@ -116,6 +116,19 @@ validator.assert({
     ],
   ],
 }) // ok
+
+try {
+  validator.assert({
+    areas: [
+      {lat: 37, lng: 126},
+      {lat: 31, lng: 125},
+    ],
+  })
+} catch (e) {
+  if (e instanceof InvalidValueError) {
+    expect(e.getErrors()).toEqual(["array@areas[0]", "array@areas[1]"])
+  }
+}
 ```
 
 ## Validators

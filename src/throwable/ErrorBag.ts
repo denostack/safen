@@ -6,7 +6,7 @@ export default class ErrorBag implements types.ErrorThowable {
   private errors: Array<[string, string[]]> = []
 
   public throws(type: string, keys: string[]): void {
-    this.errors.push([type, keys])
+    this.errors.push([type, keys.slice()])
   }
 
   public getErrors(): types.ValidatingErrors {
