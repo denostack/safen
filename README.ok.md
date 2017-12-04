@@ -24,7 +24,21 @@ validator.validate(/* any values! */) // return boolean
 
 ## Rule Examples
 
-@code("./test/index.test.ts@sample1", "typescript")
+### optional
+
+@code("./test/index.test.ts@optional", "typescript")
+
+### object in object
+
+@code("./test/index.test.ts@object-in-object", "typescript")
+
+### array
+
+@code("./test/index.test.ts@array", "typescript")
+
+@code("./test/index.test.ts@array-fixed", "typescript")
+
+@code("./test/index.test.ts@array-multi-dim", "typescript")
 
 ## Validators
 

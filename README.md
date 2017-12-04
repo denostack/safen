@@ -1,4 +1,4 @@
- # Safen
+     # Safen
 
 [![NPM](https://nodei.co/npm/safen.png)](https://nodei.co/npm/safen/)
 
@@ -24,10 +24,12 @@ validator.validate(/* any values! */) // return boolean
 
 ## Rule Examples
 
+### optional
+
 ```typescript
 const validator = safen.create({
   "username": "string|length_between:4,20",
-  "password?": "length_between:8,20",
+  "password?": "length_between:8,20", // optional
 })
 
 validator.assert({
@@ -37,6 +39,82 @@ validator.assert({
 validator.assert({
   username: "corgidisco",
   password: "password!@#",
+}) // ok
+```
+
+### object in object
+
+```typescript
+const validator = safen.create({
+  username: "string|length_between:4,20",
+  areas: {
+    lat: "number",
+    lng: "number",
+  },
+})
+
+validator.assert({
+  username: "corgidisco",
+  areas: {
+    lat: 37,
+     lng: 126,
+    },
+}) // ok
+```
+
+### array
+
+```typescript
+const validator = safen.create({
+  "areas[]": { // array
+    lat: "number",
+    lng: "number",
+  },
+})
+
+validator.assert({
+  areas: [
+    {lat: 37, lng: 126},
+    {lat: 31, lng: 125},
+  ],
+}) // ok
+```
+
+```typescript
+const validator = safen.create({
+  "areas[2]": { // array
+    lat: "number",
+    lng: "number",
+  },
+})
+
+validator.assert({
+  areas: [
+    {lat: 37, lng: 126},
+    {lat: 31, lng: 125},
+  ],
+}) // ok
+```
+
+```typescript
+const validator = safen.create({
+  "areas[][]": { // array
+    lat: "number",
+    lng: "number",
+  },
+})
+
+validator.assert({
+  areas: [
+    [
+      {lat: 37, lng: 126},
+      {lat: 31, lng: 125},
+    ],
+    [
+      {lat: 37, lng: 126},
+      {lat: 31, lng: 125},
+    ],
+  ],
 }) // ok
 ```
 

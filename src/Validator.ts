@@ -55,7 +55,7 @@ export default class Validator {
       } else if (iterators.length && !_.isArray(data[name])) {
         thrower.throws("array", keys)
       } else {
-        this.checkChild(iterators, children, thrower, data[name], origin, keys)
+        this.checkChild(iterators.slice(), children, thrower, data[name], origin, keys)
       }
       keys.pop()
     }
@@ -73,7 +73,7 @@ export default class Validator {
       }
       for (const index of Object.keys(data)) {
         keys.push(index)
-        this.checkChild(iterators, rule, thrower, data[index], origin, keys)
+        this.checkChild(iterators.slice(), rule, thrower, data[index], origin, keys)
         keys.pop()
       }
     } else {
