@@ -1,4 +1,4 @@
-       # Safen
+# Safen
 
 [![NPM](https://nodei.co/npm/safen.png)](https://nodei.co/npm/safen/)
 
