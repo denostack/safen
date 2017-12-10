@@ -64,10 +64,12 @@ Validator                     | Description                             | Exampl
 **domain**                    | alias `validator.isFQDN`                |
 **email**                     | alias `validator.isEmail`               |
 **finite**                    | alias `lodash.isFinite`                 |
+**float**                     | alias `lodash.isNumber`                 |
 **hash:{algorithm}**          | alias `validator.isHash`                | `hash:md4`, `hash:md5` ..
 **hexcolor**                  | alias `validator.isHexColor`            |
 **hexadecimal**               | alias `validator.isHexadecimal`         |
 **in:{...args}**              | check if the value is in an array {args}| `in:1,2,3`
+**int**                       | alias `lodash.isInteger`                |
 **integer**                   | alias `lodash.isInteger`                |
 **ip:{version = null}**       | alias `validator.isIP`                  | `ip`, `ip:v4`, `ip:v6`
 **isbn{version = null}**      | alias `validator.isISBN`                | `isbn`, `isbn:v10`, `isbn:v13`

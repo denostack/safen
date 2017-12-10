@@ -36,7 +36,6 @@ export default class Validator {
   }
 
   private checkSingle(rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
-      // $dataKeys = array_flip(is_array($data) ? array_keys($data) : [])
     for (const condition of rule[0]) {
       const tester = this.loader.load(condition)
       if (!this.test(tester, data, origin, keys)) {
@@ -44,9 +43,7 @@ export default class Validator {
       }
     }
     for (const [[name, iterators, optional], children] of rule[1]) {
-      //     unset($dataKeys[$name]); // remove
-      // check optional
-      if (optional && data[name] === undefined) {
+      if (optional && (data[name] === undefined || data[name] === null)) {
         continue
       }
       keys.push(name)
@@ -59,17 +56,30 @@ export default class Validator {
       }
       keys.pop()
     }
-      // foreach ($dataKeys as $dataKey => $_) {
-      //     $thrower->throws('unknown', array_merge($keys, [$dataKey]));
-      // }
   }
 
-  private checkChild(iterators: Array<number|null>, rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
+  private checkChild(iterators: Array<string|null>, rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
     if (iterators.length) {
-      const iterator = iterators.shift()
-      if (iterator && iterator < data.length) {
-        thrower.throws(`array_length:${iterator}`, keys)
-        return
+      const iterator = iterators.shift() // string|null
+      if (iterator) {
+        if (iterator.indexOf(":") > -1) {
+          const [lengthMin, lengthMax] = iterator.split(":")
+          if (lengthMin && lengthMax) {
+            if (+lengthMin > data.length || +lengthMax < data.length) {
+              return thrower.throws(`array_length_between:${lengthMin},${lengthMax}`, keys)
+            }
+          } else if (lengthMin) {
+            if (+lengthMin > data.length) {
+              return thrower.throws(`array_length_min:${lengthMin}`, keys)
+            }
+          } else if (lengthMax) {
+            if (+lengthMax < data.length) {
+              return thrower.throws(`array_length_max:${lengthMax}`, keys)
+            }
+          }
+        } else if (+iterator !== data.length) {
+          return thrower.throws(`array_length:${iterator}`, keys)
+        }
       }
       for (const index of Object.keys(data)) {
         keys.push(index)

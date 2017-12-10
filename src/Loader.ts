@@ -40,12 +40,14 @@ export const defaultTesters = {
   email: validatorTesters["validator.isEmail"],
 
   finite: lodashTesters["lodash.isFinite"],
+  float: lodashTesters["lodash.isNumber"],
 
   hash: validatorTesters["validator.isHash"],
   hexcolor: validatorTesters["validator.isHexColor"],
   hexadecimal: validatorTesters["validator.isHexadecimal"],
 
   in: InTester,
+  int: lodashTesters["lodash.isInteger"],
   integer: lodashTesters["lodash.isInteger"],
   ip: validatorTesters["validator.isIP"],
   isbn: validatorTesters["validator.isISBN"],

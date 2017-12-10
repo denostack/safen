@@ -16,6 +16,91 @@ describe("safen.create", () => {
   })
 })
 
+function expectErrorOccured(handler: any, types: string[]): void {
+  try {
+    handler()
+  } catch (e) {
+    if (e instanceof InvalidValueError) {
+      expect(e.getErrors()).toEqual(types)
+      return
+    }
+  }
+  throw new Error("error")
+}
+
+function expectErrorNothing(handler: any): void {
+  handler()
+}
+
+describe("test target name", () => {
+
+  it("test simple", () => {
+    expectErrorNothing(() => safen.create("string").assert("user1"))
+    expectErrorOccured(() => safen.create("string").assert(undefined),  ["string"])
+    expectErrorOccured(() => safen.create("string").assert(null),       ["string"])
+    expectErrorOccured(() => safen.create("string").assert([]),         ["string"])
+    expectErrorOccured(() => safen.create("string").assert({}),         ["string"])
+  })
+
+  it("test normal", () => {
+    expectErrorOccured(() => safen.create({users: "string"}).assert({}),                  ["required@users"])
+    expectErrorOccured(() => safen.create({users: "string"}).assert({users: undefined}),  ["required@users"])
+    expectErrorOccured(() => safen.create({users: "string"}).assert({users: null}),       ["string@users"])
+    expectErrorNothing(() => safen.create({users: "string"}).assert({users: "user1"}))
+    expectErrorOccured(() => safen.create({users: "string"}).assert({users: []}),         ["string@users"])
+    expectErrorOccured(() => safen.create({users: "string"}).assert({users: ["user1"]}),  ["string@users"])
+  })
+
+  it("test array", () => {
+    expectErrorOccured(() => safen.create({"users[]": "string"}).assert({}),                  ["required@users"])
+    expectErrorOccured(() => safen.create({"users[]": "string"}).assert({users: undefined}),  ["required@users"])
+    expectErrorOccured(() => safen.create({"users[]": "string"}).assert({users: null}),       ["array@users"])
+    expectErrorOccured(() => safen.create({"users[]": "string"}).assert({users: "user1"}),    ["array@users"])
+    expectErrorNothing(() => safen.create({"users[]": "string"}).assert({users: []}))
+    expectErrorNothing(() => safen.create({"users[]": "string"}).assert({users: ["user1"]}))
+  })
+
+  it("test options", () => {
+    expectErrorNothing(() => safen.create({"users?": "string"}).assert({}))
+    expectErrorNothing(() => safen.create({"users?": "string"}).assert({users: undefined}))
+    expectErrorNothing(() => safen.create({"users?": "string"}).assert({users: null}))
+    expectErrorNothing(() => safen.create({"users?": "string"}).assert({users: "user1"}))
+    expectErrorOccured(() => safen.create({"users?": "string"}).assert({users: []}),        ["string@users"])
+    expectErrorOccured(() => safen.create({"users?": "string"}).assert({users: ["user1"]}), ["string@users"])
+  })
+
+  it("test array options", () => {
+    expectErrorNothing(() => safen.create({"users[]?": "string"}).assert({}))
+    expectErrorNothing(() => safen.create({"users[]?": "string"}).assert({users: undefined}))
+    expectErrorNothing(() => safen.create({"users[]?": "string"}).assert({users: null}))
+    expectErrorOccured(() => safen.create({"users[]?": "string"}).assert({users: "user1"}), ["array@users"])
+    expectErrorNothing(() => safen.create({"users[]?": "string"}).assert({users: []}))
+    expectErrorNothing(() => safen.create({"users[]?": "string"}).assert({users: ["user1"]}))
+  })
+
+  it("test array length", () => {
+    expectErrorOccured(() => safen.create({"users[2]": "string"}).assert({users: []}),              ["array_length:2@users"])
+    expectErrorOccured(() => safen.create({"users[2]": "string"}).assert({users: ["1"]}),           ["array_length:2@users"])
+    expectErrorNothing(() => safen.create({"users[2]": "string"}).assert({users: ["1", "2"]}))
+    expectErrorOccured(() => safen.create({"users[2]": "string"}).assert({users: ["1", "2", "3"]}), ["array_length:2@users"])
+
+    expectErrorNothing(() => safen.create({"users[:2]": "string"}).assert({users: []}))
+    expectErrorNothing(() => safen.create({"users[:2]": "string"}).assert({users: ["1"]}))
+    expectErrorNothing(() => safen.create({"users[:2]": "string"}).assert({users: ["1", "2"]}))
+    expectErrorOccured(() => safen.create({"users[:2]": "string"}).assert({users: ["1", "2", "3"]}), ["array_length_max:2@users"])
+
+    expectErrorOccured(() => safen.create({"users[2:]": "string"}).assert({users: []}),         ["array_length_min:2@users"])
+    expectErrorOccured(() => safen.create({"users[2:]": "string"}).assert({users: ["1"]}),      ["array_length_min:2@users"])
+    expectErrorNothing(() => safen.create({"users[2:]": "string"}).assert({users: ["1", "2"]}))
+    expectErrorNothing(() => safen.create({"users[2:]": "string"}).assert({users: ["1", "2", "3"]}))
+
+    expectErrorOccured(() => safen.create({"users[1:2]": "string"}).assert({users: []}),              ["array_length_between:1,2@users"])
+    expectErrorNothing(() => safen.create({"users[1:2]": "string"}).assert({users: ["1"]}))
+    expectErrorNothing(() => safen.create({"users[1:2]": "string"}).assert({users: ["1", "2"]}))
+    expectErrorOccured(() => safen.create({"users[1:2]": "string"}).assert({users: ["1", "2", "3"]}), ["array_length_between:1,2@users"])
+  })
+})
+
 describe("load all testers", () => {
   it("test after", () => {
     expect(safen.create("after:2017-12-01 00:00:01").validate("2017-12-01 00:00:00")).toBe(false)

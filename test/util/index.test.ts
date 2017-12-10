@@ -5,16 +5,16 @@ import * as util from "../../dist/util"
 import * as types from "../../dist/types"
 
 describe("util.parse()", () => {
-  const expects: Array<[string, [string, Array<number|null>, boolean]]> = [
+  const expects: Array<[string, [string, Array<string|null>, boolean]]> = [
     ["name", ["name", [], false]],
     ["name?", ["name", [], true]],
     ["name[]", ["name", [null], false]],
     ["name[]?", ["name", [null], true]],
     ["name[][][]", ["name", [null, null, null], false]],
     ["name[][][]?", ["name", [null, null, null], true]],
-    ["name[10][20][30]", ["name", [10, 20, 30], false]],
-    ["name[10][20][30]?", ["name", [10, 20, 30], true]],
-    ["name[10][][30]?", ["name", [10, null, 30], true]],
+    ["name[10][20][30]", ["name", ["10", "20", "30"], false]],
+    ["name[10][20][30]?", ["name", ["10", "20", "30"], true]],
+    ["name[10][][30]?", ["name", ["10", null, "30"], true]],
   ]
 
   it("success", () => {

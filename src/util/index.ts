@@ -2,18 +2,18 @@
 import * as types from "../types"
 import * as _ from "lodash"
 
-const TARGET_NAME_PATTERN = /^([a-zA-Z_][a-zA-Z0-9_-]*)((?:\[\d*\])*)(\?)?$/u
+const TARGET_NAME_PATTERN = /^([a-zA-Z_][a-zA-Z0-9_-]*)((?:\[\d*:?\d*\])*)(\?)?$/u
 
 export function parse(target: string): types.NormalizedTargetName {
   if (!TARGET_NAME_PATTERN.test(target)) {
-    const correction = target.match(/([a-zA-Z_][a-zA-Z0-9_-]*)((?:\[\d*\])*)(\?)/u)
+    const correction = target.match(/([a-zA-Z_][a-zA-Z0-9_-]*)((?:\[\d*:?\d*\])*)(\?)/u)
     throw new Error(`Invalid target name. Did you mean this? '${(correction && correction[0]) || "unknown"}'.`)
   }
   const matches = target.match(TARGET_NAME_PATTERN)
 
-  let iterators: Array<number|null> = []
+  let iterators: Array<string|null> = []
   if (matches && matches[2]) {
-    iterators = matches[2].replace(/((^\[)|(\]$))/g, "").split("][").map(chunk => (chunk === "" ? null : +chunk))
+    iterators = matches[2].replace(/((^\[)|(\]$))/g, "").split("][").map(chunk => (chunk === "" ? null : chunk))
   }
   return [
     (matches && matches[1]) || "",

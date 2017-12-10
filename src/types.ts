@@ -18,7 +18,7 @@ export interface NormalizableRuleObject {
   [key: string]: NormalizableRuleObject | NormalizableRule
 }
 
-export type NormalizedTargetName = [string, Array<number|null>, boolean]
+export type NormalizedTargetName = [string, Array<string|null>, boolean]
 
 export type NormalizedRule = [string[], NormalizedChildRules]
 export interface NormalizedChildRules extends Array<[NormalizedTargetName, NormalizedRule]> {}

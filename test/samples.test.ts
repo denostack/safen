@@ -5,6 +5,41 @@ import safen from "../dist"
 import {InvalidValueError} from "../dist"
 
 describe("samples", () => {
+  it("sample usage", () => {
+    expect.assertions(1)
+
+    // section:optional
+    const validator = safen.create({
+      "username": "string|length_between:4,20",
+      "password?": "length_between:8,20", // optional
+      "areas[1:]": {
+        lat: "float | between:-90,90",
+        lng: "float | between:-180,180",
+      },
+    })
+
+    validator.assert({
+      username: "username",
+      areas: [{
+        lat: 0,
+        lng: 0,
+      }],
+    }) // ok
+
+    try {
+      validator.assert({
+        username: "corgidisco",
+        password: "password!@#",
+        areas: [],
+      }) // ok
+    } catch (e) {
+      if (e instanceof InvalidValueError) {
+        expect(e.getErrors()).toEqual(["array_length_min:1@areas"])
+      }
+    }
+    // endsection
+  })
+
   it("sample optional", () => {
     expect.assertions(0)
 
@@ -72,7 +107,7 @@ describe("samples", () => {
 
     // section:array-fixed
     const validator = safen.create({
-      "areas[2]": { // array
+      "areas[:2]": { // array
         lat: "number",
         lng: "number",
       },
@@ -95,7 +130,7 @@ describe("samples", () => {
       })
     } catch (e) {
       if (e instanceof InvalidValueError) {
-        expect(e.getErrors()).toEqual(["array_length:2@areas"])
+        expect(e.getErrors()).toEqual(["array_length_max:2@areas"])
       }
     }
     // endsection
