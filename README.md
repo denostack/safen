@@ -31,16 +31,31 @@ validator.validate(/* any values! */) // return boolean
 const validator = safen.create({
   "username": "string|length_between:4,20",
   "password?": "length_between:8,20", // optional
+  "areas[1:]": {
+    lat: "float | between:-90,90",
+    lng: "float | between:-180,180",
+  },
 })
 
 validator.assert({
   username: "username",
+  areas: [{
+    lat: 0,
+    lng: 0,
+  }],
 }) // ok
 
-validator.assert({
-  username: "corgidisco",
-  password: "password!@#",
-}) // ok
+try {
+  validator.assert({
+    username: "corgidisco",
+    password: "password!@#",
+    areas: [],
+  }) // fail
+} catch (e) {
+  if (e instanceof InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'array_length_min:1@areas' ]
+  }
+}
 ```
 
 ### object in object
@@ -83,7 +98,7 @@ validator.assert({
 
 ```typescript
 const validator = safen.create({
-  "areas[2]": { // array
+  "areas[:2]": { // array
     lat: "number",
     lng: "number",
   },
@@ -103,10 +118,10 @@ try {
       {lat: 31, lng: 125},
       {lat: 31, lng: 125},
     ],
-  })
+  }) // fail
 } catch (e) {
   if (e instanceof InvalidValueError) {
-    expect(e.getErrors()).toEqual(["array_length:2@areas"])
+    console.log(e.getErrors()) // output is [ 'array_length_max:2@areas' ]
   }
 }
 ```
@@ -138,10 +153,10 @@ try {
       {lat: 37, lng: 126},
       {lat: 31, lng: 125},
     ],
-  })
+  }) // fail
 } catch (e) {
   if (e instanceof InvalidValueError) {
-    expect(e.getErrors()).toEqual(["array@areas[0]", "array@areas[1]"])
+    console.log(e.getErrors()) // output is [ 'array@areas[0]', 'array@areas[1]' ]
   }
 }
 ```
@@ -169,10 +184,12 @@ Validator                     | Description                             | Exampl
 **domain**                    | alias `validator.isFQDN`                |
 **email**                     | alias `validator.isEmail`               |
 **finite**                    | alias `lodash.isFinite`                 |
+**float**                     | alias `lodash.isNumber`                 |
 **hash:{algorithm}**          | alias `validator.isHash`                | `hash:md4`, `hash:md5` ..
 **hexcolor**                  | alias `validator.isHexColor`            |
 **hexadecimal**               | alias `validator.isHexadecimal`         |
 **in:{...args}**              | check if the value is in an array {args}| `in:1,2,3`
+**int**                       | alias `lodash.isInteger`                |
 **integer**                   | alias `lodash.isInteger`                |
 **ip:{version = null}**       | alias `validator.isIP`                  | `ip`, `ip:v4`, `ip:v6`
 **isbn{version = null}**      | alias `validator.isISBN`                | `isbn`, `isbn:v10`, `isbn:v13`
@@ -275,10 +292,10 @@ validator.assert({
 try {
   validator.assert({
     username: "corgidisco",
-  }) // ok
+  }) // fail
 } catch (e) {
   if (e instanceof InvalidValueError) {
-    expect(e.getErrors()).toEqual(["validator.isEmail@username"])
+    console.log(e.getErrors()) // output is [ 'validator.isEmail@username' ]
   }
 }
 ```

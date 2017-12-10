@@ -43,17 +43,17 @@ describe("util.normalize()", () => {
     [
       {
         "username": "email",
-        "password": ["length_min:5", "length_max:20"],
-        "locations[]?": ["length_min:1", {
+        "password": "length_min:5 | length_max:20",
+        "locations[]?": {
             "address": "string",
             "lat?": "float",
             "lng?": "float",
-        }],
+        },
       },
       [[], [
         [["username", [], false], [["email"], []]],
         [["password", [], false], [["length_min:5", "length_max:20"], []]],
-        [["locations", [null], true], [["length_min:1"], [
+        [["locations", [null], true], [[], [
           [["address", [], false], [["string"], []]],
           [["lat", [], true], [["float"], []]],
           [["lng", [], true], [["float"], []]],

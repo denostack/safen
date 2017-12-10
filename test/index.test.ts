@@ -24,6 +24,7 @@ function expectErrorOccured(handler: any, types: string[]): void {
       expect(e.getErrors()).toEqual(types)
       return
     }
+    console.log(e)
   }
   throw new Error("error")
 }
@@ -42,10 +43,34 @@ describe("test target name", () => {
     expectErrorOccured(() => safen.create("string").assert({}),         ["string"])
   })
 
+  it("test multiple", () => {
+    expectErrorNothing(() => safen.create("string | email").assert("corgidisco@gmail.com"))
+    expectErrorOccured(() => safen.create("string | email").assert(undefined),  ["string", "email"])
+    expectErrorOccured(() => safen.create("string | email").assert(null),       ["string", "email"])
+    expectErrorOccured(() => safen.create("string | email").assert([]),         ["string", "email"])
+    expectErrorOccured(() => safen.create("string | email").assert({}),         ["string", "email"])
+  })
+
+  // it("test array", () => {
+  //   expectErrorNothing(() => safen.create("string[]").assert("corgidisco@gmail.com"))
+  //   expectErrorOccured(() => safen.create("string[]").assert(undefined),  ["string"])
+  //   expectErrorOccured(() => safen.create("string[]").assert(null),       ["string"])
+  //   expectErrorOccured(() => safen.create("string[]").assert([]),         ["string"])
+  //   expectErrorOccured(() => safen.create("string[]").assert({}),         ["string"])
+  // })
+
+  // it("test array of multiple", () => {
+  //   expectErrorNothing(() => safen.create("string | email []").assert("corgidisco@gmail.com"))
+  //   expectErrorOccured(() => safen.create("string | email []").assert(undefined),  ["string"])
+  //   expectErrorOccured(() => safen.create("string | email []").assert(null),       ["string"])
+  //   expectErrorOccured(() => safen.create("string | email []").assert([]),         ["string"])
+  //   expectErrorOccured(() => safen.create("string | email []").assert({}),         ["string"])
+  // })
+
   it("test normal", () => {
     expectErrorOccured(() => safen.create({users: "string"}).assert({}),                  ["required@users"])
     expectErrorOccured(() => safen.create({users: "string"}).assert({users: undefined}),  ["required@users"])
-    expectErrorOccured(() => safen.create({users: "string"}).assert({users: null}),       ["string@users"])
+    expectErrorOccured(() => safen.create({users: "string"}).assert({users: null}),       ["required@users"])
     expectErrorNothing(() => safen.create({users: "string"}).assert({users: "user1"}))
     expectErrorOccured(() => safen.create({users: "string"}).assert({users: []}),         ["string@users"])
     expectErrorOccured(() => safen.create({users: "string"}).assert({users: ["user1"]}),  ["string@users"])
@@ -54,7 +79,7 @@ describe("test target name", () => {
   it("test array", () => {
     expectErrorOccured(() => safen.create({"users[]": "string"}).assert({}),                  ["required@users"])
     expectErrorOccured(() => safen.create({"users[]": "string"}).assert({users: undefined}),  ["required@users"])
-    expectErrorOccured(() => safen.create({"users[]": "string"}).assert({users: null}),       ["array@users"])
+    expectErrorOccured(() => safen.create({"users[]": "string"}).assert({users: null}),       ["required@users"])
     expectErrorOccured(() => safen.create({"users[]": "string"}).assert({users: "user1"}),    ["array@users"])
     expectErrorNothing(() => safen.create({"users[]": "string"}).assert({users: []}))
     expectErrorNothing(() => safen.create({"users[]": "string"}).assert({users: ["user1"]}))

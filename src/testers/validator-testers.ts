@@ -1,7 +1,35 @@
 
+import * as _ from "lodash"
 import * as types from "../types"
-import {testerGenerator as gen} from "../util"
 import * as validator from "validator"
+
+type GeneratorHandler = (value: any, ...options: any[]) => boolean
+type GeneratorArgsMapper = (args: string[]) => any[]
+
+function gen(handler: GeneratorHandler, mapper?: GeneratorArgsMapper): {new(): types.Tester} {
+  if (!mapper) {
+    mapper = (args: string[]): string[] => {
+      return args
+    }
+  }
+
+  class AnonymousTester implements types.Tester {
+
+    private args: string[]
+
+    public constructor(...args: string[]) {
+      this.args = args
+    }
+
+    public test(data: any): boolean {
+      if (!_.isString(data)) { // string only
+        return false
+      }
+      return handler(data, ...(mapper as GeneratorArgsMapper)(this.args))
+    }
+  }
+  return AnonymousTester
+}
 
 export const testers = {
   "validator.isAfter": gen(validator.isAfter),

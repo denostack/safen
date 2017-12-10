@@ -19,7 +19,7 @@ export default class Validator {
 
   public assert(data: any): void {
     const errors = new ErrorBag()
-    this.checkSingle(util.normalize(this.rule), errors, data, data, [])
+    this.testOne(util.normalize(this.rule), errors, data, data, [])
     if (errors.getErrors().length) {
       throw new InvalidValueError(errors.getErrors())
     }
@@ -28,14 +28,14 @@ export default class Validator {
   public validate(data: any): boolean {
     const errors = new ErrorThrower()
     try {
-      this.checkSingle(util.normalize(this.rule), errors, data, data, [])
+      this.testOne(util.normalize(this.rule), errors, data, data, [])
     } catch (e) {
       return false
     }
     return true
   }
 
-  private checkSingle(rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
+  private testOne(rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
     for (const condition of rule[0]) {
       const tester = this.loader.load(condition)
       if (!this.test(tester, data, origin, keys)) {
@@ -43,22 +43,22 @@ export default class Validator {
       }
     }
     for (const [[name, iterators, optional], children] of rule[1]) {
-      if (optional && (data[name] === undefined || data[name] === null)) {
+      if (optional && (data === undefined || data === null || data[name] === undefined || data[name] === null)) {
         continue
       }
       keys.push(name)
-      if (data[name] === undefined) {
+      if (data === undefined || data === null || data[name] === undefined || data[name] === null) {
         thrower.throws("required", keys)
       } else if (iterators.length && !_.isArray(data[name])) {
         thrower.throws("array", keys)
       } else {
-        this.checkChild(iterators.slice(), children, thrower, data[name], origin, keys.slice())
+        this.testChildren(iterators.slice(), children, thrower, data[name], origin, keys.slice())
       }
       keys.pop()
     }
   }
 
-  private checkChild(iterators: Array<string|null>, rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
+  private testChildren(iterators: Array<string|null>, rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
     if (iterators.length) {
       const iterator = iterators.shift() // string|null
       if (iterator) {
@@ -88,12 +88,12 @@ export default class Validator {
         } else if (iterators.length && !_.isArray(data[index])) {
           thrower.throws("array", keys)
         } else {
-          this.checkChild(iterators.slice(), rule, thrower, data[index], origin, keys.slice())
+          this.testChildren(iterators.slice(), rule, thrower, data[index], origin, keys.slice())
         }
         keys.pop()
       }
     } else {
-      this.checkSingle(rule, thrower, data, origin, keys.slice())
+      this.testOne(rule, thrower, data, origin, keys.slice())
     }
   }
 

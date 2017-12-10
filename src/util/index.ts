@@ -49,28 +49,3 @@ export function normalize(rule: types.NormalizableRule): types.NormalizedRule {
   }
   return normalized
 }
-
-export type GeneratorHandler = (value: any, ...options: any[]) => boolean
-export type GeneratorArgsMapper = (args: string[]) => any[]
-
-export function testerGenerator(handler: GeneratorHandler, mapper?: GeneratorArgsMapper): {new(): types.Tester} {
-  if (!mapper) {
-    mapper = (args: string[]): string[] => {
-      return args
-    }
-  }
-
-  class AnonymousTester implements types.Tester {
-
-    private args: string[]
-
-    public constructor(...args: string[]) {
-      this.args = args
-    }
-
-    public test(data: any): boolean {
-      return handler(data, ...(mapper as GeneratorArgsMapper)(this.args))
-    }
-  }
-  return AnonymousTester
-}

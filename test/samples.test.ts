@@ -8,6 +8,11 @@ describe("samples", () => {
   it("sample usage", () => {
     expect.assertions(1)
 
+    const nativeConsoleLog = console.log
+    console.log = (error: any): void => {
+      expect(error).toEqual(["array_length_min:1@areas"])
+    }
+
     // section:optional
     const validator = safen.create({
       "username": "string|length_between:4,20",
@@ -31,13 +36,15 @@ describe("samples", () => {
         username: "corgidisco",
         password: "password!@#",
         areas: [],
-      }) // ok
+      }) // fail
     } catch (e) {
       if (e instanceof InvalidValueError) {
-        expect(e.getErrors()).toEqual(["array_length_min:1@areas"])
+        console.log(e.getErrors()) // output is [ 'array_length_min:1@areas' ]
       }
     }
     // endsection
+
+    console.log = nativeConsoleLog
   })
 
   it("sample optional", () => {
@@ -105,6 +112,11 @@ describe("samples", () => {
   it("sample array fixed", () => {
     expect.assertions(1)
 
+    const nativeConsoleLog = console.log
+    console.log = (error: any): void => {
+      expect(error).toEqual(["array_length_max:2@areas"])
+    }
+
     // section:array-fixed
     const validator = safen.create({
       "areas[:2]": { // array
@@ -127,17 +139,24 @@ describe("samples", () => {
           {lat: 31, lng: 125},
           {lat: 31, lng: 125},
         ],
-      })
+      }) // fail
     } catch (e) {
       if (e instanceof InvalidValueError) {
-        expect(e.getErrors()).toEqual(["array_length_max:2@areas"])
+        console.log(e.getErrors()) // output is [ 'array_length_max:2@areas' ]
       }
     }
     // endsection
+
+    console.log = nativeConsoleLog
   })
 
   it("sample array multi dim", () => {
     expect.assertions(1)
+
+    const nativeConsoleLog = console.log
+    console.log = (error: any): void => {
+      expect(error).toEqual(["array@areas[0]", "array@areas[1]"])
+    }
 
     // section:array-multi-dim
     const validator = safen.create({
@@ -166,13 +185,15 @@ describe("samples", () => {
           {lat: 37, lng: 126},
           {lat: 31, lng: 125},
         ],
-      })
+      }) // fail
     } catch (e) {
       if (e instanceof InvalidValueError) {
-        expect(e.getErrors()).toEqual(["array@areas[0]", "array@areas[1]"])
+        console.log(e.getErrors()) // output is [ 'array@areas[0]', 'array@areas[1]' ]
       }
     }
     // endsection
+
+    console.log = nativeConsoleLog
   })
 
   it("sample lodash validator", () => {
@@ -198,6 +219,11 @@ describe("samples", () => {
   it("sample validator validator", () => {
     expect.assertions(1)
 
+    const nativeConsoleLog = console.log
+    console.log = (error: any): void => {
+      expect(error).toEqual(["validator.isEmail@username"])
+    }
+
     // section:validator-validator
     const validator = safen.create({
       username: "validator.isEmail",
@@ -210,12 +236,14 @@ describe("samples", () => {
     try {
       validator.assert({
         username: "corgidisco",
-      }) // ok
+      }) // fail
     } catch (e) {
       if (e instanceof InvalidValueError) {
-        expect(e.getErrors()).toEqual(["validator.isEmail@username"])
+        console.log(e.getErrors()) // output is [ 'validator.isEmail@username' ]
       }
     }
     // endsection
+
+    console.log = nativeConsoleLog
   })
 })

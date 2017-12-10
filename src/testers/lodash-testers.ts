@@ -1,7 +1,17 @@
 
 import * as types from "../types"
-import {testerGenerator as gen} from "../util"
 import * as _ from "lodash"
+
+type GeneratorHandler = (value: any) => boolean
+
+function gen(handler: GeneratorHandler): {new(): types.Tester} {
+  class AnonymousTester implements types.Tester {
+    public test(data: any): boolean {
+      return handler(data)
+    }
+  }
+  return AnonymousTester
+}
 
 export const testers = {
   "lodash.isArguments": gen(_.isArguments),
