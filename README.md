@@ -1,9 +1,13 @@
 # Safen
 
+[![npm](https://img.shields.io/npm/v/safen.svg?style=flat-square)](https://www.npmjs.com/package/safen)
+[![npm](https://img.shields.io/npm/dt/safen.svg?style=flat-square)](https://www.npmjs.com/package/safen)
+[![npm](https://img.shields.io/npm/l/safen.svg?style=flat-square)](https://www.npmjs.com/package/safen)
+
 [![NPM](https://nodei.co/npm/safen.png)](https://nodei.co/npm/safen/)
 
 Complex Object Validator Based on [lodash](https://github.com/lodash/lodash.js) and
-[validator](https://github.com/chriso/validator.js).
+[validator](https://github.com/chriso/validator.js) for TypeScript and JavaScript.
 
 ## Install
 
