@@ -1,9 +1,9 @@
 
 import {} from "jest"
 
-import Loader from "../dist/Loader"
-import AlwaysTrueTester from "../dist/testers/AlwaysTrueTester"
-import AlwaysFalseTester from "../dist/testers/AlwaysFalseTester"
+import {Loader} from "../dist/Loader"
+import {AlwaysTrueTester} from "../dist/testers/AlwaysTrueTester"
+import {AlwaysFalseTester} from "../dist/testers/AlwaysFalseTester"
 
 describe("Loader.create", () => {
 

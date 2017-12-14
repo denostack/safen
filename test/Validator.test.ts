@@ -1,11 +1,11 @@
 
 import {} from "jest"
 
-import Loader from "../dist/Loader"
-import Validator from "../dist/Validator"
-import InvalidValueError from "../dist/InvalidValueError"
+import {Loader} from "../dist/Loader"
+import {Validator} from "../dist/Validator"
+import {InvalidValueError} from "../dist/InvalidValueError"
 import * as types from "../dist/types"
-import AlwaysFalseTester from "../dist/testers/AlwaysFalseTester"
+import {AlwaysFalseTester} from "../dist/testers/AlwaysFalseTester"
 
 describe("Validator.assert", () => {
 

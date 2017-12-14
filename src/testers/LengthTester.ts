@@ -1,7 +1,7 @@
 
 import * as types from "../types"
 
-export default class LengthTester implements types.Tester {
+export class LengthTester implements types.Tester {
 
   private len: number
 

@@ -1,8 +1,7 @@
 
 import {} from "jest"
 
-import safen from "../dist"
-import {InvalidValueError} from "../dist"
+import * as safen from "../dist"
 
 describe("safen.create", () => {
   it("success", () => {
@@ -20,7 +19,7 @@ function expectErrorOccured(handler: any, types: string[]): void {
   try {
     handler()
   } catch (e) {
-    if (e instanceof InvalidValueError) {
+    if (e instanceof safen.InvalidValueError) {
       expect(e.getErrors()).toEqual(types)
       return
     }

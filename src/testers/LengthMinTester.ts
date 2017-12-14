@@ -1,7 +1,7 @@
 
 import * as types from "../types"
 
-export default class LengthMinTexter implements types.Tester {
+export class LengthMinTester implements types.Tester {
 
   private min: number
 

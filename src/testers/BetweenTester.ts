@@ -1,7 +1,8 @@
 
 import * as types from "../types"
+import * as _ from "lodash"
 
-export default class BetweenTester implements types.Tester {
+export class BetweenTester implements types.Tester {
 
   private min: string
   private max: string
@@ -12,6 +13,9 @@ export default class BetweenTester implements types.Tester {
   }
 
   public test(data: any): boolean {
+    if (_.isNumber(data)) {
+      return data >= +this.min && data <= +this.max
+    }
     return data >= this.min && data <= this.max
   }
 }

@@ -2,8 +2,8 @@
 
 [![NPM](https://nodei.co/npm/safen.png)](https://nodei.co/npm/safen/)
 
-Validator Library Based on [lodash](https://github.com/lodash/lodash.js) and
-[validator](https://github.com/chriso/validator.js)
+Complex Object Validator Based on [lodash](https://github.com/lodash/lodash.js) and
+[validator](https://github.com/chriso/validator.js).
 
 ## Install
 
@@ -13,33 +13,58 @@ npm install safen --save
 
 ## Usage
 
+Import,
+
 ```js
-import safen from "safen"
-
-const validator = safen.create(/* rules */)
-
-validator.assert(/* any values! */) // if it succeeds, nothing happens. if it failes, an exception occurs.
-validator.validate(/* any values! */) // return boolean
- 
+import * as safen from "safen"
+// or
+const safen = require("safen")
 ```
+
+then,
+
+@code("./test/sample-typescript.test.ts@usage-default", "typescript")
+
 
 ## Rule Examples
 
-### optional
+### Pipe
 
-@code("./test/samples.test.ts@optional", "typescript")
+@code("./test/sample-typescript.test.ts@sample-pipe", "typescript")
 
-### object in object
+### Optional
 
-@code("./test/samples.test.ts@object-in-object", "typescript")
+@code("./test/sample-typescript.test.ts@sample-optional", "typescript")
 
-### array
+### Object in Object
 
-@code("./test/samples.test.ts@array", "typescript")
+@code("./test/sample-typescript.test.ts@sample-object-in-object", "typescript")
 
-@code("./test/samples.test.ts@array-fixed", "typescript")
+### Array
 
-@code("./test/samples.test.ts@array-multi-dim", "typescript")
+**Simple Array**
+
+@code("./test/sample-typescript.test.ts@sample-simple-array", "typescript")
+
+**Array With Range - Fixed**
+
+@code("./test/sample-typescript.test.ts@sample-array-with-range-fixed", "typescript")
+
+**Array With Range - Min**
+
+@code("./test/sample-typescript.test.ts@sample-array-with-range-min", "typescript")
+
+**Array With Range - Max**
+
+@code("./test/sample-typescript.test.ts@sample-array-with-range-max", "typescript")
+
+**Array With Range - Between**
+
+@code("./test/sample-typescript.test.ts@sample-array-with-range-between", "typescript")
+
+**Array with Multi Dimension**
+
+@code("./test/sample-typescript.test.ts@sample-array-with-multi-dims", "typescript")
 
 ## Validators
 
@@ -104,7 +129,7 @@ Validator                     | Description                             | Exampl
 
 **Example**
 
-@code("./test/samples.test.ts@lodash-validator", "typescript")
+@code("./test/sample-typescript.test.ts@lodash-validator", "typescript")
 
 Validator                     | Description                             | Documents
 ----------------------------- | --------------------------------------- | ------------------------------------------------
@@ -146,7 +171,7 @@ Validator                     | Description                             | Docume
 
 **Example**
 
-@code("./test/samples.test.ts@validator-validator", "typescript")
+@code("./test/sample-typescript.test.ts@validator-validator", "typescript")
 
 [validator documents #validators](https://github.com/chriso/validator.js/#validators)
 

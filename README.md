@@ -2,8 +2,8 @@
 
 [![NPM](https://nodei.co/npm/safen.png)](https://nodei.co/npm/safen/)
 
-Validator Library Based on [lodash](https://github.com/lodash/lodash.js) and
-[validator](https://github.com/chriso/validator.js)
+Complex Object Validator Based on [lodash](https://github.com/lodash/lodash.js) and
+[validator](https://github.com/chriso/validator.js).
 
 ## Install
 
@@ -13,59 +13,126 @@ npm install safen --save
 
 ## Usage
 
+Import,
+
 ```js
-import safen from "safen"
-
-const validator = safen.create(/* rules */)
-
-validator.assert(/* any values! */) // if it succeeds, nothing happens. if it failes, an exception occurs.
-validator.validate(/* any values! */) // return boolean
- 
+import * as safen from "safen"
+// or
+const safen = require("safen")
 ```
 
-## Rule Examples
-
-### optional
+then,
 
 ```typescript
 const validator = safen.create({
-  "username": "string|length_between:4,20",
-  "password?": "length_between:8,20", // optional
+  "username": "string|email|length_between:12,100",
+  "password?": "string|length_between:8,20",
   "areas[1:]": {
-    lat: "float | between:-90,90",
-    lng: "float | between:-180,180",
+    lat: "number|between:-90,90",
+    lng: "number|between:-180,180",
+  },
+  "env": {
+    referer: "url",
+    ip: "ip:v4",
+    os: {
+      name: "in:window,osx,android,iphone",
+      version: "string",
+    },
+    browser: {
+      name: "in:chrome,firefox,edge,ie",
+      version: "string",
+    },
   },
 })
 
 validator.assert({
-  username: "username",
-  areas: [{
-    lat: 0,
-    lng: 0,
-  }],
+  username: "corgidisco@gmail.com",
+  areas: [
+    {lat: 0, lng: 0},
+  ],
+  env: {
+    referer: "http://corgidisco.github.io",
+    ip: "127.0.0.1",
+    os: {
+      name: "osx",
+      version: "10.13.1",
+    },
+    browser: {
+      name: "chrome",
+      version: "62.0.3202.94",
+    },
+  },
+}) // ok
+```
+
+
+## Rule Examples
+
+### Pipe
+
+```typescript
+const validator = safen.create({
+  username: "string|email|length_between:12,100",
+})
+
+validator.assert({
+  username: "corgidisco@gmail.com",
 }) // ok
 
 try {
   validator.assert({
     username: "corgidisco",
-    password: "password!@#",
-    areas: [],
   }) // fail
 } catch (e) {
-  if (e instanceof InvalidValueError) {
-    console.log(e.getErrors()) // output is [ 'array_length_min:1@areas' ]
+  if (e instanceof safen.InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'email@username', 'length_between:12,100@username' ]
   }
 }
 ```
 
-### object in object
+### Optional
+
+```typescript
+const validator = safen.create({
+  "username": "string|length_between:4,20",
+  "password?": "length_between:8,20", // optional
+})
+
+validator.assert({
+  username: "corgidisco",
+  password: "password!@#",
+}) // ok
+
+validator.assert({
+  username: "username",
+  // undefined password is OK.
+}) // ok
+
+validator.assert({
+  username: "username",
+  password: null, // null password is also OK.
+}) // ok
+
+try {
+  validator.assert({
+    // undefined username is not ok.
+    password: "password!@#",
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'required@username' ]
+  }
+}
+```
+
+### Object in Object
 
 ```typescript
 const validator = safen.create({
   username: "string|length_between:4,20",
   areas: {
-    lat: "number",
-    lng: "number",
+    lat: "number|between:-90,90",
+    lng: "number|between:-180,180",
   },
 })
 
@@ -78,7 +145,9 @@ validator.assert({
 }) // ok
 ```
 
-### array
+### Array
+
+**Simple Array**
 
 ```typescript
 const validator = safen.create({
@@ -89,16 +158,32 @@ const validator = safen.create({
 })
 
 validator.assert({
+  areas: [], // empty is OK
+}) // ok
+
+validator.assert({
   areas: [
     {lat: 37, lng: 126},
     {lat: 31, lng: 125},
   ],
 }) // ok
+
+try {
+  validator.assert({
+    areas: "",
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'array@areas' ]
+  }
+}
 ```
+
+**Array With Range - Fixed**
 
 ```typescript
 const validator = safen.create({
-  "areas[:2]": { // array
+  "areas[2]": { // array
     lat: "number",
     lng: "number",
   },
@@ -120,11 +205,146 @@ try {
     ],
   }) // fail
 } catch (e) {
-  if (e instanceof InvalidValueError) {
+  if (e instanceof safen.InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'array_length:2@areas' ]
+  }
+}
+
+try {
+  validator.assert({
+    areas: [
+      {lat: 37, lng: 126},
+    ],
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'array_length:2@areas' ]
+  }
+}
+```
+
+**Array With Range - Min**
+
+```typescript
+const validator = safen.create({
+  "areas[1:]": { // array
+    lat: "number",
+    lng: "number",
+  },
+})
+
+validator.assert({
+  areas: [
+    {lat: 31, lng: 125},
+  ],
+}) // ok
+
+validator.assert({
+  areas: [
+    {lat: 37, lng: 126},
+    {lat: 31, lng: 125},
+  ],
+}) // ok
+
+try {
+  validator.assert({
+    areas: [],
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'array_length_min:1@areas' ]
+  }
+}
+```
+
+**Array With Range - Max**
+
+```typescript
+const validator = safen.create({
+  "areas[:2]": { // array
+    lat: "number",
+    lng: "number",
+  },
+})
+
+validator.assert({
+  areas: [
+    {lat: 31, lng: 125},
+  ],
+}) // ok
+
+validator.assert({
+  areas: [
+    {lat: 37, lng: 126},
+    {lat: 31, lng: 125},
+  ],
+}) // ok
+
+try {
+  validator.assert({
+    areas: [
+      {lat: 37, lng: 126},
+      {lat: 31, lng: 125},
+      {lat: 32, lng: 121},
+    ],
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
     console.log(e.getErrors()) // output is [ 'array_length_max:2@areas' ]
   }
 }
 ```
+
+**Array With Range - Between**
+
+```typescript
+const validator = safen.create({
+  "areas[1:2]": { // array
+    lat: "number",
+    lng: "number",
+  },
+})
+
+validator.assert({
+  areas: [
+    {lat: 31, lng: 125},
+  ],
+}) // ok
+
+validator.assert({
+  areas: [
+    {lat: 37, lng: 126},
+    {lat: 31, lng: 125},
+  ],
+}) // ok
+
+try {
+  validator.assert({
+    areas: [
+    ],
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'array_length_between:1,2@areas' ]
+  }
+}
+
+try {
+  validator.assert({
+    areas: [
+      {lat: 37, lng: 126},
+      {lat: 31, lng: 125},
+      {lat: 32, lng: 121},
+    ],
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    console.log(e.getErrors()) // output is [ 'array_length_between:1,2@areas' ]
+  }
+}
+```
+
+**Array with Multi Dimension**
 
 ```typescript
 const validator = safen.create({
@@ -155,7 +375,7 @@ try {
     ],
   }) // fail
 } catch (e) {
-  if (e instanceof InvalidValueError) {
+  if (e instanceof safen.InvalidValueError) {
     console.log(e.getErrors()) // output is [ 'array@areas[0]', 'array@areas[1]' ]
   }
 }
@@ -294,7 +514,7 @@ try {
     username: "corgidisco",
   }) // fail
 } catch (e) {
-  if (e instanceof InvalidValueError) {
+  if (e instanceof safen.InvalidValueError) {
     console.log(e.getErrors()) // output is [ 'validator.isEmail@username' ]
   }
 }

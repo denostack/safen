@@ -1,7 +1,7 @@
 
 import * as types from "../types"
 
-export default class LengthMaxTexter implements types.Tester {
+export class LengthMaxTester implements types.Tester {
 
   private max: number
 

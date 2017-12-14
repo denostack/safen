@@ -1,7 +1,7 @@
 
 import * as types from "../types"
 
-export default class ErrorBag implements types.ErrorThowable {
+export class ErrorBag implements types.ErrorThowable {
 
   private errors: Array<[string, string[]]> = []
 

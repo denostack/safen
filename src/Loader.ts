@@ -2,16 +2,16 @@
 import * as _ from "lodash"
 import * as types from "./types"
 
-import AlwaysTrueTester from "./testers/AlwaysTrueTester"
-import AlwaysFalseTester from "./testers/AlwaysFalseTester"
-import BetweenTester from "./testers/BetweenTester"
-import InTester from "./testers/InTester"
-import LengthTester from "./testers/LengthTester"
-import LengthBetweenTester from "./testers/LengthBetweenTester"
-import LengthMaxTester from "./testers/LengthMaxTester"
-import LengthMinTester from "./testers/LengthMinTester"
-import MaxTester from "./testers/MaxTester"
-import MinTester from "./testers/MinTester"
+import {AlwaysTrueTester} from "./testers/AlwaysTrueTester"
+import {AlwaysFalseTester} from "./testers/AlwaysFalseTester"
+import {BetweenTester} from "./testers/BetweenTester"
+import {InTester} from "./testers/InTester"
+import {LengthTester} from "./testers/LengthTester"
+import {LengthBetweenTester} from "./testers/LengthBetweenTester"
+import {LengthMaxTester} from "./testers/LengthMaxTester"
+import {LengthMinTester} from "./testers/LengthMinTester"
+import {MaxTester} from "./testers/MaxTester"
+import {MinTester} from "./testers/MinTester"
 
 import {testers as lodashTesters} from "./testers/lodash-testers"
 import {testers as validatorTesters} from "./testers/validator-testers"
@@ -88,7 +88,7 @@ export const defaultTesters = {
   uuid: validatorTesters["validator.isUUID"],
 }
 
-export default class Loader {
+export class Loader {
 
   private testers: types.TesterMap
   private caches: types.TesterCacheMap

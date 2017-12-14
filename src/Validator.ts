@@ -1,13 +1,13 @@
 
-import Loader from "./Loader"
-import ErrorBag from "./throwable/ErrorBag"
-import ErrorThrower from "./throwable/ErrorThrower"
-import InvalidValueError from "./InvalidValueError"
+import {Loader} from "./Loader"
+import {ErrorBag} from "./throwable/ErrorBag"
+import {ErrorThrower} from "./throwable/ErrorThrower"
+import {InvalidValueError} from "./InvalidValueError"
 import * as types from "./types"
 import * as util from "./util"
 import * as _ from "lodash"
 
-export default class Validator {
+export class Validator {
 
   private loader: Loader
   private rule: types.NormalizableRule

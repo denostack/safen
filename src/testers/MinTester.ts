@@ -1,7 +1,8 @@
 
 import * as types from "../types"
+import * as _ from "lodash"
 
-export default class MinTexter implements types.Tester {
+export class MinTester implements types.Tester {
 
   private min: string
 
@@ -10,6 +11,9 @@ export default class MinTexter implements types.Tester {
   }
 
   public test(data: any): boolean {
+    if (_.isNumber(data)) {
+      return data >= +this.min
+    }
     return data >= this.min
   }
 }

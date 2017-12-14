@@ -1,7 +1,7 @@
 
 import * as types from "../types"
 
-export default class InTester implements types.Tester {
+export class InTester implements types.Tester {
 
   private args: Array<string|number>
 
