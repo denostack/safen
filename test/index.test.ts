@@ -1,5 +1,5 @@
 
-import {} from "jest"
+import "jest"
 
 import * as safen from "../dist"
 

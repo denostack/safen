@@ -76,7 +76,7 @@ describe("sample pipe", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'email@username', 'length_between:12,100@username' ]
+        console.log(e.reasons()) // output is [ 'email@username', 'length_between:12,100@username' ]
       }
     }
     // endsection
@@ -122,7 +122,7 @@ describe("sample optional", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'required@username' ]
+        console.log(e.reasons()) // output is [ 'required@username' ]
       }
     }
     // endsection
@@ -189,7 +189,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'array@areas' ]
+        console.log(e.reasons()) // output is [ 'array@areas' ]
       }
     }
     // endsection
@@ -230,7 +230,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'array_length:2@areas' ]
+        console.log(e.reasons()) // output is [ 'array_length:2@areas' ]
       }
     }
 
@@ -242,7 +242,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'array_length:2@areas' ]
+        console.log(e.reasons()) // output is [ 'array_length:2@areas' ]
       }
     }
     // endsection
@@ -285,7 +285,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'array_length_min:1@areas' ]
+        console.log(e.reasons()) // output is [ 'array_length_min:1@areas' ]
       }
     }
     // endsection
@@ -332,7 +332,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'array_length_max:2@areas' ]
+        console.log(e.reasons()) // output is [ 'array_length_max:2@areas' ]
       }
     }
     // endsection
@@ -376,7 +376,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'array_length_between:1,2@areas' ]
+        console.log(e.reasons()) // output is [ 'array_length_between:1,2@areas' ]
       }
     }
 
@@ -390,7 +390,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'array_length_between:1,2@areas' ]
+        console.log(e.reasons()) // output is [ 'array_length_between:1,2@areas' ]
       }
     }
     // endsection
@@ -436,7 +436,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'array@areas[0]', 'array@areas[1]' ]
+        console.log(e.reasons()) // output is [ 'array@areas[0]', 'array@areas[1]' ]
       }
     }
     // endsection
@@ -489,7 +489,7 @@ describe("sample array", () => {
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
-        console.log(e.getErrors()) // output is [ 'validator.isEmail@username' ]
+        console.log(e.reasons()) // output is [ 'validator.isEmail@username' ]
       }
     }
     // endsection

@@ -23,9 +23,26 @@ export type NormalizedTargetName = [string, Array<string|null>, boolean]
 export type NormalizedRule = [string[], NormalizedChildRules]
 export interface NormalizedChildRules extends Array<[NormalizedTargetName, NormalizedRule]> {}
 
+
 export interface TesterMap {
   [key: string]: {new(): Tester}
 }
 export interface TesterCacheMap {
   [key: string]: Tester
+}
+export interface TesterLoader {
+  load(tester: string): Tester
+}
+
+
+export interface MessageMap {
+  [key: string]: string | [string, string]
+}
+export interface MessageLoader {
+  load(reason: string): string
+}
+
+
+export interface MiddlewareResponseFactory {
+  factory(errors: ValidatingErrors): any
 }

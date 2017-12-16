@@ -1,7 +1,7 @@
 
-import {} from "jest"
+import "jest"
 
-import {Loader} from "../dist/Loader"
+import {MapLoader as TesterLoader} from "../dist/tester-loader/MapLoader"
 import {Validator} from "../dist/Validator"
 import {InvalidValueError} from "../dist/InvalidValueError"
 import * as types from "../dist/types"
@@ -9,8 +9,8 @@ import {AlwaysFalseTester} from "../dist/testers/AlwaysFalseTester"
 
 describe("Validator.assert", () => {
 
-  const alwaysTrue = new Validator(new Loader(), "always_true")
-  const alwaysFalse = new Validator(new Loader(), "always_false")
+  const alwaysTrue = new Validator("always_true")
+  const alwaysFalse = new Validator("always_false")
 
   it("assert nothing", () => {
     expect.assertions(0)
@@ -33,8 +33,8 @@ describe("Validator.assert", () => {
 
 describe("Validator.validate", () => {
 
-  const alwaysTrue = new Validator(new Loader(), "always_true")
-  const alwaysFalse = new Validator(new Loader(), "always_false")
+  const alwaysTrue = new Validator("always_true")
+  const alwaysFalse = new Validator("always_false")
 
   it("success", () => {
     expect.assertions(2)
@@ -62,7 +62,7 @@ describe("Tester.before", () => {
     }
   }
 
-  const validator = new Validator(new Loader({custom_tester: AlwaysTrueButHasBefore}), "custom_tester")
+  const validator = new Validator("custom_tester", new TesterLoader({custom_tester: AlwaysTrueButHasBefore}))
 
   it("assert nothing", () => {
     expect(validator.validate([1, 2, 3])).toBe(false) // before return false

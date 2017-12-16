@@ -1,5 +1,5 @@
 
-import {} from "jest"
+import "jest"
 
 import * as util from "../../dist/util"
 import * as types from "../../dist/types"

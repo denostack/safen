@@ -1,27 +1,32 @@
 
-import {Loader} from "./Loader"
 import {ErrorBag} from "./throwable/ErrorBag"
 import {ErrorThrower} from "./throwable/ErrorThrower"
 import {InvalidValueError} from "./InvalidValueError"
+import {MapLoader as TesterLoader} from "./tester-loader/MapLoader"
+import {MapLoader as MessageLoader} from "./message-loader/MapLoader"
 import * as types from "./types"
 import * as util from "./util"
 import * as _ from "lodash"
 
 export class Validator {
 
-  private loader: Loader
   private rule: types.NormalizableRule
 
-  constructor(loader: Loader, rule: types.NormalizableRule) {
-    this.loader = loader
+  private testerLoader: types.TesterLoader
+
+  private messageLoader: types.MessageLoader
+
+  constructor(rule: types.NormalizableRule, testerLoader?: types.TesterLoader, messageLoader?: types.MessageLoader) {
     this.rule = rule
+    this.testerLoader = testerLoader || new TesterLoader()
+    this.messageLoader = messageLoader || new MessageLoader()
   }
 
   public assert(data: any): void {
     const errors = new ErrorBag()
     this.testOne(util.normalize(this.rule), errors, data, data, [])
     if (errors.getErrors().length) {
-      throw new InvalidValueError(errors.getErrors())
+      throw new InvalidValueError(errors.getErrors(), this.messageLoader)
     }
   }
 
@@ -37,7 +42,7 @@ export class Validator {
 
   private testOne(rule: types.NormalizedRule, thrower: types.ErrorThowable, data: any, origin: any, keys: string[]): void {
     for (const condition of rule[0]) {
-      const tester = this.loader.load(condition)
+      const tester = this.testerLoader.load(condition)
       if (!this.test(tester, data, origin, keys)) {
         thrower.throws(condition, keys)
       }

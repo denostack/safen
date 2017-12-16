@@ -5,12 +5,12 @@ export class ErrorBag implements types.ErrorThowable {
 
   private errors: Array<[string, string[]]> = []
 
-  public throws(type: string, keys: string[]): void {
-    this.errors.push([type, keys.slice()])
+  public throws(tester: string, keys: string[]): void {
+    this.errors.push([tester, keys.slice()])
   }
 
   public getErrors(): types.ValidatingErrors {
-    return this.errors.map(([type, keys]) => {
+    return this.errors.map(([tester, keys]) => {
       const target = keys.reduce((carry: string, key: string): string => {
         if (!carry) {
           return key
@@ -20,7 +20,7 @@ export class ErrorBag implements types.ErrorThowable {
         }
         return `${carry}.${key}`
       }, "")
-      return type + (target ? `@${target}` : "")
+      return tester + (target ? `@${target}` : "")
     })
   }
 }
