@@ -18,8 +18,14 @@ export class InvalidValueError extends Error {
     return this.listOfReasons
   }
 
-  public errors(): string[] {
-    return []
+  public errors(): Array<{reason: string, message: string}> {
+    const self = this
+    return this.reasons().map((reason) => {
+      return {
+        reason,
+        message: self.messageLoader.load(reason),
+      }
+    })
   }
 
   public reasons(): string[] {

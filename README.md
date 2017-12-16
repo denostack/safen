@@ -89,7 +89,10 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'email@username', 'length_between:12,100@username' ]
+    // output is :
+    // [ { reason: 'email@username', message: 'The username must be a valid email address.' },
+    //   { reason: 'length_between:12,100@username', message: 'The username\'s length must be between 12 and 100.' } ]
+    console.log(e.errors())
   }
 }
 ```
@@ -124,7 +127,9 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'required@username' ]
+    // output is :
+    // [ { reason: 'required@username', message: 'The username is required.' } ]
+    console.log(e.errors())
   }
 }
 ```
@@ -178,7 +183,9 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'array@areas' ]
+    // output is :
+    // [ { reason: 'array@areas', message: 'The areas must be an array.' } ]
+    console.log(e.errors())
   }
 }
 ```
@@ -210,7 +217,9 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'array_length:2@areas' ]
+    // output is :
+    // [ { reason: 'array_length:2@areas', message: 'The areas's length must be 2.' } ]
+    console.log(e.errors())
   }
 }
 
@@ -222,7 +231,9 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'array_length:2@areas' ]
+    // output is :
+    // [ { reason: 'array_length:2@areas', message: 'The areas's length must be 2.' } ]
+    console.log(e.errors())
   }
 }
 ```
@@ -256,7 +267,9 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'array_length_min:1@areas' ]
+    // output is :
+    // [ { reason: 'array_length_min:1@areas', message: 'The areas's length must be at least 1.' } ]
+    console.log(e.errors())
   }
 }
 ```
@@ -294,7 +307,9 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'array_length_max:2@areas' ]
+    // output is :
+    // [ { reason: 'array_length_max:2@areas', message: 'The areas's length may not be greater than 2.' } ]
+    console.log(e.errors())
   }
 }
 ```
@@ -324,12 +339,13 @@ validator.assert({
 
 try {
   validator.assert({
-    areas: [
-    ],
+    areas: [],
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'array_length_between:1,2@areas' ]
+    // output is :
+    // [ { reason: 'array_length_between:1,2@areas', message: 'The areas's length must be between 1 and 2.' } ]
+    console.log(e.errors())
   }
 }
 
@@ -343,7 +359,9 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'array_length_between:1,2@areas' ]
+    // output is :
+    // [ { reason: 'array_length_between:1,2@areas', message: 'The areas's length must be between 1 and 2.' } ]
+    console.log(e.errors())
   }
 }
 ```
@@ -380,7 +398,10 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'array@areas[0]', 'array@areas[1]' ]
+    // output is :
+    // [ { reason: 'array@areas[0]', message: 'The areas[0] must be an array.' },
+    //   { reason: 'array@areas[1]', message: 'The areas[1] must be an array.' } ]
+    console.log(e.errors())
   }
 }
 ```
@@ -519,7 +540,9 @@ try {
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
-    console.log(e.reasons()) // output is [ 'validator.isEmail@username' ]
+    // output is :
+    // [ { reason: 'validator.isEmail@username', message: 'An validator.isEmail error occured in username.' } ]
+    console.log(e.errors())
   }
 }
 ```

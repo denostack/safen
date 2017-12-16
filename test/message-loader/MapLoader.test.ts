@@ -8,7 +8,8 @@ describe("MapLoader", () => {
   const loader = new MapLoader({
     always_false: "This value is always false.",
     required: ["The :attribute field is required.", "It is required."],
-    something: [":attribute :arguments0 :arguments1 :tester", ":arguments0 :arguments1 :tester"],
+    something: [":attribute :arg0 :arg1 :tester", ":arg0 :arg1 :tester"],
+    in: ["The :attribute does not exist in :args.", "It does not exist in :args."],
   })
 
   it("test string message", () => {
@@ -21,9 +22,14 @@ describe("MapLoader", () => {
     expect(loader.load("required@user.name")).toEqual("The user.name field is required.")
   })
 
+  it("test string message", () => {
+    expect(loader.load("in:abc,def,ghi")).toEqual("It does not exist in abc, def, ghi.")
+    expect(loader.load("in:abc,def,ghi@user.name")).toEqual("The user.name does not exist in abc, def, ghi.")
+  })
+
   it("test unknown message", () => {
-    expect(loader.load("unknown")).toEqual("Something is wrong.")
-    expect(loader.load("unknown@user.name")).toEqual("Something is wrong.")
+    expect(loader.load("unknown")).toEqual("An unknown error occured.")
+    expect(loader.load("unknown@user.name")).toEqual("An unknown error occured in user.name.")
   })
 
   it("test template", () => {
