@@ -42,6 +42,10 @@ export interface MessageLoader {
   load(reason: string): string
 }
 
+export interface SafenCreateOptions {
+  testers?: TesterMap
+  messages?: MessageMap
+}
 
 export interface MiddlewareResponseFactory {
   factory(errors: ValidatingErrors): any

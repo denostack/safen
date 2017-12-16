@@ -406,6 +406,42 @@ try {
 }
 ```
 
+## Custom Error Messages
+
+If needed, you can add custom error messages.
+
+```typescript
+const validator = safen.create({
+  username: "email",
+}, {
+  messages: {
+    email: ["this is a custom message in :attribute.", "this is a custom message."],
+  },
+})
+
+try {
+  validator.assert({
+    username: "corgidisco",
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    // output is :
+    // [ { reason: 'email@username', message: 'this is a custom message in username.' } ]
+    console.log(e.errors())
+  }
+}
+```
+
+The `:attribute` will be replaced by field name. For example :
+
+```typescript
+const messages = {
+  required: ["The :attribute is required.", "It is required."],
+  between: ["The :attribute must be between :arg0 and :arg1.", "It must be between :arg0 and :arg1."],
+  in: ["The :attribute does not exist in :args.", "It does not exist in :args."],
+}
+```
+
 ## Validators
 
 Validator                     | Description                             | Example

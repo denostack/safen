@@ -70,6 +70,16 @@ then,
 
 @code("./test/sample-typescript.test.ts@sample-array-with-multi-dims", "typescript")
 
+## Custom Error Messages
+
+If needed, you can add custom error messages.
+
+@code("./test/sample-typescript.test.ts@sample-custom-error-messages", "typescript")
+
+The `:attribute` will be replaced by field name. For example :
+
+@code("./test/sample-typescript.test.ts@sample-custom-error-messages-examples", "typescript")
+
 ## Validators
 
 Validator                     | Description                             | Example

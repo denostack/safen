@@ -539,4 +539,75 @@ describe("sample array", () => {
 
     console.log = nativeConsoleLog
   })
+
+  it("sample custom error messages", () => {
+    expect.assertions(1)
+
+    const nativeConsoleLog = console.log
+    console.log = (error: any): void => {
+      expect(error).toEqual([
+        {reason: "email@username", message: "this is a custom message in username."},
+      ])
+    }
+
+    // section:sample-custom-error-messages
+    const validator = safen.create({
+      username: "email",
+    }, {
+      messages: {
+        email: [
+          "this is a custom message in :attribute.", // exist `:attribute`
+          "this is a custom message.", // no `:attribute`
+        ],
+      },
+    })
+
+    try {
+      validator.assert({
+        username: "corgidisco",
+      }) // fail
+    } catch (e) {
+      if (e instanceof safen.InvalidValueError) {
+        // output is :
+        // [ { reason: 'email@username', message: 'this is a custom message in username.' } ]
+        console.log(e.errors())
+      }
+    }
+    // endsection
+
+    console.log = nativeConsoleLog
+  })
+
+  it("sample custom error messages examples", () => {
+    // section:sample-custom-error-messages-examples
+    const messages = {
+      required: ["The :attribute is required.", "It is required."],
+      between: ["The :attribute must be between :arg0 and :arg1.", "It must be between :arg0 and :arg1."],
+      in: ["The :attribute does not exist in :args.", "It does not exist in :args."],
+    }
+    // endsection
+
+    const validator = safen.create({
+      username: "email",
+      foo: "between:1,2",
+      bar: "in:a,b,c",
+    }, {
+      messages,
+    })
+
+    try {
+      validator.assert({
+        foo: 4,
+        bar: "d",
+      })
+    } catch (e) {
+      if (e instanceof safen.InvalidValueError) {
+        expect(e.errors()).toEqual([
+          {reason: "required@username", message: "The username is required."},
+          {reason: "between:1,2@foo", message: "The foo must be between 1 and 2."},
+          {reason: "in:a,b,c@bar", message: "The bar does not exist in a, b, c."},
+        ])
+      }
+    }
+  })
 })
