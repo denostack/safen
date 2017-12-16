@@ -9,7 +9,7 @@ export class ErrorBag implements types.ErrorThowable {
     this.errors.push([tester, keys.slice()])
   }
 
-  public getErrors(): types.ValidatingErrors {
+  public getErrors(): string[] {
     return this.errors.map(([tester, keys]) => {
       const target = keys.reduce((carry: string, key: string): string => {
         if (!carry) {

@@ -9,8 +9,6 @@ export * from "./Validator"
 export * from "./InvalidValueError"
 export * from "./types"
 
-const nativeConsole = console.log
-
 export function create(rules: NormalizableRule, options?: SafenCreateOptions): Validator {
   const testerLoader = (options && options.testers)
     ? new TesterLoader(Object.assign({}, defaultTesters, options.testers))

@@ -9,7 +9,12 @@ export interface Tester {
 export interface ErrorThowable {
   throws(type: string, keys: string[]): void
 }
-export type ValidatingErrors = string[]
+
+export interface ValidatingError {
+  reason: string
+  message: string
+}
+export type ValidatingErrors = ValidatingError[]
 
 export type NormalizableRule = string | NormalizableRuleObject | Array<string|NormalizableRuleObject> | NormalizableInvoker
 export type NormalizableInvoker = () => NormalizableRule | NormalizableInvoker
@@ -45,8 +50,4 @@ export interface MessageLoader {
 export interface SafenCreateOptions {
   testers?: TesterMap
   messages?: MessageMap
-}
-
-export interface MiddlewareResponseFactory {
-  factory(errors: ValidatingErrors): any
 }

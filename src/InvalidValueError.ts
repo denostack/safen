@@ -2,10 +2,10 @@
 import * as types from "./types"
 
 export class InvalidValueError extends Error {
-  private listOfReasons: types.ValidatingErrors
+  private listOfReasons: string[]
   private messageLoader: types.MessageLoader
 
-  constructor(reasons: types.ValidatingErrors, messageLoader: types.MessageLoader) {
+  constructor(reasons: string[], messageLoader: types.MessageLoader) {
     super()
     this.listOfReasons = reasons
     this.messageLoader = messageLoader
@@ -14,11 +14,11 @@ export class InvalidValueError extends Error {
   /**
    * @deprecated use reasons()
    */
-  public getErrors(): types.ValidatingErrors {
+  public getErrors(): string[] {
     return this.listOfReasons
   }
 
-  public errors(): Array<{reason: string, message: string}> {
+  public errors(): types.ValidatingErrors {
     const self = this
     return this.reasons().map((reason) => {
       return {
