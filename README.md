@@ -1,10 +1,10 @@
 # Safen
 
-[![npm](https://img.shields.io/npm/v/safen.svg?style=flat-square)](https://www.npmjs.com/package/safen)
-[![npm](https://img.shields.io/npm/dt/safen.svg?style=flat-square)](https://www.npmjs.com/package/safen)
-[![npm](https://img.shields.io/npm/l/safen.svg?style=flat-square)](https://www.npmjs.com/package/safen)
+[![Downloads](https://img.shields.io/npm/dm/safen.svg)](https://npmcharts.com/compare/safen?minimal=true)
+[![Version](https://img.shields.io/npm/v/safen.svg)](https://www.npmjs.com/package/safen)
+[![License](https://img.shields.io/npm/l/safen.svg)](https://www.npmjs.com/package/safen)
 
-[![NPM](https://nodei.co/npm/safen.png)](https://nodei.co/npm/safen/)
+[![NPM](https://nodei.co/npm/safen.png)](https://www.npmjs.com/package/safen)
 
 Complex Object Validator Based on [lodash](https://github.com/lodash/lodash.js) and
 [validator](https://github.com/chriso/validator.js) for TypeScript and JavaScript.
@@ -415,7 +415,10 @@ const validator = safen.create({
   username: "email",
 }, {
   messages: {
-    email: ["this is a custom message in :attribute.", "this is a custom message."],
+    email: [
+      "this is a custom message in :attribute.", // exist `:attribute`
+      "this is a custom message.", // no `:attribute`
+    ],
   },
 })
 
@@ -636,3 +639,4 @@ Validator                     | Description
 **validator.isUppercase**     | use function `validator.isUppercase` 
 **validator.isVariableWidth** | use function `validator.isVariableWidth` 
 **validator.isWhitelisted**   | use function `validator.isWhitelisted`
+

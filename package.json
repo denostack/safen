@@ -10,10 +10,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm run build",
+    "prepack": "npm run build",
     "build": "rimraf ./dist && tsc -p .",
-    "lint": "./node_modules/.bin/tslint -c ./tslint.json -p tsconfig.json 'src/**/*.ts' --format stylish",
-    "test": "npm run build && jest test"
+    "lint": "tslint -c ./tslint.json -p tsconfig.json 'src/**/*.ts' --format stylish",
+    "jest": "jest test",
+    "test": "npm run build && npm run lint && npm run jest"
   },
   "jest": {
     "transform": {
