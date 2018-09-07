@@ -1,8 +1,8 @@
 
-import * as types from "../types"
+import { ErrorThowable } from "../interfaces/tester"
 
-export class ErrorThrower implements types.ErrorThowable {
-  public throws(type: string, keys: string[]): void {
+export class ErrorThrower implements ErrorThowable {
+  public throws(): void {
     throw new Error()
   }
 }

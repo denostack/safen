@@ -1,7 +1,7 @@
 
-import * as types from "../types"
+import { ErrorThowable } from "../interfaces/tester"
 
-export class ErrorBag implements types.ErrorThowable {
+export class ErrorBag implements ErrorThowable {
 
   private errors: Array<[string, string[]]> = []
 

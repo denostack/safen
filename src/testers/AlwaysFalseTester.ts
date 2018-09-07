@@ -1,8 +1,8 @@
 
-import * as types from "../types"
+import { Tester } from "../interfaces/tester"
 
-export class AlwaysFalseTester implements types.Tester {
-  public test(data: any, origin?: any, keys?: string[]): boolean {
+export class AlwaysFalseTester implements Tester {
+  public test(data: any): boolean {
     return false
   }
 }

@@ -10,11 +10,6 @@ export interface ErrorThowable {
   throws(type: string, keys: string[]): void
 }
 
-export interface ValidatingError {
-  reason: string
-  message: string
-}
-export type ValidatingErrors = ValidatingError[]
 
 export type NormalizableRule = string | NormalizableRuleObject | Array<string|NormalizableRuleObject> | NormalizableInvoker
 export type NormalizableInvoker = () => NormalizableRule | NormalizableInvoker
@@ -30,7 +25,7 @@ export interface NormalizedChildRules extends Array<[NormalizedTargetName, Norma
 
 
 export interface TesterMap {
-  [key: string]: {new(): Tester}
+  [key: string]: {new(...args: any[]): Tester}
 }
 export interface TesterCacheMap {
   [key: string]: Tester

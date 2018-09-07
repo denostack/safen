@@ -4,11 +4,6 @@ import { defaultMessages, MapLoader as MessageLoader } from "./message-loader/Ma
 import { defaultTesters, MapLoader as TesterLoader } from "./tester-loader/MapLoader"
 import { Validator } from "./validator/validator"
 
-export * from "./validator/validator"
-export * from "./errors/invalid-value-error"
-export * from "./interfaces/tester"
-export * from "./interfaces/error"
-
 export function create(rules: NormalizableRule, options?: SafenCreateOptions): Validator {
   const testerLoader = (options && options.testers)
     ? new TesterLoader(Object.assign({}, defaultTesters, options.testers))

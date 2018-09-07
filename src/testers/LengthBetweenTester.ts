@@ -1,7 +1,7 @@
 
-import * as types from "../types"
+import { Tester } from "../interfaces/tester"
 
-export class LengthBetweenTester implements types.Tester {
+export class LengthBetweenTester implements Tester {
 
   private min: number
   private max: number

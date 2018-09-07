@@ -1,19 +1,19 @@
 
 import * as _ from "lodash"
-import * as types from "../types"
 import * as validator from "validator"
+import { Tester } from "../interfaces/tester"
 
 type GeneratorHandler = (value: any, ...options: any[]) => boolean
 type GeneratorArgsMapper = (args: string[]) => any[]
 
-function gen(handler: GeneratorHandler, mapper?: GeneratorArgsMapper): {new(): types.Tester} {
+function gen(handler: GeneratorHandler, mapper?: GeneratorArgsMapper): {new(): Tester} {
   if (!mapper) {
     mapper = (args: string[]): string[] => {
       return args
     }
   }
 
-  class AnonymousTester implements types.Tester {
+  class AnonymousTester implements Tester {
 
     private args: string[]
 

@@ -1,6 +1,6 @@
 
-import * as types from "../types"
 import * as _ from "lodash"
+import { MessageLoader, MessageMap } from "../interfaces/tester"
 
 const REASON_REGEX = /^([\w\.]+)\s*(?::\s*([\s\w,]*))?\s*(?:@\s*(\w+(?:(?:\.\w+)|(?:\[\d+\]))*))?$/u
 const REASON_CORRECTION_REGEX = /([\w\.]+)\s*(?::\s*([\s\w,]*))?\s*(?:@\s*(\w+(?:(?:\.\w+)|(?:\[\d+\]))*))?/u
@@ -21,7 +21,7 @@ function reasonParse(reason: string): [string, string[], string] {
 /**
  * @ref https://github.com/laravel/laravel/blob/master/resources/lang/en/validation.php
  */
-export const defaultMessages: types.MessageMap = {
+export const defaultMessages: MessageMap = {
   // internal
   required: ["The :attribute is required.", "It is required."],
   array: ["The :attribute must be an array.", "It must be an array."],
@@ -102,11 +102,11 @@ export const defaultMessages: types.MessageMap = {
   uuid: ["The :attribute must be a valid uuid.", "It must be a valid uuid."],
 }
 
-export class MapLoader implements types.MessageLoader {
+export class MapLoader implements MessageLoader {
 
-  private messages: types.MessageMap
+  private messages: MessageMap
 
-  public constructor(messages?: types.MessageMap) {
+  public constructor(messages?: MessageMap) {
     this.messages = messages || Object.assign({}, defaultMessages)
   }
 
@@ -122,7 +122,7 @@ export class MapLoader implements types.MessageLoader {
       .replace(":tester", tester)
       .replace(":args", args.join(", "))
 
-    for (const i of args.keys()) {
+    for (let i = 0; i < args.length; i++) {
       message = message.replace(`:arg${i}`, args[i])
     }
     return message

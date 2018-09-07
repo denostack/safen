@@ -1,7 +1,7 @@
 
-import * as types from "../types"
+import { Tester } from "../interfaces/tester"
 
-export class InTester implements types.Tester {
+export class InTester implements Tester {
 
   private args: Array<string|number>
 

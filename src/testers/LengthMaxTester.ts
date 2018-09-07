@@ -1,7 +1,7 @@
 
-import * as types from "../types"
+import { Tester } from "../interfaces/tester"
 
-export class LengthMaxTester implements types.Tester {
+export class LengthMaxTester implements Tester {
 
   private max: number
 

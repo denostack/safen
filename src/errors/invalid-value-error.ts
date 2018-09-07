@@ -1,11 +1,12 @@
 
-import * as types from "./types"
+import { ValidatingError } from "../interfaces/error"
+import { MessageLoader } from "../interfaces/tester"
 
 export class InvalidValueError extends Error {
   private listOfReasons: string[]
-  private messageLoader: types.MessageLoader
+  private messageLoader: MessageLoader
 
-  constructor(reasons: string[], messageLoader: types.MessageLoader) {
+  constructor(reasons: string[], messageLoader: MessageLoader) {
     super()
     this.listOfReasons = reasons
     this.messageLoader = messageLoader
@@ -18,7 +19,7 @@ export class InvalidValueError extends Error {
     return this.listOfReasons
   }
 
-  public errors(): types.ValidatingErrors {
+  public errors(): ValidatingError[] {
     const self = this
     return this.reasons().map((reason) => {
       return {

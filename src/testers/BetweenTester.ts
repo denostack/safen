@@ -1,8 +1,8 @@
 
-import * as types from "../types"
 import * as _ from "lodash"
+import { Tester } from "../interfaces/tester"
 
-export class BetweenTester implements types.Tester {
+export class BetweenTester implements Tester {
 
   private min: string
   private max: string

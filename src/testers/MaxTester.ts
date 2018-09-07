@@ -1,8 +1,8 @@
 
-import * as types from "../types"
 import * as _ from "lodash"
+import { Tester } from "../interfaces/tester"
 
-export class MaxTester implements types.Tester {
+export class MaxTester implements Tester {
 
   private max: string
 

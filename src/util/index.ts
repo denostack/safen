@@ -1,10 +1,15 @@
 
-import * as types from "../types"
 import * as _ from "lodash"
+import {
+  NormalizableRule,
+  NormalizableRuleObject,
+  NormalizedRule,
+  NormalizedTargetName,
+} from "../interfaces/tester"
 
 const TARGET_NAME_PATTERN = /^([a-zA-Z_][a-zA-Z0-9_-]*)((?:\[\d*:?\d*\])*)(\?)?$/u
 
-export function parse(target: string): types.NormalizedTargetName {
+export function parse(target: string): NormalizedTargetName {
   if (!TARGET_NAME_PATTERN.test(target)) {
     const correction = target.match(/([a-zA-Z_][a-zA-Z0-9_-]*)((?:\[\d*:?\d*\])*)(\?)/u)
     throw new Error(`Invalid target name. Did you mean this? '${(correction && correction[0]) || "unknown"}'.`)
@@ -22,7 +27,7 @@ export function parse(target: string): types.NormalizedTargetName {
   ]
 }
 
-export function normalize(rule: types.NormalizableRule): types.NormalizedRule {
+export function normalize(rule: NormalizableRule): NormalizedRule {
   while (_.isFunction(rule)) {
     rule = rule()
   }
@@ -33,12 +38,12 @@ export function normalize(rule: types.NormalizableRule): types.NormalizedRule {
     return [[rule], []]
   }
   if (_.isPlainObject(rule)) {
-    rule = [rule] as Array<string|types.NormalizableRuleObject>
+    rule = [rule] as Array<string|NormalizableRuleObject>
   }
 
   // normalized logic!
-  const normalized: types.NormalizedRule = [[], []]
-  for (const entry of (rule as Array<string|types.NormalizableRuleObject>)) {
+  const normalized: NormalizedRule = [[], []]
+  for (const entry of (rule as Array<string|NormalizableRuleObject>)) {
     if (_.isString(entry)) {
       normalized[0].push(entry)
       continue

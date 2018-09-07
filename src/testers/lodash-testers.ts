@@ -1,11 +1,11 @@
 
-import * as types from "../types"
 import * as _ from "lodash"
+import { Tester } from "../interfaces/tester"
 
 type GeneratorHandler = (value: any) => boolean
 
-function gen(handler: GeneratorHandler): {new(): types.Tester} {
-  class AnonymousTester implements types.Tester {
+function gen(handler: GeneratorHandler): {new(): Tester} {
+  class AnonymousTester implements Tester {
     public test(data: any): boolean {
       return handler(data)
     }

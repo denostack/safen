@@ -1,20 +1,20 @@
 
 import * as _ from "lodash"
-import * as types from "../types"
+import { Tester, TesterCacheMap, TesterMap } from "../interfaces/tester"
 
-import {AlwaysTrueTester} from "../testers/AlwaysTrueTester"
-import {AlwaysFalseTester} from "../testers/AlwaysFalseTester"
-import {BetweenTester} from "../testers/BetweenTester"
-import {InTester} from "../testers/InTester"
-import {LengthTester} from "../testers/LengthTester"
-import {LengthBetweenTester} from "../testers/LengthBetweenTester"
-import {LengthMaxTester} from "../testers/LengthMaxTester"
-import {LengthMinTester} from "../testers/LengthMinTester"
-import {MaxTester} from "../testers/MaxTester"
-import {MinTester} from "../testers/MinTester"
+import { AlwaysFalseTester } from "../testers/AlwaysFalseTester"
+import { AlwaysTrueTester } from "../testers/AlwaysTrueTester"
+import { BetweenTester } from "../testers/BetweenTester"
+import { InTester } from "../testers/InTester"
+import { LengthBetweenTester } from "../testers/LengthBetweenTester"
+import { LengthMaxTester } from "../testers/LengthMaxTester"
+import { LengthMinTester } from "../testers/LengthMinTester"
+import { LengthTester } from "../testers/LengthTester"
+import { MaxTester } from "../testers/MaxTester"
+import { MinTester } from "../testers/MinTester"
 
-import {testers as lodashTesters} from "../testers/lodash-testers"
-import {testers as validatorTesters} from "../testers/validator-testers"
+import { testers as lodashTesters } from "../testers/lodash-testers"
+import { testers as validatorTesters } from "../testers/validator-testers"
 
 export const defaultTesters = {
   after: validatorTesters["validator.isAfter"],
@@ -90,15 +90,15 @@ export const defaultTesters = {
 
 export class MapLoader {
 
-  private testers: types.TesterMap
-  private caches: types.TesterCacheMap
+  private testers: TesterMap
+  private caches: TesterCacheMap
 
-  constructor(testers?: types.TesterMap) {
+  constructor(testers?: TesterMap) {
     this.testers = testers || Object.assign({}, defaultTesters, lodashTesters, validatorTesters)
     this.caches = {}
   }
 
-  public load(tester: string): types.Tester {
+  public load(tester: string): Tester {
     if (!(tester in this.caches)) {
       const [name, args] = this.getMethodAndParams(tester)
       this.caches[tester] = this.create(name, args)
@@ -106,7 +106,7 @@ export class MapLoader {
     return this.caches[tester]
   }
 
-  public create(tester: string, args: any[]): types.Tester {
+  public create(tester: string, args: any[]): Tester {
       const className = this.getClassName(tester)
       return new className(...args)
   }
@@ -122,7 +122,7 @@ export class MapLoader {
     ]
   }
 
-  private getClassName(name: string): {new(): types.Tester} {
+  private getClassName(name: string): {new(...args: any[]): Tester} {
     if (name in this.testers) {
       return this.testers[name]
     }
