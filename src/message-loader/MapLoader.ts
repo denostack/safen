@@ -1,6 +1,6 @@
 
 import * as _ from "lodash"
-import { MessageLoader, MessageMap } from "../interfaces/tester"
+import { MessageMap } from "../interfaces/common"
 
 const REASON_REGEX = /^([\w\.]+)\s*(?::\s*([\s\w,]*))?\s*(?:@\s*(\w+(?:(?:\.\w+)|(?:\[\d+\]))*))?$/u
 const REASON_CORRECTION_REGEX = /([\w\.]+)\s*(?::\s*([\s\w,]*))?\s*(?:@\s*(\w+(?:(?:\.\w+)|(?:\[\d+\]))*))?/u
@@ -102,7 +102,7 @@ export const defaultMessages: MessageMap = {
   uuid: ["The :attribute must be a valid uuid.", "It must be a valid uuid."],
 }
 
-export class MapLoader implements MessageLoader {
+export class MapLoader {
 
   private messages: MessageMap
 

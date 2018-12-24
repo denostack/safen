@@ -1,20 +1,11 @@
 
-import { NormalizableRule, SafenCreateOptions } from "./interfaces/tester"
-import { defaultMessages, MapLoader as MessageLoader } from "./message-loader/MapLoader"
-import { defaultTesters, MapLoader as TesterLoader } from "./tester-loader/MapLoader"
-import { Validator } from "./validator/validator"
-
-export * from "./validator/validator"
-export * from "./errors/invalid-value-error"
-export * from "./interfaces/tester"
+export * from "./interfaces/common"
 export * from "./interfaces/error"
+export * from "./interfaces/ast"
 
-export function create(rules: NormalizableRule, options?: SafenCreateOptions): Validator {
-  const testerLoader = (options && options.testers)
-    ? new TesterLoader(Object.assign({}, defaultTesters, options.testers))
-    : undefined
-  const messageLoader = (options && options.messages)
-    ? new MessageLoader(Object.assign({}, defaultMessages, options.messages))
-    : undefined
-  return new Validator(rules, testerLoader, messageLoader)
-}
+export { Validator } from "./validator/validator"
+
+export { InvalidKeyError } from "./errors/invalid-key-error"
+export { InvalidValueError } from "./errors/invalid-value-error"
+
+export { create, CreateOptions } from "./create"

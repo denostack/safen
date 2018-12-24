@@ -1,11 +1,6 @@
 
-// export interface EachValidationError {
-//   key: string
-//   message: string
-//   reason: string
-// }
-
-export interface ValidatingError {
+export interface InvalidValueErrorReason {
+  path: string
   reason: string
   message: string
 }
