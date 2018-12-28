@@ -1,5 +1,4 @@
 
-// import * as _ from "lodash"
 // import * as validator from "validator"
 // import { Tester } from "../interfaces/common"
 
@@ -22,7 +21,7 @@
 //     }
 
 //     public test(data: any): boolean {
-//       if (!_.isString(data)) { // string only
+//       if (typeof data === "string") { // string only
 //         return false
 //       }
 //       return handler(data, ...(mapper as GeneratorArgsMapper)(this.args))

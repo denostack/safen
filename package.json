@@ -30,12 +30,10 @@
     ]
   },
   "dependencies": {
-    "lodash": "^4.17.4",
     "validator": "^9.1.2"
   },
   "devDependencies": {
     "@types/jest": "^21.1.5",
-    "@types/lodash": "^4.14.85",
     "@types/node": "^8.0.53",
     "@types/validator": "^6.3.0",
     "jest": "^21.2.1",
@@ -44,6 +42,6 @@
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "tslint-language-service": "^0.9.6",
-    "typescript": "^2.5.3"
+    "typescript": "^3.2.2"
   }
 }

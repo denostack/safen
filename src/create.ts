@@ -2,17 +2,25 @@ import { Rule, TesterMap } from "./interfaces/common"
 import { alwaysFalseTester } from "./testers/always-false"
 import { alwaysTrueTester } from "./testers/always-true"
 import { betweenTester } from "./testers/between"
+import { booleanTester } from "./testers/boolean"
+import { bufferTester } from "./testers/buffer"
 import { emailTester } from "./testers/email"
+import { finiteTester } from "./testers/finite"
 import { inTester } from "./testers/in"
 import { intTester } from "./testers/int"
 import { lengthTester } from "./testers/length"
 import { lengthBetweenTester } from "./testers/length-between"
 import { lengthMaxTester } from "./testers/length-max"
 import { lengthMinTester } from "./testers/length-min"
+import { mapTester } from "./testers/map"
 import { maxTester } from "./testers/max"
 import { minTester } from "./testers/min"
+import { nanTester } from "./testers/nan"
 import { nullTester } from "./testers/null"
+import { numberTester } from "./testers/number"
+import { setTester } from "./testers/set"
 import { stringTester } from "./testers/string"
+import { symbolTester } from "./testers/symbol"
 import { Validator } from "./validator/validator"
 
 
@@ -32,9 +40,10 @@ export function create(rule: Rule, {testers}: CreateOptions = {}): Validator {
     // base64: validatorTesters["validator.isBase64"],
     // before: validatorTesters["validator.isBefore"],
     between: betweenTester,
-    // boolean: lodashTesters["lodash.isBoolean"],
+    boolean: booleanTester,
+    bool: booleanTester,
     // boolean_string: validatorTesters["validator.isBoolean"],
-    // buffer: lodashTesters["lodash.isBuffer"],
+    buffer: bufferTester,
 
     // creditcard: validatorTesters["validator.isCreditCard"],
 
@@ -44,8 +53,8 @@ export function create(rule: Rule, {testers}: CreateOptions = {}): Validator {
 
     email: emailTester,
 
-    // finite: lodashTesters["lodash.isFinite"],
-    // float: lodashTesters["lodash.isNumber"],
+    finite: finiteTester,
+    float: numberTester,
 
     // hash: validatorTesters["validator.isHash"],
     // hexcolor: validatorTesters["validator.isHexColor"],
@@ -70,24 +79,22 @@ export function create(rule: Rule, {testers}: CreateOptions = {}): Validator {
     length_min: lengthMinTester,
 
     // macaddress: validatorTesters["validator.isMACAddress"],
-    // map: lodashTesters["lodash.isMap"],
+    map: mapTester,
     max: maxTester,
     min: minTester,
     // mobilephone: validatorTesters["validator.isMobilePhone"],
     // mongoid: validatorTesters["validator.isMongoId"],
 
-    // nan: lodashTesters["lodash.isNaN"],
+    nan: nanTester,
     null: nullTester,
-    // number: lodashTesters["lodash.isNumber"],
+    number: numberTester,
     // number_string: validatorTesters["validator.isFloat"],
-
-    // object: lodashTesters["lodash.isObject"],
 
     // postalcode: validatorTesters["validator.isPostalCode"],
 
-    // set: lodashTesters["lodash.isSet"],
+    set: setTester,
     string: stringTester,
-    // symbol: lodashTesters["lodash.isSymbol"],
+    symbol: symbolTester,
 
     // uppercase: validatorTesters["validator.isUppercase"],
     // url: validatorTesters["validator.isURL"],

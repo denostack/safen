@@ -458,23 +458,23 @@ Validator                     | Description                             | Exampl
 **base64**                    | alias `validator.isBase64`              |
 **before:{date = now}**       | alias `validator.isBefore`              | `before:2017-10-01`, `before:2017-10-01 14:30:00`
 **between:{min},{max}**       | check if the value is between {min} and {max}. | `between:aaa,zzz`, `between:1,100`
-**boolean**                   | alias `lodash.isBoolean`                |
+**boolean**                   |                                         |
 **boolean_string**            | alias `validator.isBoolean`             |
-**buffer**                    | alias `lodash.isBuffer`                 |
+**buffer**                    |                                         |
 **creditcard**                | alias `validator.isCreditCard`          |
 **data_uri**                  | alias `validator.isDataURI`             |
 **data_uri**                  | alias `validator.isDataURI`             |
 **decimal_string**            | alias `validator.isDecimal`             |
 **domain**                    | alias `validator.isFQDN`                |
-**email**                     | alias `validator.isEmail`               |
-**finite**                    | alias `lodash.isFinite`                 |
-**float**                     | alias `lodash.isNumber`                 |
+**email**                     |                                         |
+**finite**                    |                                         |
+**float**                     |                                         |
 **hash:{algorithm}**          | alias `validator.isHash`                | `hash:md4`, `hash:md5` ..
 **hexcolor**                  | alias `validator.isHexColor`            |
 **hexadecimal**               | alias `validator.isHexadecimal`         |
 **in:{...args}**              | check if the value is in an array {args}| `in:1,2,3`
-**int**                       | alias `lodash.isInteger`                |
-**integer**                   | alias `lodash.isInteger`                |
+**int**                       |                                         |
+**integer**                   |                                         |
 **ip:{version = null}**       | alias `validator.isIP`                  | `ip`, `ip:v4`, `ip:v6`
 **isbn{version = null}**      | alias `validator.isISBN`                | `isbn`, `isbn:v10`, `isbn:v13`
 **issn**                      | alias `validator.isISSN`                |
@@ -487,78 +487,23 @@ Validator                     | Description                             | Exampl
 **length_max:{max}**          | check if the value's length is less than {max}. | `length_max:20`
 **length_min:{min}**          | check if the value's length is greater than {min}. | `length_min:4`
 **macaddress**                | alias `validator.isMACAddress`          |
-**map**                       | alias `lodash.isMap`                    |
+**map**                       |                                         |
 **max:{max}**                 | check if the value is less than {min}.  |
 **min:{min}**                 | check if the value is greater than {max}. |
 **mobilephone:{locale}**      | alias `validator.isMobilePhone`         |
 **mongoid**                   | alias `validator.isMongoId`             |
-**nan**                       | alias `lodash.isNaN`                    |
-**number**                    | alias `lodash.isNumber`                 |
+**nan**                       |                                         |
+**number**                    |                                         |
 **number_string**             | alias `validator.isFloat`               |
-**object**                    | alias `lodash.isObject`                 |
+**object**                    |                                         |
 **postalcode:{locale}**       | alias `validator.isPostalCode`          |
-**set**                       | alias `lodash.isSet`                    |
-**string**                    | alias `lodash.isString`                 |
-**symbol**                    | alias `lodash.isSymbol`                 |
+**set**                       |                                         |
+**string**                    |                                         |
+**symbol**                    |                                         |
 **uppercase**                 | alias `validator.isUppercase`           |
 **url**                       | alias `validator.isURL`                 |
 **uuid**                      | alias `validator.isUUID`                |
 
-### lodash validators
-
-**Example**
-
-```typescript
-//     const validator = safen.create({
-//       "areas[]": {
-//         lat: "lodash.isNumber",
-//         lng: "lodash.isNumber",
-//       },
-//     })
-
-//     validator.assert({
-//       areas: [
-//         {lat: 37, lng: 126},
-//         {lat: 31, lng: 125},
-//       ],
-//     }) // ok
-```
-
-Validator                     | Description                             | Documents
------------------------------ | --------------------------------------- | ------------------------------------------------
-**lodash.isArguments**        | use function `lodash.isArguments`       | [lodash documents #isArguments](https://lodash.com/docs/4.17.4#isArguments)
-**lodash.isArray**            | use function `lodash.isArray`           | [lodash documents #isArray](https://lodash.com/docs/4.17.4#isArray)
-**lodash.isArrayBuffer**      | use function `lodash.isArrayBuffer`     | [lodash documents #isArrayBuffer](https://lodash.com/docs/4.17.4#isArrayBuffer)
-**lodash.isArrayLike**        | use function `lodash.isArrayLike`       | [lodash documents #isArrayLike](https://lodash.com/docs/4.17.4#isArrayLike)
-**lodash.isArrayLikeObject**  | use function `lodash.isArrayLikeObject` | [lodash documents #isArrayLikeObject](https://lodash.com/docs/4.17.4#isArrayLikeObject)
-**lodash.isBoolean**          | use function `lodash.isBoolean`         | [lodash documents #isBoolean](https://lodash.com/docs/4.17.4#isBoolean)
-**lodash.isBuffer**           | use function `lodash.isBuffer`          | [lodash documents #isBuffer](https://lodash.com/docs/4.17.4#isBuffer)
-**lodash.isDate**             | use function `lodash.isDate`            | [lodash documents #isDate](https://lodash.com/docs/4.17.4#isDate)
-**lodash.isElement**          | use function `lodash.isElement`         | [lodash documents #isElement](https://lodash.com/docs/4.17.4#isElement)
-**lodash.isEmpty**            | use function `lodash.isEmpty`           | [lodash documents #isEmpty](https://lodash.com/docs/4.17.4#isEmpty)
-**lodash.isError**            | use function `lodash.isError`           | [lodash documents #isError](https://lodash.com/docs/4.17.4#isError)
-**lodash.isFinite**           | use function `lodash.isFinite`          | [lodash documents #isFinite](https://lodash.com/docs/4.17.4#isFinite)
-**lodash.isFunction**         | use function `lodash.isFunction`        | [lodash documents #isFunction](https://lodash.com/docs/4.17.4#isFunction)
-**lodash.isInteger**          | use function `lodash.isInteger`         | [lodash documents #isInteger](https://lodash.com/docs/4.17.4#isInteger)
-**lodash.isLength**           | use function `lodash.isLength`          | [lodash documents #isLength](https://lodash.com/docs/4.17.4#isLength)
-**lodash.isMap**              | use function `lodash.isMap`             | [lodash documents #isMap](https://lodash.com/docs/4.17.4#isMap)
-**lodash.isNaN**              | use function `lodash.isNaN`             | [lodash documents #isNaN](https://lodash.com/docs/4.17.4#isNaN)
-**lodash.isNative**           | use function `lodash.isNative`          | [lodash documents #isNative](https://lodash.com/docs/4.17.4#isNative)
-**lodash.isNil**              | use function `lodash.isNil`             | [lodash documents #isNil](https://lodash.com/docs/4.17.4#isNil)
-**lodash.isNull**             | use function `lodash.isNull`            | [lodash documents #isNull](https://lodash.com/docs/4.17.4#isNull)
-**lodash.isNumber**           | use function `lodash.isNumber`          | [lodash documents #isNumber](https://lodash.com/docs/4.17.4#isNumber)
-**lodash.isObject**           | use function `lodash.isObject`          | [lodash documents #isObject](https://lodash.com/docs/4.17.4#isObject)
-**lodash.isObjectLike**       | use function `lodash.isObjectLike`      | [lodash documents #isObjectLike](https://lodash.com/docs/4.17.4#isObjectLike)
-**lodash.isPlainObject**      | use function `lodash.isPlainObject`     | [lodash documents #isPlainObject](https://lodash.com/docs/4.17.4#isPlainObject)
-**lodash.isRegExp**           | use function `lodash.isRegExp`          | [lodash documents #isRegExp](https://lodash.com/docs/4.17.4#isRegExp)
-**lodash.isSafeInteger**      | use function `lodash.isSafeInteger`     | [lodash documents #isSafeInteger](https://lodash.com/docs/4.17.4#isSafeInteger)
-**lodash.isSet**              | use function `lodash.isSet`             | [lodash documents #isSet](https://lodash.com/docs/4.17.4#isSet)
-**lodash.isString**           | use function `lodash.isString`          | [lodash documents #isString](https://lodash.com/docs/4.17.4#isString)
-**lodash.isSymbol**           | use function `lodash.isSymbol`          | [lodash documents #isSymbol](https://lodash.com/docs/4.17.4#isSymbol)
-**lodash.isTypedArray**       | use function `lodash.isTypedArray`      | [lodash documents #isTypedArray](https://lodash.com/docs/4.17.4#isTypedArray)
-**lodash.isUndefined**        | use function `lodash.isUndefined`       | [lodash documents #isUndefined](https://lodash.com/docs/4.17.4#isUndefined)
-**lodash.isWeakMap**          | use function `lodash.isWeakMap`         | [lodash documents #isWeakMap](https://lodash.com/docs/4.17.4#isWeakMap)
-**lodash.isWeakSet**          | use function `lodash.isWeakSet`         | [lodash documents #isWeakSet](https://lodash.com/docs/4.17.4#isWeakSet)
 
 ### validator validators
 

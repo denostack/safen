@@ -192,14 +192,14 @@ describe("load all testers", () => {
     // expect(safen.create("between:2,3").validate("33")).toBeFalsy()
   })
 
-//   it("test boolean", () => {
-//     expect(safen.create("boolean").validate(true)).toBeTruthy()
-//     expect(safen.create("boolean").validate(false)).toBeTruthy()
-//     expect(safen.create("boolean").validate("true")).toBeFalsy()
-//     expect(safen.create("boolean").validate("false")).toBeFalsy()
-//     expect(safen.create("boolean").validate(1)).toBeFalsy()
-//     expect(safen.create("boolean").validate(0)).toBeFalsy()
-//   })
+  it("test boolean", () => {
+    expect(safen.create("boolean").validate(true)).toBeTruthy()
+    expect(safen.create("boolean").validate(false)).toBeTruthy()
+    expect(safen.create("boolean").validate("true")).toBeFalsy()
+    expect(safen.create("boolean").validate("false")).toBeFalsy()
+    expect(safen.create("boolean").validate(1)).toBeFalsy()
+    expect(safen.create("boolean").validate(0)).toBeFalsy()
+  })
 
 //   it("test boolean_string", () => {
 //     expect(safen.create("boolean_string").validate("true")).toBeTruthy()
@@ -212,11 +212,11 @@ describe("load all testers", () => {
 //     expect(safen.create("boolean_string").validate(0)).toBeFalsy()
 //   })
 
-//   it("test buffer", () => {
-//     expect(safen.create("buffer").validate(new Buffer("hello world"))).toBeTruthy()
-//     expect(safen.create("buffer").validate("string")).toBeFalsy()
-//     expect(safen.create("buffer").validate(1)).toBeFalsy()
-//   })
+  it("test buffer", () => {
+    expect(safen.create("buffer").validate(new Buffer("hello world"))).toBeTruthy()
+    expect(safen.create("buffer").validate("string")).toBeFalsy()
+    expect(safen.create("buffer").validate(1)).toBeFalsy()
+  })
 
 //   it("test creditcard", () => {
 //     expect(safen.create("creditcard").validate("4716-2210-5188-5662")).toBeTruthy()
@@ -248,19 +248,12 @@ describe("load all testers", () => {
     expect(safen.create("email").validate("corgidisco")).toBeFalsy()
   })
 
-//   it("test finite", () => {
-//     expect(safen.create("finite").validate(100)).toBeTruthy()
-//     expect(safen.create("finite").validate(100.1)).toBeTruthy()
-//     expect(safen.create("finite").validate(NaN)).toBeFalsy()
-//     expect(safen.create("finite").validate(Infinity)).toBeFalsy()
-//   })
-
-//   it("test finite", () => {
-//     expect(safen.create("finite").validate(100)).toBeTruthy()
-//     expect(safen.create("finite").validate(100.1)).toBeTruthy()
-//     expect(safen.create("finite").validate(NaN)).toBeFalsy()
-//     expect(safen.create("finite").validate(Infinity)).toBeFalsy()
-//   })
+  it("test finite", () => {
+    expect(safen.create("finite").validate(100)).toBeTruthy()
+    expect(safen.create("finite").validate(100.1)).toBeTruthy()
+    expect(safen.create("finite").validate(NaN)).toBeFalsy()
+    expect(safen.create("finite").validate(Infinity)).toBeFalsy()
+  })
 
 //   it("test hash", () => {
 //     expect(safen.create("hash:md5").validate("d94f3f01")).toBeFalsy()
@@ -380,10 +373,10 @@ describe("load all testers", () => {
 //     expect(safen.create("macaddress").validate("01:02:03:04:05")).toBeFalsy()
 //   })
 
-//   it("test map", () => {
-//     expect(safen.create("map").validate(new Map())).toBeTruthy()
-//     expect(safen.create("map").validate([])).toBeFalsy()
-//   })
+  it("test map", () => {
+    expect(safen.create("map").validate(new Map())).toBeTruthy()
+    expect(safen.create("map").validate([])).toBeFalsy()
+  })
 
   it("test max", () => {
     expect(safen.create("max:3").validate(2)).toBeTruthy()
@@ -416,27 +409,22 @@ describe("load all testers", () => {
 //     expect(safen.create("mongoid").validate("507f1f77bcf86cd7994390")).toBeFalsy()
 //   })
 
-//   it("test nan", () => {
-//     expect(safen.create("nan").validate(NaN)).toBeTruthy()
-//     expect(safen.create("nan").validate(Infinity)).toBeFalsy()
-//     expect(safen.create("nan").validate(1)).toBeFalsy()
-//   })
+  it("test nan", () => {
+    expect(safen.create("nan").validate(NaN)).toBeTruthy()
+    expect(safen.create("nan").validate(Infinity)).toBeFalsy()
+    expect(safen.create("nan").validate(1)).toBeFalsy()
+  })
 
-//   it("test number", () => {
-//     expect(safen.create("number").validate(NaN)).toBeTruthy()
-//     expect(safen.create("number").validate(Infinity)).toBeTruthy()
-//     expect(safen.create("number").validate(1)).toBeTruthy()
-//     expect(safen.create("number").validate("abc")).toBeFalsy()
-//   })
+  it("test number", () => {
+    expect(safen.create("number").validate(NaN)).toBeTruthy()
+    expect(safen.create("number").validate(Infinity)).toBeTruthy()
+    expect(safen.create("number").validate(1)).toBeTruthy()
+    expect(safen.create("number").validate("abc")).toBeFalsy()
+  })
 
 //   it("test number_string", () => {
 //     expect(safen.create("number_string").validate("100")).toBeTruthy()
 //     expect(safen.create("number_string").validate("abc")).toBeFalsy()
-//   })
-
-//   it("test object", () => {
-//     expect(safen.create("object").validate({})).toBeTruthy()
-//     expect(safen.create("object").validate("abc")).toBeFalsy()
 //   })
 
 //   it("test postalcode", () => {
@@ -444,20 +432,20 @@ describe("load all testers", () => {
 //     expect(safen.create("postalcode:FR").validate("DE993GG")).toBeFalsy()
 //   })
 
-//   it("test set", () => {
-//     expect(safen.create("set").validate(new Set())).toBeTruthy()
-//     expect(safen.create("set").validate(new Map())).toBeFalsy()
-//   })
+  it("test set", () => {
+    expect(safen.create("set").validate(new Set())).toBeTruthy()
+    expect(safen.create("set").validate(new Map())).toBeFalsy()
+  })
 
   it("test string", () => {
     expect(safen.create("string").validate("string")).toBeTruthy()
     expect(safen.create("string").validate(12345678)).toBeFalsy()
   })
 
-//   it("test symbol", () => {
-//     expect(safen.create("symbol").validate(Symbol("symbol"))).toBeTruthy()
-//     expect(safen.create("symbol").validate(12345678)).toBeFalsy()
-//   })
+  it("test symbol", () => {
+    expect(safen.create("symbol").validate(Symbol("symbol"))).toBeTruthy()
+    expect(safen.create("symbol").validate(12345678)).toBeFalsy()
+  })
 
 //   it("test uppercase", () => {
 //     expect(safen.create("uppercase").validate("ABCD")).toBeTruthy()
