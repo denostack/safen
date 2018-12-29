@@ -38,7 +38,7 @@ export function generateValidate(rule: AstValue, testers: TesterMap = {}): (valu
       case 2:
         return `(${(curr.p).map(p => astcondition(p, val)).join(curr.n === "and" ? "&&" : "||")})`
       case 4:
-        return testers[curr.n].template(val, curr.p as string[])
+        return testers[curr.n].template(val, curr.p as string[], uid)
     }
   }
 
@@ -70,10 +70,10 @@ export function generateValidate(rule: AstValue, testers: TesterMap = {}): (valu
   }
 
   const func = `${astvalue(rule, "v")}return true`
-  return new Function("v", func) as (value: any) => boolean
+  return new Function("v", "$plugins", func) as (value: any) => boolean
 }
 
-export function generateAssert(rule: AstValue, testers: TesterMap = {}): (value: any) => {[path: string]: string[]} {
+export function generateAssert(rule: AstValue, testers: TesterMap = {}): (value: any) => {[path: string]: Array<[string, string[]]>} {
   let u = 0
   const uid = () => `t${u++}`
 
@@ -87,7 +87,7 @@ export function generateAssert(rule: AstValue, testers: TesterMap = {}): (value:
           if (k.o) { // optional start
             nextFunc += `if (typeof ${nextVal} !== "undefined") {\n`
           } else {
-            nextFunc += `if (typeof ${nextVal} === "undefined") {p=path.join(".");err[p]=err[p]||[];err[p].push("required")} else {\n`
+            nextFunc += `if (typeof ${nextVal} === "undefined") {p=path.join(".");err[p]=err[p]||[];err[p].push(["required", []])} else {\n`
           }
           if (k.l.length) {
             nextFunc += astarrvalue(v, k.l, nextVal)
@@ -110,7 +110,7 @@ export function generateAssert(rule: AstValue, testers: TesterMap = {}): (value:
       case 2:
         return `(${(curr.p).map(p => astcondition(p, val)).join(curr.n === "and" ? "&&" : "||")})`
       case 4:
-        return `(function(){var r=${testers[curr.n].template(val, curr.p as string[])};if(!r){p=path.join(".");err[p]=err[p]||[];err[p].push("${curr.n}")};return r})()`
+        return `(function(){var r=${testers[curr.n].template(val, curr.p, uid)};if(!r){p=path.join(".");err[p]=err[p]||[];err[p].push(["${curr.n}", ${JSON.stringify(curr.p)}])};return r})()`
     }
   }
 
@@ -118,16 +118,26 @@ export function generateAssert(rule: AstValue, testers: TesterMap = {}): (value:
     let nextFunc = ""
     params = params.slice()
     const a = params.pop()!
+    let ifcount = 0
     if (a === null) {
-      nextFunc += `if (!Array.isArray(${val})) {p=path.join(".");err[p]=err[p]||[];err[p].push("array")} else {\n`
+      nextFunc += `if (!Array.isArray(${val})) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array", []])} else {\n`
+      ifcount++
     } else if (typeof a === "string") {
-      nextFunc += `if (!Array.isArray(${val}) || ${val}.length !== ${a}) {p=path.join(".");err[p]=err[p]||[];err[p].push("array")} else {\n`
+      nextFunc += `if (!Array.isArray(${val})) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array", []])} else {\n`
+      nextFunc += `if (${val}.length !== ${a}) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array_length", ["${a}"]])} else {\n`
+      ifcount += 2
     } else if (a[0] !== null && a[1] !== null) {
-      nextFunc += `if (!Array.isArray(${val}) || ${val}.length < ${a[0]} || ${val}.length > ${a[1]}) {p=path.join(".");err[p]=err[p]||[];err[p].push("array")} else {\n`
+      nextFunc += `if (!Array.isArray(${val})) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array", []])} else {\n`
+      nextFunc += `if (${val}.length < ${a[0]} || ${val}.length > ${a[1]}) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array_length_between", ["${a[0]}", "${a[1]}"]])} else {\n`
+      ifcount += 2
     } else if (a[0] !== null) {
-      nextFunc += `if (!Array.isArray(${val}) || ${val}.length < ${a[0]}) {p=path.join(".");err[p]=err[p]||[];err[p].push("array")} else {\n`
+      nextFunc += `if (!Array.isArray(${val})) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array", []])} else {\n`
+      nextFunc += `if (${val}.length < ${a[0]}) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array_length_min", ["${a[0]}"]])} else {\n`
+      ifcount += 2
     } else if (a[1] !== null) {
-      nextFunc += `if (!Array.isArray(${val}) || ${val}.length > ${a[1]}) {p=path.join(".");err[p]=err[p]||[];err[p].push("array")} else {\n`
+      nextFunc += `if (!Array.isArray(${val})) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array", []])} else {\n`
+      nextFunc += `if (${val}.length > ${a[1]}) {p=path.join(".");err[p]=err[p]||[];err[p].push(["array_length_max", ["${a[1]}"]])} else {\n`
+      ifcount += 2
     }
 
     const i = uid()
@@ -142,10 +152,10 @@ export function generateAssert(rule: AstValue, testers: TesterMap = {}): (value:
       nextFunc += `path.pop()\n`
     }
     nextFunc += "}\n"
-    nextFunc += "}\n" // end if
+    nextFunc += "}\n".repeat(ifcount) // end if
     return nextFunc
   }
 
   const func = `var err={}\nvar path=[]\nvar p=""\n${astvalue(rule, "v")}return err`
-  return new Function("v", func) as (value: any) => {[path: string]: string[]}
+  return new Function("v", "$plugins", func) as (value: any) => {[path: string]: Array<[string, string[]]>}
 }

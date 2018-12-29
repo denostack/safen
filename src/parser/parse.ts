@@ -6,10 +6,13 @@ import {
   AstTester,
   AstValue
   } from "../interfaces/ast"
+import { Scalar } from "../interfaces/common"
 
 
 const RE_BLANK = /^\s+/
-const RE_TESTER = /^(\w+)\s*(?:\:\s*([a-zA-Z0-9_]*(?:\s*,\s*[a-zA-Z0-9_]*)*))?/
+const RE_TESTER_NAME = /^(\w+)/
+const RE_TESTER_PARAM = /^(?:([a-zA-Z_][a-zA-Z0-9_-]*)|("(?:[^"\\]*|\\")*")|('(?:[^'\\]*|\\')*')|(-?[0-9]+(?:\.[0-9]*)?))/
+
 const RE_KEY = /^([a-zA-Z_][a-zA-Z0-9_-]+)((?:\[\d*:?\d*\])*)(\?)?$/u
 
 const RE_CORRECTION_KEY = /([a-zA-Z_][a-zA-Z0-9_-]+)((?:\[\d*:?\d*\])*)(\?)/u
@@ -67,13 +70,6 @@ export function parseKey(key: string): AstKey {
   }
 }
 
-function splitParmas(params?: string): string[] {
-  if (params) {
-    return params.split(",").map(chunk => chunk.trim())
-  }
-  return []
-}
-
 export function parseExpr(expression: string): AstExpr | AstTester {
   let buf = expression
   let match: RegExpMatchArray | null = null
@@ -91,14 +87,54 @@ export function parseExpr(expression: string): AstExpr | AstTester {
 
   const tester: () => AstTester = () => {
     white()
-    match = buf.match(RE_TESTER)
+    match = buf.match(RE_TESTER_NAME)
     if (match) {
       next(match[0])
-      return {
-        t: 4,
-        n: match[1],
-        p: splitParmas(match[2]),
+      const n = match[0]
+      const p = [] as Scalar[]
+      white()
+      if (buf[0] === ":") {
+        next(":")
+        while (1) {
+          white()
+          match = buf.match(RE_TESTER_PARAM)
+          if (match) {
+            if (match[1]) {
+              switch (match[1]) {
+                case "null":
+                  p.push(null)
+                  break
+                case "true":
+                  p.push(true)
+                  break
+                case "false":
+                  p.push(false)
+                  break
+                default:
+                  p.push(match[1])
+              }
+            } else if (match[2]) {
+              p.push(match[2].replace(/^"|"$/g, "").replace(/\\\"/g, "\""))
+            } else if (match[3]) {
+              p.push(match[3].replace(/^'|'$/g, "").replace(/\\'/g, "'"))
+            } else if (match[4]) {
+              p.push(+match[4])
+            } else {
+              throw Object.assign(new Error(`syntax error: remain "${buf}"`), {remain: buf})
+            }
+            next(match[0])
+          } else {
+            p.push(null)
+          }
+          white()
+          if (buf[0] === ",") {
+            next(",")
+          } else {
+            break
+          }
+        }
       }
+      return {t: 4, n, p}
     } else {
       throw Object.assign(new Error(`syntax error: remain "${buf}"`), {remain: buf})
     }

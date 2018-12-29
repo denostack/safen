@@ -2,7 +2,7 @@ import { Tester } from "../interfaces/common"
 
 
 export const minTester: Tester = {
-  template(value: string, params: string[]) {
-    return `(${value} >= ${params[0]})`
+  template(value, params) {
+    return `(${value} >= ${JSON.stringify(params[0])})`
   },
 }

@@ -29,13 +29,10 @@
       "json"
     ]
   },
-  "dependencies": {
-    "validator": "^9.1.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^21.1.5",
     "@types/node": "^8.0.53",
-    "@types/validator": "^6.3.0",
     "jest": "^21.2.1",
     "rimraf": "^2.6.2",
     "ts-jest": "^21.1.4",

@@ -1,3 +1,5 @@
+import { Scalar } from "./common"
+
 
 export type AstValue = AstObject
   | AstExpr
@@ -28,5 +30,5 @@ export interface AstExpr {
 export interface AstTester {
   t: 4
   n: string
-  p: string[]
+  p: Scalar[]
 }

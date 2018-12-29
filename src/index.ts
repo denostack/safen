@@ -9,3 +9,6 @@ export { InvalidKeyError } from "./errors/invalid-key-error"
 export { InvalidValueError } from "./errors/invalid-value-error"
 
 export { create, CreateOptions } from "./create"
+
+export { testers } from "./testers"
+export { messages } from "./messages"

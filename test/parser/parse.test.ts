@@ -45,37 +45,43 @@ describe("parse-expr", () => {
     "string": {t: 4, n: "string", p: []},
     "  string  ": {t: 4, n: "string", p: []},
     "  (  string  )  ": {t: 4, n: "string", p: []},
-    "between:10,20": {t: 4, n: "between", p: ["10", "20"]},
-    "  between  :  10  ,  20  ": {t: 4, n: "between", p: ["10", "20"]},
-    "  (  between  :  10  ,  20  )  ": {t: 4, n: "between", p: ["10", "20"]},
-    "between:,20": {t: 4, n: "between", p: ["", "20"]},
+    "between:10,20": {t: 4, n: "between", p: [10, 20]},
+    "  between  :  10  ,  20  ": {t: 4, n: "between", p: [10, 20]},
+    "  (  between  :  10  ,  20  )  ": {t: 4, n: "between", p: [10, 20]},
+    "between:,20": {t: 4, n: "between", p: [null, 20]},
+    "any:,null,true,false,100,-100,1.101,-10.101,abc,\"hello \\\"world\\\"!\",'hello \\\'world\\\'!\',": {t: 4, n: "any", p: [
+      null, null, true, false, 100, -100, 1.101, -10.101, "abc", "hello \"world\"!", "hello 'world'!", null,
+    ]},
+    "any : , null , true , false , 100 , -100 , 1.101 , -10.101 , abc , \"hello \\\"world\\\"!\" , 'hello \\\'world\\\'!\' , ": {t: 4, n: "any", p: [
+      null, null, true, false, 100, -100, 1.101, -10.101, "abc", "hello \"world\"!", "hello 'world'!", null,
+    ]},
     "string & between:10,20": {t: 2, n: "and", p: [
       {t: 4, n: "string", p: []},
-      {t: 4, n: "between", p: ["10", "20"]},
+      {t: 4, n: "between", p: [10, 20]},
     ]},
     "string & email & between:10,20": {t: 2, n: "and", p: [
       {t: 4, n: "string", p: []},
       {t: 4, n: "email", p: []},
-      {t: 4, n: "between", p: ["10", "20"]},
+      {t: 4, n: "between", p: [10, 20]},
     ]},
     "  string  &  email  &  between  :  10  ,  20  ": {t: 2, n: "and", p: [
       {t: 4, n: "string", p: []},
       {t: 4, n: "email", p: []},
-      {t: 4, n: "between", p: ["10", "20"]},
+      {t: 4, n: "between", p: [10, 20]},
     ]},
     "string | between:10,20": {t: 2, n: "or", p: [
       {t: 4, n: "string", p: []},
-      {t: 4, n: "between", p: ["10", "20"]},
+      {t: 4, n: "between", p: [10, 20]},
     ]},
     "string | email | between:10,20": {t: 2, n: "or", p: [
       {t: 4, n: "string", p: []},
       {t: 4, n: "email", p: []},
-      {t: 4, n: "between", p: ["10", "20"]},
+      {t: 4, n: "between", p: [10, 20]},
     ]},
     "  string  |  email  |  between  :  10  ,  20  ": {t: 2, n: "or", p: [
       {t: 4, n: "string", p: []},
       {t: 4, n: "email", p: []},
-      {t: 4, n: "between", p: ["10", "20"]},
+      {t: 4, n: "between", p: [10, 20]},
     ]},
     "string & email | string & phone": {t: 2, n: "or", p: [
       {t: 2, n: "and", p: [

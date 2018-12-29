@@ -2,7 +2,7 @@ import { Tester } from "../interfaces/common"
 
 
 export const numberTester: Tester = {
-  template(value: string) {
+  template(value) {
     return `(typeof (${value}) === "number")`
   },
 }

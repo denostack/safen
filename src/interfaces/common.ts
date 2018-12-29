@@ -1,10 +1,16 @@
 
+export type Scalar = string | number | boolean | null
+
 export interface Tester {
-  template(value: string, params: string[]): string
+  template(value: string, params: Scalar[], generateVariable: () => string): string
 }
 
 export interface TesterMap {
   [name: string]: Tester
+}
+
+export interface MessageMap {
+  [key: string]: [string, string]
 }
 
 export type Rule = string | RuleObject | RuleInvoker
@@ -13,9 +19,3 @@ export interface RuleObject {
   [key: string]: RuleObject | Rule
 }
 
-export interface MessageMap {
-  [key: string]: string | [string, string]
-}
-export interface MessageLoader {
-  load(reason: string): string
-}
