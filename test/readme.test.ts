@@ -4,12 +4,12 @@ import "jest"
 import * as safen from "../src"
 
 describe("usage", () => {
-  it("usage", () => {
+  it("usage default", () => {
     expect.assertions(0)
 
     // section:usage-default
     const validator = safen.create({
-      "username": "string & email & length_between:12,100",
+      "username": "(string & email & length_between:12,100) | null",
       "password?": "string & length_between:8,20",
       "areas[1:]": {
         lat: "number & between:-90,90",
@@ -47,6 +47,33 @@ describe("usage", () => {
         },
       },
     }) // ok
+    // endsection
+  })
+
+  it("usage validate and assert", () => {
+    expect.assertions(4)
+
+    // section:usage-validate-and-assert
+    const validator = safen.create("(string & email & length_between:12,100) | null")
+
+    // validate method
+
+    expect(validator.validate("corgidisco@gmail.com")).toBeTruthy()
+    expect(validator.validate(null)).toBeTruthy()
+
+    expect(validator.validate("corgidisco")).toBeFalsy() // return false!!!
+
+
+    // assert method
+
+    validator.assert("corgidisco@gmail.com") // safe
+    validator.assert(null) // safe
+    try {
+      validator.assert("corgidisco") // // not safe!
+    } catch (e) {
+      expect(e).toBeInstanceOf(safen.InvalidValueError)
+    }
+
     // endsection
   })
 })

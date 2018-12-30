@@ -28,6 +28,10 @@ then,
 
 @code("./test/readme.test.ts@usage-default", "typescript")
 
+There are two method in Safen, named `validate`, `assert`. `validate` is return boolean, `assert` occure Exception.
+
+@code("./test/readme.test.ts@usage-validate-and-assert", "typescript")
+
 
 ## Support Validators
 

@@ -28,7 +28,7 @@ then,
 
 ```typescript
 const validator = safen.create({
-  "username": "string & email & length_between:12,100",
+  "username": "(string & email & length_between:12,100) | null",
   "password?": "string & length_between:8,20",
   "areas[1:]": {
     lat: "number & between:-90,90",
@@ -66,6 +66,30 @@ validator.assert({
     },
   },
 }) // ok
+```
+
+There are two method in Safen, named `validate`, `assert`. `validate` is return boolean, `assert` occure Exception.
+
+```typescript
+const validator = safen.create("(string & email & length_between:12,100) | null")
+
+// validate method
+
+expect(validator.validate("corgidisco@gmail.com")).toBeTruthy()
+expect(validator.validate(null)).toBeTruthy()
+
+expect(validator.validate("corgidisco")).toBeFalsy() // return false!!!
+
+
+// assert method
+
+validator.assert("corgidisco@gmail.com") // safe
+validator.assert(null) // safe
+try {
+  validator.assert("corgidisco") // // not safe!
+} catch (e) {
+  expect(e).toBeInstanceOf(safen.InvalidValueError)
+}
 ```
 
 
