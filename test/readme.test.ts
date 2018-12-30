@@ -57,11 +57,14 @@ describe("sample pipe", () => {
     expect.assertions(1)
     // section:sample-pipe
     const validator = safen.create({
-      username: "string & email & length_between:12,100",
+      username: "(string & email & length_between:12,100) | null",
     })
 
     validator.assert({
       username: "corgidisco@gmail.com",
+    }) // ok
+    validator.assert({
+      username: null,
     }) // ok
 
     try {
@@ -76,6 +79,12 @@ describe("sample pipe", () => {
             reason: "email",
             params: [],
             message: "The username must be a valid email address.",
+          },
+          {
+            path: "username",
+            reason: "null",
+            params: [],
+            message: "The username must be a null.",
           },
         ])
       }
@@ -99,12 +108,12 @@ describe("sample optional", () => {
     }) // ok
 
     validator.assert({
-      username: "username",
+      username: "corgidisco",
       // undefined password is OK.
     }) // ok
 
     validator.assert({
-      username: "username",
+      username: "corgidisco",
       password: undefined, // undefined password is also OK.
     }) // ok
 
@@ -128,8 +137,8 @@ describe("sample optional", () => {
 
     try {
       validator.assert({
-        username: "username",
-        password: null, // null password is not OK
+        username: "corgidisco",
+        password: null, // null is not allowed
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
@@ -149,7 +158,7 @@ describe("sample optional", () => {
 
 describe("sample object in object", () => {
   it("sample object in object", () => {
-    expect.assertions(0)
+    expect.assertions(1)
 
     // section:sample-object-in-object
     const validator = safen.create({
@@ -159,6 +168,35 @@ describe("sample object in object", () => {
         lng: "number & between:-180,180",
       },
     })
+
+    validator.assert({
+      username: "corgidisco",
+      areas: {
+        lat: 37,
+        lng: 126,
+      },
+    }) // ok
+
+    try {
+      validator.assert({
+        username: "corgidisco",
+        areas: {
+          lat: "37",
+          lng: 126,
+        },
+      }) // fail
+    } catch (e) {
+      if (e instanceof safen.InvalidValueError) {
+        expect(e.errors).toEqual([
+          {
+            path: "areas.lat",
+            reason: "number",
+            params: [],
+            message: "The areas.lat must be a number.",
+          },
+        ])
+      }
+    }
 
     validator.assert({
       username: "corgidisco",
@@ -480,74 +518,71 @@ describe("sample array", () => {
   })
 
 
-  // it("sample custom error messages", () => {
-  //   expect.assertions(1)
+  it("sample custom error messages", () => {
+    expect.assertions(1)
 
-  //   const nativeConsoleLog = console.log
-  //   console.log = (error: any): void => {
-  //     expect(error).toEqual([
-  //       {reason: "email@username", message: "this is a custom message in username."},
-  //     ])
-  //   }
+    // section:sample-custom-error-messages
+    const validator = safen.create({
+      username: "email",
+    }, {
+      messages: {
+        email: [
+          "this is a custom error message in :path.", // exist `:path`
+          "this is a custom error message.", // no `:path`
+        ],
+      },
+    })
 
-  //   // section:sample-custom-error-messages
-  //   const validator = safen.create({
-  //     username: "email",
-  //   }, {
-  //     messages: {
-  //       email: [
-  //         "this is a custom message in :attribute.", // exist `:attribute`
-  //         "this is a custom message.", // no `:attribute`
-  //       ],
-  //     },
-  //   })
+    try {
+      validator.assert({
+        username: "corgidisco",
+      }) // fail
+    } catch (e) {
+      if (e instanceof safen.InvalidValueError) {
+        expect(e.errors).toEqual([
+          {
+            path: "username",
+            reason: "email",
+            params: [],
+            message: "this is a custom error message in username.",
+          },
+        ])
+      }
+    }
+    // endsection
+  })
 
-  //   try {
-  //     validator.assert({
-  //       username: "corgidisco",
-  //     }) // fail
-  //   } catch (e) {
-  //     if (e instanceof safen.InvalidValueError) {
-  //       // output is :
-  //       // [ { reason: 'email@username', message: 'this is a custom message in username.' } ]
-  //       console.log(e.errors)
-  //     }
-  //   }
-  //   // endsection
+  it("sample custom error messages examples", () => {
+    expect.assertions(1)
 
-  //   console.log = nativeConsoleLog
-  // })
+    // section:sample-custom-error-messages-examples
+    const validator = safen.create({
+      foo: "email",
+      bar: "between:1,2",
+      baz: "in:a,b,c",
+    }, {
+      messages: {
+        required: ["The :path is required.", "It is required."],
+        between: ["The :path must be between :param0 and :param1.", "It must be between :param0 and :param1."],
+        in: ["The :path does not exist in :params.", "It does not exist in :params."],
+      },
+    })
 
-  // it("sample custom error messages examples", () => {
-  //   // section:sample-custom-error-messages-examples
-  //   const messages = {
-  //     required: ["The :attribute is required.", "It is required."],
-  //     between: ["The :attribute must be between :arg0 and :arg1.", "It must be between :arg0 and :arg1."],
-  //     in: ["The :attribute does not exist in :args.", "It does not exist in :args."],
-  //   }
-  //   // endsection
-
-  //   const validator = safen.create({
-  //     username: "email",
-  //     foo: "between:1,2",
-  //     bar: "in:a,b,c",
-  //   }, {
-  //     messages,
-  //   })
-
-  //   try {
-  //     validator.assert({
-  //       foo: 4,
-  //       bar: "d",
-  //     })
-  //   } catch (e) {
-  //     if (e instanceof safen.InvalidValueError) {
-  //       expect(e.errors()).toEqual([
-  //         {reason: "required@username", message: "The username is required."},
-  //         {reason: "between:1,2@foo", message: "The foo must be between 1 and 2."},
-  //         {reason: "in:a,b,c@bar", message: "The bar does not exist in a, b, c."},
-  //       ])
-  //     }
-  //   }
-  // })
+    try {
+      validator.assert({
+        // foo
+        bar: 4,
+        baz: "d",
+      })
+    } catch (e) {
+      if (e instanceof safen.InvalidValueError) {
+        expect(e.errors).toEqual([
+          {path: "foo", reason: "required", params: [], message: "The foo is required."},
+          {path: "bar", reason: "between", params: [1, 2], message: "The bar must be between 1 and 2."},
+          {path: "baz", reason: "in", params: ["a", "b", "c"], message: "The baz does not exist in [\"a\",\"b\",\"c\"]."},
+        ])
+      }
+    }
+    // endsection
+  })
 })

@@ -6,12 +6,11 @@
 
 [![NPM](https://nodei.co/npm/safen.png)](https://www.npmjs.com/package/safen)
 
-Complex Object Validator Based on [lodash](https://github.com/lodash/lodash.js) and
-[validator](https://github.com/chriso/validator.js) for TypeScript and JavaScript.
+Super Fast Object Validator for Javascript(& Typescript).
 
 ## Install
 
-```
+```bash
 npm install safen --save
 ```
 
@@ -70,17 +69,73 @@ validator.assert({
 ```
 
 
+## Support Validators
+
+### Type
+
+Validator                 | Description
+------------------------- | -----------
+**bool**                  | check if it is a `boolean`(alias to `boolean`).
+**boolean**               | check if it is a `boolean`.
+**float**                 | check if it is a `float`.
+**int**                   | check if it is a `integer`(alias to `integer`).
+**integer**               | check if it is a `integer`.
+**number**                | check if it is a `number`.
+**null**                  | check if it is a `null`.
+**string**                | check if it is a `string`.
+**symbol**                | check if it is a `symbol`.
+
+Validator                 | Description | Example
+------------------------- | ----------- | ------- |
+**afte:{date = now}**     | check if the `string` is a date that's after the specified date. | `after`, `after:"2017-10-01"`, `after:"2017-10-01 14:30:00"`
+**alpha**                 | check if the `string` contains only letters([a-zA-Z]). | `alpha`
+**alphanum**              | check if the `string` contains only letters and numbers([a-zA-Z0-9]) | `alphanum`
+**always_false**          | return always false, for debugging. | `always_false`
+**always_true**           | return always true, for debugging. | `always_true`
+**ascii**                 | check if the `string` contains only ascii characters. | `ascii`
+**base64**                | check if the `string` is Base64. | `base64`
+**before:{date = now}**   | check if the `string` is a date that's before the specified date. | `before:2017-10-01`, `before:2017-10-01 14:30:00`
+**between:{min},{max}**   | check if the value(`string`, `number`) is between `{min}` and `{max}`. | `between:aaa,zzz`, `between:1,100`
+**creditcard**            | check if the `string` is valid Credit Card number. cf. `0000-0000-0000-0000` | `creditcard`
+**date**                  | check if the `string` is valid Date string(RFC2822, ISO8601). cf. `2018-12-25`, `12/25/2018`, `Dec 25, 2018` | `date`
+**email**                 | check if the `string` is valid E-mail string. | `email`
+**finite**                | check if the `number` is not `NaN`, `Infinity`, `-Infinity`. | `finite`
+**hexcolor**              | check if the `string` is valid Hex Color string. cf. `#ffffff` | `hexcolor`
+**in:{...params}**        | check if the value(`any`) is in an array `{params}`. | `in:1,2,3`, `in:safari,edge,firefox,"other browser"`
+**ip:{version = all}**    | check if the `string` is valid UUID.<br />version is one of `all`(default), `v4`, and `v6`. | `ip`, `ip:v4`, `ip:v6`
+**json**                  | check if the `string` is valid JSON. | `json`
+**jwt**                   | check if the `string` is valid JWT. | `jwt`
+**length:{size}**              | check if the value(`string`)'s length is `{size}`. | `length:16`
+**length_between:{min},{max}** | check if the value(`string`)'s length is between `{min}` and `{max}`. | `length_between:4,20`
+**length_max:{max}**           | check if the value(`string`)'s length is less than `{max}`. | `length_max:20`
+**length_min:{min}**           | check if the value(`string`)'s length is greater than `{min}`. | `length_min:4`
+**lowercase**             | check if the `string` is lowercase. | `lowercase`
+**macaddress**            | check if the `string` is valid Mac Address. | `macaddress`
+**max:{max}**             | check if the value(`string`, `number`) is less than {min}. | `max:5`
+**min:{min}**             | check if the value(`string`, `number`) is greater than {max}. | `min:3`
+**nan**                   | check if the value(`any`) is NaN. | `nan`
+**port**                  | check if the `string` is valid PORT(0-65535). | `port`
+**uppercase**             | check if the `string` is uppercase. | `uppercase`
+**url**                   | check if the `string` is valid URL. | `url`
+**uuid:{version = all}**  | check if the `string` is valid UUID.<br />version is one of `all`(default), `v3`, `v4`, and `v5`. | `uuid`, `uuid:v3`, `uuid:v4`, `uuid:v5`
+
+
 ## Rule Examples
 
-### Pipe
+### Type Syntax
+
+You can easily set the validation by supporting the `and`, `or` syntax.
 
 ```typescript
 const validator = safen.create({
-  username: "string & email & length_between:12,100",
+  username: "(string & email & length_between:12,100) | null",
 })
 
 validator.assert({
   username: "corgidisco@gmail.com",
+}) // ok
+validator.assert({
+  username: null,
 }) // ok
 
 try {
@@ -96,12 +151,20 @@ try {
         params: [],
         message: "The username must be a valid email address.",
       },
+      {
+        path: "username",
+        reason: "null",
+        params: [],
+        message: "The username must be a null.",
+      },
     ])
   }
 }
 ```
 
 ### Optional
+
+The optional grammar is available through the "?" character. You can allow no key value in the object, or undefined.
 
 ```typescript
 const validator = safen.create({
@@ -115,12 +178,12 @@ validator.assert({
 }) // ok
 
 validator.assert({
-  username: "username",
+  username: "corgidisco",
   // undefined password is OK.
 }) // ok
 
 validator.assert({
-  username: "username",
+  username: "corgidisco",
   password: undefined, // undefined password is also OK.
 }) // ok
 
@@ -144,8 +207,8 @@ try {
 
 try {
   validator.assert({
-    username: "username",
-    password: null, // null password is not OK
+    username: "corgidisco",
+    password: null, // null is not allowed
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
@@ -163,6 +226,8 @@ try {
 
 ### Object in Object
 
+Objects in objects are also easy to use. In addition, the error message makes it easy to check the error path.
+
 ```typescript
 const validator = safen.create({
   username: "string & length_between:4,20",
@@ -179,9 +244,39 @@ validator.assert({
     lng: 126,
   },
 }) // ok
+
+try {
+  validator.assert({
+    username: "corgidisco",
+    areas: {
+      lat: "37",
+      lng: 126,
+    },
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    expect(e.errors).toEqual([
+      {
+        path: "areas.lat",
+        reason: "number",
+        params: [],
+        message: "The areas.lat must be a number.",
+      },
+    ])
+  }
+}
+
+validator.assert({
+  username: "corgidisco",
+  areas: {
+    lat: 37,
+    lng: 126,
+  },
+}) // ok
 ```
 
-### Array
+
+### Array Support
 
 **Simple Array**
 
@@ -478,91 +573,78 @@ try {
 }
 ```
 
+
+## Custom Validation
+
+.. :-)
+
+
 ## Custom Error Messages
 
 If needed, you can add custom error messages.
 
 ```typescript
-//   const validator = safen.create({
-//     username: "email",
-//   }, {
-//     messages: {
-//       email: [
-//         "this is a custom message in :attribute.", // exist `:attribute`
-//         "this is a custom message.", // no `:attribute`
-//       ],
-//     },
-//   })
+const validator = safen.create({
+  username: "email",
+}, {
+  messages: {
+    email: [
+      "this is a custom error message in :path.", // exist `:path`
+      "this is a custom error message.", // no `:path`
+    ],
+  },
+})
 
-//   try {
-//     validator.assert({
-//       username: "corgidisco",
-//     }) // fail
-//   } catch (e) {
-//     if (e instanceof safen.InvalidValueError) {
-//       // output is :
-//       // [ { reason: 'email@username', message: 'this is a custom message in username.' } ]
-//       console.log(e.errors)
-//     }
-//   }
+try {
+  validator.assert({
+    username: "corgidisco",
+  }) // fail
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    expect(e.errors).toEqual([
+      {
+        path: "username",
+        reason: "email",
+        params: [],
+        message: "this is a custom error message in username.",
+      },
+    ])
+  }
+}
 ```
 
 The `:attribute` will be replaced by field name. For example :
 
 ```typescript
-//   const messages = {
-//     required: ["The :attribute is required.", "It is required."],
-//     between: ["The :attribute must be between :arg0 and :arg1.", "It must be between :arg0 and :arg1."],
-//     in: ["The :attribute does not exist in :args.", "It does not exist in :args."],
-//   }
+const validator = safen.create({
+  foo: "email",
+  bar: "between:1,2",
+  baz: "in:a,b,c",
+}, {
+  messages: {
+    required: ["The :path is required.", "It is required."],
+    between: ["The :path must be between :param0 and :param1.", "It must be between :param0 and :param1."],
+    in: ["The :path does not exist in :params.", "It does not exist in :params."],
+  },
+})
+
+try {
+  validator.assert({
+    // foo
+    bar: 4,
+    baz: "d",
+  })
+} catch (e) {
+  if (e instanceof safen.InvalidValueError) {
+    expect(e.errors).toEqual([
+      {path: "foo", reason: "required", params: [], message: "The foo is required."},
+      {path: "bar", reason: "between", params: [1, 2], message: "The bar must be between 1 and 2."},
+      {path: "baz", reason: "in", params: ["a", "b", "c"], message: "The baz does not exist in [\"a\",\"b\",\"c\"]."},
+    ])
+  }
+}
 ```
 
-## Validators
+## License
 
-### Type
-
-Validator                 | Description
-------------------------- | -----------
-**bool**                  | check if it is a `boolean`(alias to `boolean`).
-**boolean**               | check if it is a `boolean`.
-**float**                 | check if it is a `float`.
-**int**                   | check if it is a `integer`(alias to `integer`).
-**integer**               | check if it is a `integer`.
-**number**                | check if it is a `number`.
-**null**                  | check if it is a `null`.
-**string**                | check if it is a `string`.
-**symbol**                | check if it is a `symbol`.
-
-Validator                 | Description | Example
-------------------------- | ----------- | ------- |
-**afte:{date = now}**     | check if the `string` is a date that's after the specified date. | `after`, `after:"2017-10-01"`, `after:"2017-10-01 14:30:00"`
-**alpha**                 | check if the `string` contains only letters([a-zA-Z]). | `alpha`
-**alphanum**              | check if the `string` contains only letters and numbers([a-zA-Z0-9]) | `alphanum`
-**always_false**          | return always false, for debugging. | `always_false`
-**always_true**           | return always true, for debugging. | `always_true`
-**ascii**                 | check if the `string` contains only ascii characters. | `ascii`
-**base64**                | check if the `string` is Base64. | `base64`
-**before:{date = now}**   | check if the `string` is a date that's before the specified date. | `before:2017-10-01`, `before:2017-10-01 14:30:00`
-**between:{min},{max}**   | check if the value(`string`, `number`) is between `{min}` and `{max}`. | `between:aaa,zzz`, `between:1,100`
-**creditcard**            | check if the `string` is valid Credit Card number. cf. `0000-0000-0000-0000` | `creditcard`
-**date**                  | check if the `string` is valid Date string(RFC2822, ISO8601). cf. `2018-12-25`, `12/25/2018`, `Dec 25, 2018` | `date`
-**email**                 | check if the `string` is valid E-mail string. | `email`
-**finite**                | check if the `number` is not `NaN`, `Infinity`, `-Infinity`. | `finite`
-**hexcolor**              | check if the `string` is valid Hex Color string. cf. `#ffffff` | `hexcolor`
-**in:{...params}**        | check if the value(`any`) is in an array `{params}`. | `in:1,2,3`, `in:safari,edge,firefox,"other browser"`
-**ip:{version = all}**    | check if the `string` is valid UUID.<br />version is one of `all`(default), `v4`, and `v6`. | `ip`, `ip:v4`, `ip:v6`
-**json**                  | check if the `string` is valid JSON. | `json`
-**jwt**                   | check if the `string` is valid JWT. | `jwt`
-**length:{size}**              | check if the value(`string`)'s length is `{size}`. | `length:16`
-**length_between:{min},{max}** | check if the value(`string`)'s length is between `{min}` and `{max}`. | `length_between:4,20`
-**length_max:{max}**           | check if the value(`string`)'s length is less than `{max}`. | `length_max:20`
-**length_min:{min}**           | check if the value(`string`)'s length is greater than `{min}`. | `length_min:4`
-**lowercase**             | check if the `string` is lowercase. | `lowercase`
-**macaddress**            | check if the `string` is valid Mac Address. | `macaddress`
-**max:{max}**             | check if the value(`string`, `number`) is less than {min}. | `max:5`
-**min:{min}**             | check if the value(`string`, `number`) is greater than {max}. | `min:3`
-**nan**                   | check if the value(`any`) is NaN. | `nan`
-**port**                  | check if the `string` is valid PORT(0-65535). | `port`
-**uppercase**             | check if the `string` is uppercase. | `uppercase`
-**url**                   | check if the `string` is valid URL. | `url`
-**uuid:{version = all}**  | check if the `string` is valid UUID.<br />version is one of `all`(default), `v3`, `v4`, and `v5`. | `uuid`, `uuid:v3`, `uuid:v4`, `uuid:v5`
+MIT

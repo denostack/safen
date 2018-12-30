@@ -6,12 +6,11 @@
 
 [![NPM](https://nodei.co/npm/safen.png)](https://www.npmjs.com/package/safen)
 
-Complex Object Validator Based on [lodash](https://github.com/lodash/lodash.js) and
-[validator](https://github.com/chriso/validator.js) for TypeScript and JavaScript.
+Super Fast Object Validator for Javascript(& Typescript).
 
 ## Install
 
-```
+```bash
 npm install safen --save
 ```
 
@@ -30,57 +29,7 @@ then,
 @code("./test/readme.test.ts@usage-default", "typescript")
 
 
-## Rule Examples
-
-### Pipe
-
-@code("./test/readme.test.ts@sample-pipe", "typescript")
-
-### Optional
-
-@code("./test/readme.test.ts@sample-optional", "typescript")
-
-### Object in Object
-
-@code("./test/readme.test.ts@sample-object-in-object", "typescript")
-
-### Array
-
-**Simple Array**
-
-@code("./test/readme.test.ts@sample-simple-array", "typescript")
-
-**Array With Range - Fixed**
-
-@code("./test/readme.test.ts@sample-array-with-range-fixed", "typescript")
-
-**Array With Range - Min**
-
-@code("./test/readme.test.ts@sample-array-with-range-min", "typescript")
-
-**Array With Range - Max**
-
-@code("./test/readme.test.ts@sample-array-with-range-max", "typescript")
-
-**Array With Range - Between**
-
-@code("./test/readme.test.ts@sample-array-with-range-between", "typescript")
-
-**Array with Multi Dimension**
-
-@code("./test/readme.test.ts@sample-array-with-multi-dims", "typescript")
-
-## Custom Error Messages
-
-If needed, you can add custom error messages.
-
-@code("./test/readme.test.ts@sample-custom-error-messages", "typescript")
-
-The `:attribute` will be replaced by field name. For example :
-
-@code("./test/readme.test.ts@sample-custom-error-messages-examples", "typescript")
-
-## Validators
+## Support Validators
 
 ### Type
 
@@ -129,3 +78,71 @@ Validator                 | Description | Example
 **uppercase**             | check if the `string` is uppercase. | `uppercase`
 **url**                   | check if the `string` is valid URL. | `url`
 **uuid:{version = all}**  | check if the `string` is valid UUID.<br />version is one of `all`(default), `v3`, `v4`, and `v5`. | `uuid`, `uuid:v3`, `uuid:v4`, `uuid:v5`
+
+
+## Rule Examples
+
+### Type Syntax
+
+You can easily set the validation by supporting the `and`, `or` syntax.
+
+@code("./test/readme.test.ts@sample-pipe", "typescript")
+
+### Optional
+
+The optional grammar is available through the "?" character. You can allow no key value in the object, or undefined.
+
+@code("./test/readme.test.ts@sample-optional", "typescript")
+
+### Object in Object
+
+Objects in objects are also easy to use. In addition, the error message makes it easy to check the error path.
+
+@code("./test/readme.test.ts@sample-object-in-object", "typescript")
+
+
+### Array Support
+
+**Simple Array**
+
+@code("./test/readme.test.ts@sample-simple-array", "typescript")
+
+**Array With Range - Fixed**
+
+@code("./test/readme.test.ts@sample-array-with-range-fixed", "typescript")
+
+**Array With Range - Min**
+
+@code("./test/readme.test.ts@sample-array-with-range-min", "typescript")
+
+**Array With Range - Max**
+
+@code("./test/readme.test.ts@sample-array-with-range-max", "typescript")
+
+**Array With Range - Between**
+
+@code("./test/readme.test.ts@sample-array-with-range-between", "typescript")
+
+**Array with Multi Dimension**
+
+@code("./test/readme.test.ts@sample-array-with-multi-dims", "typescript")
+
+
+## Custom Validation
+
+.. :-)
+
+
+## Custom Error Messages
+
+If needed, you can add custom error messages.
+
+@code("./test/readme.test.ts@sample-custom-error-messages", "typescript")
+
+The `:attribute` will be replaced by field name. For example :
+
+@code("./test/readme.test.ts@sample-custom-error-messages-examples", "typescript")
+
+## License
+
+MIT
