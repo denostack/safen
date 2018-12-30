@@ -1,12 +1,15 @@
 # Safen
 
-[![Downloads](https://img.shields.io/npm/dm/safen.svg)](https://npmcharts.com/compare/safen?minimal=true)
+[![Downloads](https://img.shields.io/npm/dt/safen.svg)](https://npmcharts.com/compare/safen?minimal=true)
 [![Version](https://img.shields.io/npm/v/safen.svg)](https://www.npmjs.com/package/safen)
 [![License](https://img.shields.io/npm/l/safen.svg)](https://www.npmjs.com/package/safen)
 
+[![dependencies Status](https://david-dm.org/corgidisco/safen/status.svg)](https://david-dm.org/corgidisco/safen)
+[![devDependencies Status](https://david-dm.org/corgidisco/safen/dev-status.svg)](https://david-dm.org/corgidisco/safen?type=dev)
+
 [![NPM](https://nodei.co/npm/safen.png)](https://www.npmjs.com/package/safen)
 
-Super Fast Object Validator for Javascript(& Typescript).
+Super Fast Complex Object Validator for Javascript(& Typescript).
 
 ## Install
 

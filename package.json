@@ -1,6 +1,16 @@
 {
   "name": "safen",
   "version": "0.3.0",
+  "description": "Super Fast Complex Object Validator for Javascript(& Typescript).",
+  "keywords": [
+    "validation",
+    "validator",
+    "validate",
+    "assert",
+    "type",
+    "safen",
+    "typescript"
+  ],
   "author": "Cris <corgidisco@gmail.com>",
   "license": "MIT",
   "repository": {
@@ -18,7 +28,7 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.tsx?$": "./node_modules/ts-jest/preprocessor.js"
+      "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "[^/]*\\.(test|spec)\\.(j|t)sx?$",
     "moduleFileExtensions": [
@@ -32,7 +42,6 @@
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^21.1.5",
-    "@types/node": "^8.0.53",
     "jest": "^21.2.1",
     "rimraf": "^2.6.2",
     "ts-jest": "^21.1.4",
