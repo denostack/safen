@@ -70,7 +70,7 @@ export function generateValidate(rule: AstValue, testers: TesterMap = {}): (valu
   }
 
   const func = `${astvalue(rule, "v")}return true`
-  return new Function("v", "$plugins", func) as (value: any) => boolean
+  return new Function("v", "$plugins", func) as (value: any) => boolean // tslint:disable-line function-constructor
 }
 
 export function generateAssert(rule: AstValue, testers: TesterMap = {}): (value: any) => {[path: string]: Array<[string, Scalar[]]>} {
@@ -157,5 +157,5 @@ export function generateAssert(rule: AstValue, testers: TesterMap = {}): (value:
   }
 
   const func = `var err={}\nvar path=[]\nvar p=""\n${astvalue(rule, "v")}return err`
-  return new Function("v", "$plugins", func) as (value: any) => {[path: string]: Array<[string, Scalar[]]>}
+  return new Function("v", "$plugins", func) as (value: any) => {[path: string]: Array<[string, Scalar[]]>} // tslint:disable-line function-constructor
 }
