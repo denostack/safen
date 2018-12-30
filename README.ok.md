@@ -1,5 +1,6 @@
 # Safen
 
+[![Build](https://img.shields.io/travis/corgidisco/safen.svg)](https://travis-ci.org/corgidisco/safen)
 [![Downloads](https://img.shields.io/npm/dt/safen.svg)](https://npmcharts.com/compare/safen?minimal=true)
 [![Version](https://img.shields.io/npm/v/safen.svg)](https://www.npmjs.com/package/safen)
 [![License](https://img.shields.io/npm/l/safen.svg)](https://www.npmjs.com/package/safen)
