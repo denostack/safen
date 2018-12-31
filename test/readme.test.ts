@@ -1,7 +1,7 @@
 
 import "jest"
 
-import * as safen from "../src"
+import * as safen from "../lib" // lib!
 
 describe("usage", () => {
   it("usage default", () => {
