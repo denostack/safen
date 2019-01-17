@@ -20,18 +20,21 @@ function getMessage(messages: MessageMap, path: string, reason: string, params: 
 
 export class Validator {
 
-  public validate: (data: any) => boolean
-
-  public assertInner: (data: any) => {[path: string]: Array<[string, Scalar[]]>}
+  public rawValidate: (data: any) => boolean
+  public rawAssert: (data: any) => {[path: string]: Array<[string, Scalar[]]>}
 
   constructor(public rule: Rule, testers: TesterMap, public messages: MessageMap) {
     const parsed = parse(rule)
-    this.validate = generateValidate(parsed, testers)
-    this.assertInner = generateAssert(parsed, testers)
+    this.rawValidate = generateValidate(parsed, testers)
+    this.rawAssert = generateAssert(parsed, testers)
+  }
+
+  public validate(data: any): boolean {
+    return this.rawValidate(data)
   }
 
   public assert(data: any) {
-    const errors = this.assertInner(data)
+    const errors = this.rawAssert(data)
     const keys = Object.keys(errors)
     if (keys.length) {
       throw new InvalidValueError(keys.reduce((carry, key) => ([

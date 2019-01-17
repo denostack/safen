@@ -1,8 +1,3 @@
 import { Tester } from "../interfaces/common"
 
-
-export const nanTester: Tester = {
-  template(value) {
-    return `(typeof (${value}) === "number" && Number.isNaN(${value}))`
-  },
-}
+export const nanTester: Tester = (value) => `(typeof(${value})==="number"&&Number.isNaN(${value}))`

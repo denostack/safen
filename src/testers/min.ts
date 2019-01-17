@@ -1,8 +1,3 @@
 import { Tester } from "../interfaces/common"
 
-
-export const minTester: Tester = {
-  template(value, params) {
-    return `(${value} >= ${JSON.stringify(params[0])})`
-  },
-}
+export const minTester: Tester = (value, params) => `(${value}>=${JSON.stringify(params[0])})`

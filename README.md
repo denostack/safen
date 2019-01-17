@@ -99,19 +99,21 @@ try {
 
 ## Support Validators
 
-### Type
+### Type Validations
 
 Validator                 | Description
 ------------------------- | -----------
 **bool**                  | check if it is a `boolean`(alias to `boolean`).
 **boolean**               | check if it is a `boolean`.
-**float**                 | check if it is a `float`.
+**float**                 | check if it is a `float`(alias to `number`).
 **int**                   | check if it is a `integer`(alias to `integer`).
 **integer**               | check if it is a `integer`.
 **number**                | check if it is a `number`.
 **null**                  | check if it is a `null`.
 **string**                | check if it is a `string`.
 **symbol**                | check if it is a `symbol`.
+
+### Other Validations
 
 Validator                 | Description | Example
 ------------------------- | ----------- | ------- |

@@ -1,5 +1,10 @@
 {
   "extends": "tslint:recommended",
+  "linterOptions": {
+    "exclude": [
+      "test/**/*.ts"
+    ]
+  },
   "rules": {
     "adjacent-overload-signatures": false,
     "arrow-parens": false,

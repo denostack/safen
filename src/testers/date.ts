@@ -1,8 +1,3 @@
 import { Tester } from "../interfaces/common"
 
-
-export const dateTester: Tester = {
-  template(value) {
-    return `!Number.isNaN(Date.parse(${value}))`
-  },
-}
+export const dateTester: Tester = (value) => `!Number.isNaN(Date.parse(${value}))`

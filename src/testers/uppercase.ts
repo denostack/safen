@@ -1,8 +1,3 @@
 import { Tester } from "../interfaces/common"
 
-
-export const uppercaseTester: Tester = {
-  template(value) {
-    return `${value}.toUpperCase() === ${value}`
-  },
-}
+export const uppercaseTester: Tester = (value) => `(${value}.toUpperCase&&${value}.toUpperCase()===${value})`
