@@ -29,6 +29,7 @@ import { minTester } from "./testers/min"
 import { nanTester } from "./testers/nan"
 import { nullTester } from "./testers/null"
 import { numberTester } from "./testers/number"
+import { objectTester } from "./testers/object"
 import { portTester } from "./testers/port"
 import { stringTester } from "./testers/string"
 import { symbolTester } from "./testers/symbol"
@@ -87,6 +88,8 @@ export const testers = {
   nan: nanTester,
   null: nullTester,
   number: numberTester,
+
+  object: objectTester,
 
   port: portTester,
 

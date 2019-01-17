@@ -39,7 +39,6 @@ describe("parse-key", () => {
   }
 })
 
-
 describe("parse-expr", () => {
   const successes: {[input: string]: AstExpr | AstTester} = {
     "string": {t: 4, n: "string", p: []},
@@ -49,10 +48,10 @@ describe("parse-expr", () => {
     "  between  :  10  ,  20  ": {t: 4, n: "between", p: [10, 20]},
     "  (  between  :  10  ,  20  )  ": {t: 4, n: "between", p: [10, 20]},
     "between:,20": {t: 4, n: "between", p: [null, 20]},
-    "any:,null,true,false,100,-100,1.101,-10.101,abc,\"hello \\\"world\\\"!\",'hello \\\'world\\\'!\',": {t: 4, n: "any", p: [
+    "params:,null,true,false,100,-100,1.101,-10.101,abc,\"hello \\\"world\\\"!\",'hello \\\'world\\\'!\',": {t: 4, n: "params", p: [
       null, null, true, false, 100, -100, 1.101, -10.101, "abc", "hello \"world\"!", "hello 'world'!", null,
     ]},
-    "any : , null , true , false , 100 , -100 , 1.101 , -10.101 , abc , \"hello \\\"world\\\"!\" , 'hello \\\'world\\\'!\' , ": {t: 4, n: "any", p: [
+    "params : , null , true , false , 100 , -100 , 1.101 , -10.101 , abc , \"hello \\\"world\\\"!\" , 'hello \\\'world\\\'!\' , ": {t: 4, n: "params", p: [
       null, null, true, false, 100, -100, 1.101, -10.101, "abc", "hello \"world\"!", "hello 'world'!", null,
     ]},
     "string & between:10,20": {t: 2, n: "and", p: [

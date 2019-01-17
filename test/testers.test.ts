@@ -382,6 +382,14 @@ describe("load all testers", () => {
     expect(safen.create("number").validate("abc")).toBeFalsy()
   })
 
+  it("test object", () => {
+    expect(safen.create("object").validate({})).toBeTruthy()
+    expect(safen.create("object").validate(null)).toBeFalsy()
+    expect(safen.create("object").validate(false)).toBeFalsy()
+    expect(safen.create("object").validate(1)).toBeFalsy()
+    expect(safen.create("object").validate("abc")).toBeFalsy()
+  })
+
   it("test port", () => {
     expect(safen.create("port").validate(0)).toBeTruthy()
     expect(safen.create("port").validate(1)).toBeTruthy()

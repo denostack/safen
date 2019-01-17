@@ -50,6 +50,7 @@ Validator                 | Description
 **integer**               | check if it is a `integer`.
 **number**                | check if it is a `number`.
 **null**                  | check if it is a `null`.
+**object**                | check if it is a `object`.
 **string**                | check if it is a `string`.
 **symbol**                | check if it is a `symbol`.
 
