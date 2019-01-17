@@ -604,10 +604,39 @@ try {
 ```
 
 
-## Custom Validation
+## Custom Tester
 
-.. :-)
+Custom tester is written in template format like below:
 
+```typescript
+const oddTester: safen.Tester = (value, params, gen) => {
+  return `(Number.isInteger(${value}) && ${value} % 2 === 1)`
+}
+
+const evenTester: safen.Tester = (value, params, gen) => {
+  return `(Number.isInteger(${value}) && ${value} % 2 === 0)`
+}
+
+const validation = safen.create({
+  even: "even",
+  odd: "odd"
+}, {
+  testers: {
+    odd: oddTester,
+    even: evenTester,
+  },
+})
+
+expect(validation.validate({even: 2, odd: 1})).toBeTruthy()
+
+expect(validation.validate({even: 1, odd: 1})).toBeFalsy()
+expect(validation.validate({even: 2, odd: 2})).toBeFalsy()
+expect(validation.validate({even: 1, odd: 2})).toBeFalsy()
+```
+
+A more complex example is:
+
+- example of `params` and `gen`: [before tester](./src/testers/before.ts)
 
 ## Custom Error Messages
 

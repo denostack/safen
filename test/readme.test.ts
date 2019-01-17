@@ -2,6 +2,8 @@
 import "jest"
 
 import * as safen from "../lib" // lib!
+import { Tester } from "../lib";
+import { Scalar } from "../src";
 
 describe("usage", () => {
   it("usage default", () => {
@@ -544,6 +546,34 @@ describe("sample array", () => {
     // endsection
   })
 
+  it("sample custom tester", () => {
+    // section:sample-custom-tester
+    const oddTester: safen.Tester = (value, params, gen) => {
+      return `(Number.isInteger(${value}) && ${value} % 2 === 1)`
+    }
+
+    const evenTester: safen.Tester = (value, params, gen) => {
+      return `(Number.isInteger(${value}) && ${value} % 2 === 0)`
+    }
+
+    const validation = safen.create({
+      even: "even",
+      odd: "odd"
+    }, {
+      testers: {
+        odd: oddTester,
+        even: evenTester,
+      },
+    })
+
+    expect(validation.validate({even: 2, odd: 1})).toBeTruthy()
+
+    expect(validation.validate({even: 1, odd: 1})).toBeFalsy()
+    expect(validation.validate({even: 2, odd: 2})).toBeFalsy()
+    expect(validation.validate({even: 1, odd: 2})).toBeFalsy()
+
+    // endsection
+  })
 
   it("sample custom error messages", () => {
     expect.assertions(1)

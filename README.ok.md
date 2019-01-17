@@ -39,19 +39,21 @@ There are two method in Safen, named `validate`, `assert`. `validate` is return 
 
 ## Support Validators
 
-### Type
+### Type Validations
 
 Validator                 | Description
 ------------------------- | -----------
 **bool**                  | check if it is a `boolean`(alias to `boolean`).
 **boolean**               | check if it is a `boolean`.
-**float**                 | check if it is a `float`.
+**float**                 | check if it is a `float`(alias to `number`).
 **int**                   | check if it is a `integer`(alias to `integer`).
 **integer**               | check if it is a `integer`.
 **number**                | check if it is a `number`.
 **null**                  | check if it is a `null`.
 **string**                | check if it is a `string`.
 **symbol**                | check if it is a `symbol`.
+
+### Other Validations
 
 Validator                 | Description | Example
 ------------------------- | ----------- | ------- |
@@ -136,10 +138,15 @@ Objects in objects are also easy to use. In addition, the error message makes it
 @code("./test/readme.test.ts@sample-array-with-multi-dims", "typescript")
 
 
-## Custom Validation
+## Custom Tester
 
-.. :-)
+Custom tester is written in template format like below:
 
+@code("./test/readme.test.ts@sample-custom-tester", "typescript")
+
+A more complex example is:
+
+- example of `params` and `gen`: [before tester](./src/testers/before.ts)
 
 ## Custom Error Messages
 
