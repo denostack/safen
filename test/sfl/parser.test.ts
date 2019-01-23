@@ -1,0 +1,172 @@
+import "jest"
+
+import { parse } from "../../src/sfl/parser"
+
+function createError(message: string, code: string, line: number, column: number) {
+  return Object.assign(new Error(message), {
+    code,
+    line,
+    column,
+  })
+}
+
+describe("parse", () => {
+  it("test scalar success", () => {
+    expect(parse(`string`)).toEqual({
+      type: "scalar",
+      name: "string",
+      params: [],
+    })
+
+    expect(parse(`email`)).toEqual({
+      type: "scalar",
+      name: "email",
+      params: [],
+    })
+
+    expect(parse(`email()`)).toEqual({
+      type: "scalar",
+      name: "email",
+      params: [],
+    })
+
+    expect(parse(`email(true, false, null, "string", 3.14, -500.5,)`)).toEqual({
+      type: "scalar",
+      name: "email",
+      params: [true, false, null, "string", 3.14, -500.5],
+    })
+
+    expect(parse(`  
+        string   
+      `)).toEqual({
+      type: "scalar",
+      name: "string",
+      params: [],
+    })
+
+    expect(parse(`  
+        email   
+      `)).toEqual({
+      type: "scalar",
+      name: "email",
+      params: [],
+    })
+  })
+
+  it("test scalar fail", () => {
+    expect(() => parse(`?string`)).toThrowError(createError(`Syntax Error: unexpected token "?" (1:1)
+1: ?string
+   ^`, "SYNTAX_ERROR", 1, 1))
+    expect(() => parse(`str?ing`)).toThrowError(createError(`Syntax Error: unexpected token "?" (1:4)
+1: str?ing
+      ^`, "SYNTAX_ERROR", 1, 4))
+
+    expect(() => parse(`
+      ?string
+    `)).toThrowError(createError(`Syntax Error: unexpected token "?" (2:7)
+2:       ?string
+         ^`, "SYNTAX_ERROR", 2, 7))
+  })
+
+  it("test expression success", () => {
+    expect(parse("string | email | something")).toEqual({type: "or", params: [
+      {type: "scalar", name: "string", params: []},
+      {type: "scalar", name: "email", params: []},
+      {type: "scalar", name: "something", params: []},
+    ]})
+
+    expect(parse("string & email & something")).toEqual({type: "and", params: [
+      {type: "scalar", name: "string", params: []},
+      {type: "scalar", name: "email", params: []},
+      {type: "scalar", name: "something", params: []},
+    ]})
+
+    expect(parse("string & email | string & phone")).toEqual({type: "or", params: [
+      {type: "and", params: [
+          {type: "scalar", name: "string", params: []},
+          {type: "scalar", name: "email", params: []},
+      ]},
+      {type: "and", params: [
+        {type: "scalar", name: "string", params: []},
+        {type: "scalar", name: "phone", params: []},
+      ]},
+    ]})
+
+    expect(parse("string | string & email | phone")).toEqual({type: "or", params: [
+      {type: "scalar", name: "string", params: []},
+      {type: "and", params: [
+        {type: "scalar", name: "string", params: []},
+        {type: "scalar", name: "email", params: []},
+      ]},
+      {type: "scalar", name: "phone", params: []},
+    ]})
+
+    expect(parse("(string | email) & (string | phone)")).toEqual({type: "and", params: [
+      {type: "or", params: [
+          {type: "scalar", name: "string", params: []},
+          {type: "scalar", name: "email", params: []},
+      ]},
+      {type: "or", params: [
+        {type: "scalar", name: "string", params: []},
+        {type: "scalar", name: "phone", params: []},
+      ]},
+    ]})
+
+  })
+
+  it("test object success", () => {
+    expect(parse(`{}`)).toEqual({type: "object", properties: {}})
+    expect(parse(` { } `)).toEqual({type: "object", properties: {}})
+
+    expect(parse(`{
+      name: string,
+      username: string & email
+    }`)).toEqual({type: "object", properties: {
+      name: {optional: false, value: {type: "scalar", name: "string", params: []}},
+      username: {optional: false, value: {type: "and", params: [
+        {type: "scalar", name: "string", params: []},
+        {type: "scalar", name: "email", params: []},
+      ]}},
+    }})
+
+    expect(parse(`{
+      name?: string,
+      username: string & email
+    }`)).toEqual({type: "object", properties: {
+      name: {optional: true, value: {type: "scalar", name: "string", params: []}},
+      username: {optional: false, value: {type: "and", params: [
+        {type: "scalar", name: "string", params: []},
+        {type: "scalar", name: "email", params: []},
+      ]}},
+    }})
+
+    expect(parse(`{
+      name?: string,
+      username?: (string & email) | null,
+    }`)).toEqual({type: "object", properties: {
+      name: {optional: true, value: {type: "scalar", name: "string", params: []}},
+      username: {optional: true, value: {type: "or", params: [
+        {type: "and", params: [
+          {type: "scalar", name: "string", params: []},
+          {type: "scalar", name: "email", params: []},
+        ]},
+        {type: "scalar", name: "null", params: []},
+      ]}},
+    }})
+
+    expect(parse(`{
+      name: string,
+      username: string & email & in("abc", "def", 10, 20)
+    } | null`)).toEqual({type: "or", params: [
+      {type: "object", properties: {
+        name: {optional: false, value: {type: "scalar", name: "string", params: []}},
+        username: {optional: false, value: {type: "and", params: [
+          {type: "scalar", name: "string", params: []},
+          {type: "scalar", name: "email", params: []},
+          {type: "scalar", name: "in", params: ["abc", "def", 10, 20]},
+        ]}},
+      }},
+      {type: "scalar", name: "null", params: []},
+    ]})
+  })
+})
