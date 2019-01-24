@@ -9,30 +9,42 @@ const RE_WHITESPACE = /^[ \t\r\v\f]+/
 const RE_NEWLINE = /^[\n]+/
 
 const RE_TESTERNAME = /^([a-zA-Z_][a-zA-Z0-9_]*)/
-const RE_TESTERPARAM = /^(?:(null|true|false)|("(?:[^"\\]*|\\")*")|('(?:[^'\\]*|\\')*')|(-?[0-9]+(?:\.[0-9]*)?))/
+const RE_TESTERPARAM = /^(null|true|false)|("(?:[^"\\]*|\\")*")|('(?:[^'\\]*|\\')*')|(-?[0-9]+(?:\.[0-9]*)?)|\/((?:[^\/\\]*|\\\/)+)\/(igm|img|gim|gmi|mig|mgi|ig|im|gi|gm|mi|mg|i|g|m)?/
 
-const RE_OBJECTKEY = /^([a-zA-Z_][a-zA-Z0-9_]*)(\?)?/u
+const RE_OBJECTKEY = /^([a-zA-Z_][a-zA-Z0-9_]*)(\?)?/
+const RE_NUMBER = /^(\d+)/
 
 /*
+SFL Grammar
+
+@ref http://hepunx.rl.ac.uk/~adye/jsspec11/llr.htm
+
 root: expr
-expr: tester
+expr: orexpr
+orexpr: andexpr
+  | andexpr '|' orexpr
+
+andexpr: memberexpr
+  | memberexpr '&' andexpr
+
+memberexpr: unaryexpr
+  | memberexpr '[' ']'
+  | memberexpr '[' RE_NUMBER ']'
+  | memberexpr '[' RE_NUMBER ':' ']'
+  | memberexpr '[' ':' RE_NUMBER ']'
+  | memberexpr '[' RE_NUMBER ':' RE_NUMBER ']'
+
+unaryexpr: tester
   | '(' expr ')'
-  | expr '&' expr
-  | expr '|' expr
 
 tester: object
   | scalar
-  | tester '[' ']'
-  | tester '[' NUMBER ']'
-  | tester '[' NUMBER ':' ']'
-  | tester '[' ':' NUMBER ']'
-  | tester '[' NUMBER ':' NUMBER ']'
 
 object: '{' '}'
   | '{' objectpairs '}'
 
 objectpairs: objectpair
-  | objectpairs '\n' objectpair
+  | objectpairs ',' objectpair
 
 objectpair: objectkey ':' expr
 objectkey: RE_OBJECTKEY
@@ -88,70 +100,115 @@ function next(cnt = 1) {
   white()
 }
 
+
+function root(): SflTester {
+  return expr()
+}
+
 function expr(): SflTester {
   white()
-  const orParams: SflTester[] = []
-  let andParams: SflTester[] = [buf[0] === "(" ? brace() : tester()]
-  while (1) {
+  return orexpr()
+}
+
+function orexpr(): SflTester {
+  const params = [andexpr()]
+  white()
+  while (buf[0] === "|") {
+    next()
+    params.push(andexpr())
     white()
-    if (buf[0] === "&") {
-      next()
-      const nextTester = buf[0] === "(" ? brace() : tester()
-
-      if (nextTester.type === "and") {
-        andParams = andParams.concat(nextTester.params)
-      } else {
-        andParams.push(nextTester)
-      }
-    } else if (buf[0] === "|") {
-      next()
-      const nextTester = buf[0] === "(" ? brace() : tester()
-
-      if (andParams.length === 1) {
-        orParams.push(andParams[0])
-      } else {
-        orParams.push({
-          type: "and",
-          params: andParams,
-        })
-      }
-      if (nextTester.type === "or") {
-        andParams = [...nextTester.params]
-      } else {
-        andParams = [nextTester]
-      }
-    } else {
-      break
-    }
   }
-  if (andParams.length === 1) {
-    orParams.push(andParams[0])
-  } else {
-    orParams.push({
-      type: "and",
-      params: andParams,
-    })
-  }
-  if (orParams.length === 1) {
-    return orParams[0]
+  if (params.length === 1) {
+    return params[0]
   }
   return {
     type: "or",
-    params: orParams,
+    params,
   }
 }
 
-function brace(): SflTester {
-  next()
-  const nextTester = expr()
+function andexpr(): SflTester {
+  const params = [memberexpr()]
   white()
-  if (buf[0] === ")") {
-    pos += 1
-    col += 1
-    buf = buf.slice(1)
-    return nextTester
+  while (buf[0] === "&") {
+    next()
+    params.push(memberexpr())
+    white()
   }
-  throw error()
+  if (params.length === 1) {
+    return params[0]
+  }
+  return {
+    type: "and",
+    params,
+  }
+}
+
+function memberexpr(): SflTester {
+  let nxt = unaryexpr()
+  white()
+  while (buf[0] === "[") {
+    next()
+    let min: number | undefined
+    let max: number | undefined
+    if (buf[0] === ":") {
+      next()
+      match = buf.match(RE_NUMBER)
+      if (match) {
+        max = +match[0]
+        next(match[0].length)
+      }
+    } else {
+      match = buf.match(RE_NUMBER)
+      if (match) {
+        min = +match[0]
+        next(match[0].length)
+        if (buf[0] === ":") {
+          next()
+          match = buf.match(RE_NUMBER)
+          if (match) {
+            max = +match[0]
+            next(match[0].length)
+          }
+        } else {
+          max = min
+        }
+      }
+    }
+    white()
+    if (buf[0] === "]") {
+      next()
+      nxt = {
+        type: "array",
+        ...(min ? {min} : {}),
+        ...(max ? {max} : {}),
+        value: nxt,
+      }
+    } else {
+      throw error("\"]\"")
+    }
+  }
+  return nxt
+}
+
+function unaryexpr(): SflTester {
+  if (buf[0] === "(") {
+    next()
+    const nxt = expr()
+    white()
+    if (buf[0] === ")") {
+      pos += 1
+      col += 1
+      buf = buf.slice(1)
+      return nxt
+    }
+    throw error("\")\"")
+  }
+  return tester()
+}
+
+function tester(): SflTester {
+  return buf[0] === "{" ? object() : scalar()
 }
 
 function object(): SflObjectTester {
@@ -171,7 +228,7 @@ function object(): SflObjectTester {
     next(match[0].length)
     white()
     if (buf[0] !== ":") {
-      throw error()
+      throw error("\":\"")
     }
     next()
     properties[key] = {
@@ -200,7 +257,7 @@ function object(): SflObjectTester {
     }
     break
   }
-  throw error()
+  throw error("\"}\"")
 }
 
 function scalar(): SflScalarTester {
@@ -239,8 +296,10 @@ function scalar(): SflScalarTester {
           params.push(match[3].replace(/^'|'$/g, "").replace(/\\'/g, "'"))
         } else if (match[4]) {
           params.push(+match[4])
+        } else if (match[5]) {
+          params.push(new RegExp(match[5].replace(/\\\//g, "/"), match[6] || undefined))
         } else {
-          throw error
+          throw error("tester param")
         }
         next(match[0].length)
         switch (buf[0]) {
@@ -272,30 +331,18 @@ function scalar(): SflScalarTester {
       params,
     }
   } else {
-    throw error()
+    throw error("tester")
   }
 }
 
-function tester(): SflTester {
-  white()
-  switch (buf[0]) {
-    case "{":
-      return object()
-  }
-  return scalar()
-}
 
-function root(): SflTester {
-  return expr()
-}
-
-function error(point = "") {
+function error(expected = "") {
   // Error Example
   // something wrong (1:7)
   // 1: email || null
   //           ^
   const lines = origin.split("\n")
-  return Object.assign(new Error(`Syntax Error: unexpected token${point} "${buf[0]}" (${ln}:${col})
+  return Object.assign(new Error(`Syntax Error: ${expected ? `expected ${expected}, ` : ""}unexpected token "${buf[0]}" (${ln}:${col})
 ${ln}: ${lines[ln - 1]}
 ${"^".padStart(col + 2 + ln.toString().length, " ")}`), {
     code: "SYNTAX_ERROR",
@@ -316,7 +363,7 @@ export function parse(ctx: string): SflTester {
   white()
 
   if (buf.length) {
-    throw error()
+    throw error("EOF")
   }
   return result
 }

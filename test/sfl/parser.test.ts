@@ -30,10 +30,10 @@ describe("parse", () => {
       params: [],
     })
 
-    expect(parse(`email(true, false, null, "string", 3.14, -500.5,)`)).toEqual({
+    expect(parse(`email(true, false, null, "string", 3.14, -500.5, /ab\\/c/igm)`)).toEqual({
       type: "scalar",
       name: "email",
-      params: [true, false, null, "string", 3.14, -500.5],
+      params: [true, false, null, "string", 3.14, -500.5, /ab\/c/gim],
     })
 
     expect(parse(`  
@@ -54,16 +54,16 @@ describe("parse", () => {
   })
 
   it("test scalar fail", () => {
-    expect(() => parse(`?string`)).toThrowError(createError(`Syntax Error: unexpected token "?" (1:1)
+    expect(() => parse(`?string`)).toThrowError(createError(`Syntax Error: expected tester, unexpected token "?" (1:1)
 1: ?string
    ^`, "SYNTAX_ERROR", 1, 1))
-    expect(() => parse(`str?ing`)).toThrowError(createError(`Syntax Error: unexpected token "?" (1:4)
+    expect(() => parse(`str?ing`)).toThrowError(createError(`Syntax Error: expected EOF, unexpected token "?" (1:4)
 1: str?ing
       ^`, "SYNTAX_ERROR", 1, 4))
 
     expect(() => parse(`
       ?string
-    `)).toThrowError(createError(`Syntax Error: unexpected token "?" (2:7)
+    `)).toThrowError(createError(`Syntax Error: expected tester, unexpected token "?" (2:7)
 2:       ?string
          ^`, "SYNTAX_ERROR", 2, 7))
   })
@@ -168,5 +168,78 @@ describe("parse", () => {
       }},
       {type: "scalar", name: "null", params: []},
     ]})
+  })
+
+  it("test array success", () => {
+    expect(parse(`string[]`)).toEqual({type: "array", value: {type: "scalar", name: "string", params: []}})
+    expect(parse(`string[1]`)).toEqual({type: "array", min: 1, max: 1, value: {type: "scalar", name: "string", params: []}})
+    expect(parse(`string[1:]`)).toEqual({type: "array", min: 1, value: {type: "scalar", name: "string", params: []}})
+    expect(parse(`string[:2]`)).toEqual({type: "array", max: 2, value: {type: "scalar", name: "string", params: []}})
+    expect(parse(`string[1:2]`)).toEqual({type: "array", min: 1, max: 2, value: {type: "scalar", name: "string", params: []}})
+
+    expect(parse(`string[][]`)).toEqual({type: "array", value: {type: "array", value: {type: "scalar", name: "string", params: []}}})
+    expect(parse(`string[ 1 ][]`)).toEqual({type: "array", value: {type: "array", min: 1, max: 1, value: {type: "scalar", name: "string", params: []}}})
+    expect(parse(`string[ 1 : ][]`)).toEqual({type: "array", value: {type: "array", min: 1, value: {type: "scalar", name: "string", params: []}}})
+    expect(parse(`string[ : 2 ][]`)).toEqual({type: "array", value: {type: "array", max: 2, value: {type: "scalar", name: "string", params: []}}})
+    expect(parse(`string[ 1 : 2 ][]`)).toEqual({type: "array", value: {type: "array", min: 1, max: 2, value: {type: "scalar", name: "string", params: []}}})
+
+    expect(parse(`{
+      name: string,
+      username: string & email & in("abc", "def", 10, 20)
+    }[]`)).toEqual({type: "array", value: {type: "object", properties: {
+      name: {optional: false, value: {type: "scalar", name: "string", params: []}},
+      username: {optional: false, value: {type: "and", params: [
+        {type: "scalar", name: "string", params: []},
+        {type: "scalar", name: "email", params: []},
+        {type: "scalar", name: "in", params: ["abc", "def", 10, 20]},
+      ]}}}},
+    })
+
+    expect(parse(`{
+      name: string,
+      username: string & email & in("abc", "def", 10, 20)
+    }[] | null`)).toEqual({type: "or", params: [
+      {type: "array", value: {type: "object", properties: {
+        name: {optional: false, value: {type: "scalar", name: "string", params: []}},
+        username: {optional: false, value: {type: "and", params: [
+          {type: "scalar", name: "string", params: []},
+          {type: "scalar", name: "email", params: []},
+          {type: "scalar", name: "in", params: ["abc", "def", 10, 20]},
+        ]}},
+      }}},
+      {type: "scalar", name: "null", params: []},
+    ]})
+
+    expect(parse(`({
+      name: string,
+      username: string & email & in("abc", "def", 10, 20)
+    } | null)[][5]`)).toEqual({type: "array", min: 5, max: 5, value: {type: "array", value: {type: "or", params: [
+      {type: "object", properties: {
+        name: {optional: false, value: {type: "scalar", name: "string", params: []}},
+        username: {optional: false, value: {type: "and", params: [
+          {type: "scalar", name: "string", params: []},
+          {type: "scalar", name: "email", params: []},
+          {type: "scalar", name: "in", params: ["abc", "def", 10, 20]},
+        ]}},
+      }},
+      {type: "scalar", name: "null", params: []},
+    ]}}})
+
+    expect(parse(` ( ( ( ( {
+      name     : string   ,
+      username : ( string & email ) & in ( "abc" , "def" , 10 , 20 )
+    } | null ) ) ) [ ] ) [ 5 ]`)).toEqual({type: "array", min: 5, max: 5, value: {type: "array", value: {type: "or", params: [
+      {type: "object", properties: {
+        name: {optional: false, value: {type: "scalar", name: "string", params: []}},
+        username: {optional: false, value: {type: "and", params: [
+          {type: "and", params: [
+            {type: "scalar", name: "string", params: []},
+            {type: "scalar", name: "email", params: []},  
+          ]},
+          {type: "scalar", name: "in", params: ["abc", "def", 10, 20]},
+        ]}},
+      }},
+      {type: "scalar", name: "null", params: []},
+    ]}}})
   })
 })
