@@ -1,5 +1,5 @@
+import { RE_IP_V4, RE_IP_V6 } from "../constants/regexp"
 import { Tester } from "../interfaces/common"
-import { RE_IP_V4, RE_IP_V6 } from "../regexp"
 
 
 export const ipTester: Tester = (value, params) => {

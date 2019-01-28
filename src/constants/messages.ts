@@ -1,4 +1,4 @@
-import { MessageMap } from "./interfaces/common"
+import { MessageMap } from "../interfaces/common"
 
 // ref https://github.com/laravel/laravel/blob/master/resources/lang/en/validation.php
 

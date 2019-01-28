@@ -1,6 +1,7 @@
+import { messages as defaultMessages } from "./constants/messages"
+import { testers as defaultTesters } from "./constants/testers"
 import { MessageMap, Rule, TesterMap } from "./interfaces/common"
-import { messages as defaultMessages } from "./messages"
-import { testers as defaultTesters } from "./testers"
+import { parse } from "./sfl/parser"
 import { Validator } from "./validator/validator"
 
 
@@ -9,10 +10,10 @@ export interface CreateOptions {
   messages?: MessageMap
 }
 
-export function create(rule: Rule, {testers, messages}: CreateOptions = {}): Validator {
+export function create(rule: string, {testers, messages}: CreateOptions = {}): Validator {
   return new Validator(
-    rule,
-    testers || defaultTesters,
-    messages || defaultMessages
+    parse(rule),
+    Object.assign(testers || {}, defaultTesters),
+    Object.assign(messages || {}, defaultMessages)
   )
 }

@@ -1,7 +1,7 @@
 
 export type Scalar = string | number | boolean | null
 
-export type Tester = (value: string, params: Scalar[], generateVariable: () => string) => string
+export type Tester = (value: string, params: any[], generateVariable: () => string) => string
 
 export interface TesterMap {
   [name: string]: Tester
