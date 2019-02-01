@@ -10,26 +10,26 @@ describe("usage", () => {
     expect.assertions(0)
 
     // section:usage-default
-    const validator = safen.create({
-      "username": "(string & email & length_between:12,100) | null",
-      "password?": "string & length_between:8,20",
-      "areas[1:]": {
-        lat: "number & between:-90,90",
-        lng: "number & between:-180,180",
-      },
-      "env": {
-        referer: "url",
-        ip: "ip:v4",
+    const validator = safen.create(`{
+      username: (string & email & length_between(12, 100)) | null,
+      password?: string & length_between(8, 20),
+      areas: {
+        lat: number & between(-90, 90),
+        lng: number & between(-180, 180),
+      }[1:],
+      env: {
+        referer: url,
+        ip: ip("v4"),
         os: {
-          name: "in:window,osx,android,iphone",
-          version: "string",
+          name: in("window", "osx", "android", "iphone"),
+          version: string,
         },
         browser: {
-          name: "in:chrome,firefox,edge,ie",
-          version: "string",
+          name: in("chrome", "firefox", "edge", "ie"),
+          version: string,
         },
       },
-    })
+    }`)
 
     validator.assert({
       username: "corgidisco@gmail.com",
@@ -56,7 +56,7 @@ describe("usage", () => {
     expect.assertions(4)
 
     // section:usage-validate-and-assert
-    const validator = safen.create("(string & email & length_between:12,100) | null")
+    const validator = safen.create("(string & email & length_between(12, 100)) | null")
 
     // validate method
 
@@ -85,9 +85,9 @@ describe("sample pipe", () => {
   it("sample pipe", () => {
     expect.assertions(1)
     // section:sample-pipe
-    const validator = safen.create({
-      username: "(string & email & length_between:12,100) | null",
-    })
+    const validator = safen.create(`{
+      username: (string & email & length_between(12, 100)) | null,
+    }`)
 
     validator.assert({
       username: "corgidisco@gmail.com",
@@ -126,10 +126,10 @@ describe("sample optional", () => {
   it("sample optional", () => {
     expect.assertions(1)
     // section:sample-optional
-    const validator = safen.create({
-      "username": "string & length_between:4,20",
-      "password?": "length_between:8,20", // optional
-    })
+    const validator = safen.create(`{
+      username: string & length_between(4, 20),
+      password?: length_between(8, 20),
+    }`)
 
     validator.assert({
       username: "corgidisco",
@@ -190,13 +190,13 @@ describe("sample object in object", () => {
     expect.assertions(1)
 
     // section:sample-object-in-object
-    const validator = safen.create({
-      username: "string & length_between:4,20",
+    const validator = safen.create(`{
+      username: string & length_between(4, 20),
       areas: {
-        lat: "number & between:-90,90",
-        lng: "number & between:-180,180",
+        lat: number & between(-90, 90),
+        lng: number & between(-180, 180),
       },
-    })
+    }`)
 
     validator.assert({
       username: "corgidisco",
@@ -243,12 +243,12 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-simple-array
-    const validator = safen.create({
-      "areas[]": { // array
-        lat: "number",
-        lng: "number",
-      },
-    })
+    const validator = safen.create(`{
+      areas: {
+        lat: number,
+        lng: number,
+      }[],
+    }`)
 
     validator.assert({
       areas: [], // empty is OK
@@ -284,12 +284,12 @@ describe("sample array", () => {
     expect.assertions(2)
 
     // section:sample-array-with-range-fixed
-    const validator = safen.create({
-      "areas[2]": { // array
-        lat: "number",
-        lng: "number",
-      },
-    })
+    const validator = safen.create(`{
+      areas: {
+        lat: number,
+        lng: number,
+      }[2],
+    }`)
 
     validator.assert({
       areas: [
@@ -344,12 +344,12 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-array-with-range-min
-    const validator = safen.create({
-      "areas[1:]": { // array
-        lat: "number",
-        lng: "number",
-      },
-    })
+    const validator = safen.create(`{
+      areas: {
+        lat: number,
+        lng: number,
+      }[1:],
+    }`)
 
     validator.assert({
       areas: [
@@ -387,12 +387,12 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-array-with-range-max
-    const validator = safen.create({
-      "areas[:2]": { // array
-        lat: "number",
-        lng: "number",
-      },
-    })
+    const validator = safen.create(`{
+      areas: {
+        lat: number,
+        lng: number,
+      }[:2],
+    }`)
 
     validator.assert({
       areas: [
@@ -434,12 +434,12 @@ describe("sample array", () => {
     expect.assertions(2)
 
     // section:sample-array-with-range-between
-    const validator = safen.create({
-      "areas[1:2]": { // array
-        lat: "number",
-        lng: "number",
-      },
-    })
+    const validator = safen.create(`{
+      areas: {
+        lat: number,
+        lng: number,
+      }[1:2],
+    }`)
 
     validator.assert({
       areas: [
@@ -498,12 +498,12 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-array-with-multi-dims
-    const validator = safen.create({
-      "areas[][]": { // array
-        lat: "number",
-        lng: "number",
-      },
-    })
+    const validator = safen.create(`{
+      areas: {
+        lat: number,
+        lng: number,
+      }[][],
+    }`)
 
     validator.assert({
       areas: [
@@ -529,16 +529,16 @@ describe("sample array", () => {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas.0",
+            path: "areas[0]",
             reason: "array",
             params: [],
-            message: "The areas.0 must be an array.",
+            message: "The areas[0] must be an array.",
           },
           {
-            path: "areas.1",
+            path: "areas[1]",
             reason: "array",
             params: [],
-            message: "The areas.1 must be an array.",
+            message: "The areas[1] must be an array.",
           },
         ])
       }
@@ -556,10 +556,10 @@ describe("sample array", () => {
       return `(Number.isInteger(${value}) && ${value} % 2 === 0)`
     }
 
-    const validation = safen.create({
-      even: "even",
-      odd: "odd"
-    }, {
+    const validation = safen.create(`{
+      even: even,
+      odd: odd,
+    }`, {
       testers: {
         odd: oddTester,
         even: evenTester,
@@ -579,9 +579,9 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-custom-error-messages
-    const validator = safen.create({
-      username: "email",
-    }, {
+    const validator = safen.create(`{
+      username: email,
+    }`, {
       messages: {
         email: [
           "this is a custom error message in :path.", // exist `:path`
@@ -613,11 +613,11 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-custom-error-messages-examples
-    const validator = safen.create({
-      foo: "email",
-      bar: "between:1,2",
-      baz: "in:a,b,c",
-    }, {
+    const validator = safen.create(`{
+      foo: email,
+      bar: between(1, 2),
+      baz: in("a", "b", "c"),
+    }`, {
       messages: {
         required: ["The :path is required.", "It is required."],
         between: ["The :path must be between :param0 and :param1.", "It must be between :param0 and :param1."],

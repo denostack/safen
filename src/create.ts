@@ -13,7 +13,7 @@ export interface CreateOptions {
 export function create(rule: string, {testers, messages}: CreateOptions = {}): Validator {
   return new Validator(
     parse(rule),
-    Object.assign(testers || {}, defaultTesters),
-    Object.assign(messages || {}, defaultMessages)
+    Object.assign({}, defaultTesters, testers),
+    Object.assign({}, defaultMessages, messages)
   )
 }

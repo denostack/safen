@@ -31,26 +31,26 @@ const safen = require("safen")
 then,
 
 ```typescript
-const validator = safen.create({
-  "username": "(string & email & length_between:12,100) | null",
-  "password?": "string & length_between:8,20",
-  "areas[1:]": {
-    lat: "number & between:-90,90",
-    lng: "number & between:-180,180",
-  },
-  "env": {
-    referer: "url",
-    ip: "ip:v4",
+const validator = safen.create(`{
+  username: (string & email & length_between(12, 100)) | null,
+  password?: string & length_between(8, 20),
+  areas: {
+    lat: number & between(-90, 90),
+    lng: number & between(-180, 180),
+  }[1:],
+  env: {
+    referer: url,
+    ip: ip("v4"),
     os: {
-      name: "in:window,osx,android,iphone",
-      version: "string",
+      name: in("window", "osx", "android", "iphone"),
+      version: string,
     },
     browser: {
-      name: "in:chrome,firefox,edge,ie",
-      version: "string",
+      name: in("chrome", "firefox", "edge", "ie"),
+      version: string,
     },
   },
-})
+}`)
 
 validator.assert({
   username: "corgidisco@gmail.com",
@@ -75,7 +75,7 @@ validator.assert({
 There are two method in Safen, named `validate`, `assert`. `validate` is return boolean, `assert` occure Exception.
 
 ```typescript
-const validator = safen.create("(string & email & length_between:12,100) | null")
+const validator = safen.create("(string & email & length_between(12, 100)) | null")
 
 // validate method
 
@@ -158,9 +158,9 @@ Validator                 | Description | Example
 You can easily set the validation by supporting the `and`, `or` syntax.
 
 ```typescript
-const validator = safen.create({
-  username: "(string & email & length_between:12,100) | null",
-})
+const validator = safen.create(`{
+  username: (string & email & length_between(12, 100)) | null,
+}`)
 
 validator.assert({
   username: "corgidisco@gmail.com",
@@ -198,10 +198,10 @@ try {
 The optional grammar is available through the "?" character. You can allow no key value in the object, or undefined.
 
 ```typescript
-const validator = safen.create({
-  "username": "string & length_between:4,20",
-  "password?": "length_between:8,20", // optional
-})
+const validator = safen.create(`{
+  username: string & length_between(4, 20),
+  password?: length_between(8, 20),
+}`)
 
 validator.assert({
   username: "corgidisco",
@@ -260,13 +260,13 @@ try {
 Objects in objects are also easy to use. In addition, the error message makes it easy to check the error path.
 
 ```typescript
-const validator = safen.create({
-  username: "string & length_between:4,20",
+const validator = safen.create(`{
+  username: string & length_between(4, 20),
   areas: {
-    lat: "number & between:-90,90",
-    lng: "number & between:-180,180",
+    lat: number & between(-90, 90),
+    lng: number & between(-180, 180),
   },
-})
+}`)
 
 validator.assert({
   username: "corgidisco",
@@ -312,12 +312,12 @@ validator.assert({
 **Simple Array**
 
 ```typescript
-const validator = safen.create({
-  "areas[]": { // array
-    lat: "number",
-    lng: "number",
-  },
-})
+const validator = safen.create(`{
+  areas: {
+    lat: number,
+    lng: number,
+  }[],
+}`)
 
 validator.assert({
   areas: [], // empty is OK
@@ -351,12 +351,12 @@ try {
 **Array With Range - Fixed**
 
 ```typescript
-const validator = safen.create({
-  "areas[2]": { // array
-    lat: "number",
-    lng: "number",
-  },
-})
+const validator = safen.create(`{
+  areas: {
+    lat: number,
+    lng: number,
+  }[2],
+}`)
 
 validator.assert({
   areas: [
@@ -409,12 +409,12 @@ try {
 **Array With Range - Min**
 
 ```typescript
-const validator = safen.create({
-  "areas[1:]": { // array
-    lat: "number",
-    lng: "number",
-  },
-})
+const validator = safen.create(`{
+  areas: {
+    lat: number,
+    lng: number,
+  }[1:],
+}`)
 
 validator.assert({
   areas: [
@@ -450,12 +450,12 @@ try {
 **Array With Range - Max**
 
 ```typescript
-const validator = safen.create({
-  "areas[:2]": { // array
-    lat: "number",
-    lng: "number",
-  },
-})
+const validator = safen.create(`{
+  areas: {
+    lat: number,
+    lng: number,
+  }[:2],
+}`)
 
 validator.assert({
   areas: [
@@ -495,12 +495,12 @@ try {
 **Array With Range - Between**
 
 ```typescript
-const validator = safen.create({
-  "areas[1:2]": { // array
-    lat: "number",
-    lng: "number",
-  },
-})
+const validator = safen.create(`{
+  areas: {
+    lat: number,
+    lng: number,
+  }[1:2],
+}`)
 
 validator.assert({
   areas: [
@@ -557,12 +557,12 @@ try {
 **Array with Multi Dimension**
 
 ```typescript
-const validator = safen.create({
-  "areas[][]": { // array
-    lat: "number",
-    lng: "number",
-  },
-})
+const validator = safen.create(`{
+  areas: {
+    lat: number,
+    lng: number,
+  }[][],
+}`)
 
 validator.assert({
   areas: [
@@ -588,16 +588,16 @@ try {
   if (e instanceof safen.InvalidValueError) {
     expect(e.errors).toEqual([
       {
-        path: "areas.0",
+        path: "areas[0]",
         reason: "array",
         params: [],
-        message: "The areas.0 must be an array.",
+        message: "The areas[0] must be an array.",
       },
       {
-        path: "areas.1",
+        path: "areas[1]",
         reason: "array",
         params: [],
-        message: "The areas.1 must be an array.",
+        message: "The areas[1] must be an array.",
       },
     ])
   }
@@ -618,10 +618,10 @@ const evenTester: safen.Tester = (value, params, gen) => {
   return `(Number.isInteger(${value}) && ${value} % 2 === 0)`
 }
 
-const validation = safen.create({
-  even: "even",
-  odd: "odd"
-}, {
+const validation = safen.create(`{
+  even: even,
+  odd: odd,
+}`, {
   testers: {
     odd: oddTester,
     even: evenTester,
@@ -644,9 +644,9 @@ A more complex example is:
 If needed, you can add custom error messages.
 
 ```typescript
-const validator = safen.create({
-  username: "email",
-}, {
+const validator = safen.create(`{
+  username: email,
+}`, {
   messages: {
     email: [
       "this is a custom error message in :path.", // exist `:path`
@@ -676,11 +676,11 @@ try {
 The `:attribute` will be replaced by field name. For example :
 
 ```typescript
-const validator = safen.create({
-  foo: "email",
-  bar: "between:1,2",
-  baz: "in:a,b,c",
-}, {
+const validator = safen.create(`{
+  foo: email,
+  bar: between(1, 2),
+  baz: in("a", "b", "c"),
+}`, {
   messages: {
     required: ["The :path is required.", "It is required."],
     between: ["The :path must be between :param0 and :param1.", "It must be between :param0 and :param1."],
