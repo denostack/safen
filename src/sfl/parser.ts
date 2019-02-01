@@ -14,6 +14,14 @@ const RE_TESTERPARAM = /^(null|true|false)|("(?:[^"\\]*|\\")*")|('(?:[^'\\]*|\\'
 const RE_OBJECTKEY = /^([a-zA-Z_][a-zA-Z0-9_]*)(\?)?/
 const RE_NUMBER = /^(\d+)/
 
+function padStart(text: string, length: number) {
+  if (text.length > length) {
+    return text
+  }
+  length = length - text.length
+  return " ".repeat(length).slice(0, length) + text
+}
+
 /*
 SFL Grammar
 
@@ -363,7 +371,7 @@ function error(expected = "") {
   const lines = origin.split("\n")
   return Object.assign(new Error(`Syntax Error: ${expected ? `expected ${expected}, ` : ""}unexpected token "${buf[0]}" (${ln}:${col})
 ${ln}: ${lines[ln - 1]}
-${"^".padStart(col + 2 + ln.toString().length, " ")}`), {
+${padStart("^", col + 2 + ln.toString().length)}`), {
     code: "SYNTAX_ERROR",
     position: pos,
     line: ln,
