@@ -31,7 +31,7 @@ const safen = require("safen")
 then,
 
 ```typescript
-const validator = safen.create(`{
+const validator = safen.sfl`{
   username: (string & email & length_between(12, 100)) | null,
   password?: string & length_between(8, 20),
   areas: {
@@ -50,7 +50,7 @@ const validator = safen.create(`{
       version: string,
     },
   },
-}`)
+}`
 
 validator.assert({
   username: "corgidisco@gmail.com",

@@ -10,4 +10,6 @@ export { Validator } from "./validator/validator"
 
 export { InvalidValueError } from "./errors/invalid-value-error"
 
-export { create, CreateOptions } from "./create"
+export { parse } from "./sfl/parser"
+export { create, CreateOptions } from "./sfl/create"
+export { sfl } from "./sfl/sfl"

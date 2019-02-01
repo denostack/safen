@@ -1,8 +1,8 @@
-import { messages as defaultMessages } from "./constants/messages"
-import { testers as defaultTesters } from "./constants/testers"
-import { MessageMap, TesterMap } from "./interfaces/common"
-import { parse } from "./sfl/parser"
-import { Validator } from "./validator/validator"
+import { messages as defaultMessages } from "../constants/messages"
+import { testers as defaultTesters } from "../constants/testers"
+import { MessageMap, TesterMap } from "../interfaces/common"
+import { Validator } from "../validator/validator"
+import { parse } from "./parser"
 
 
 export interface CreateOptions {

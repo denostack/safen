@@ -8,7 +8,7 @@ describe("usage", () => {
     expect.assertions(0)
 
     // section:usage-default
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       username: (string & email & length_between(12, 100)) | null,
       password?: string & length_between(8, 20),
       areas: {
@@ -27,7 +27,7 @@ describe("usage", () => {
           version: string,
         },
       },
-    }`)
+    }`
 
     validator.assert({
       username: "corgidisco@gmail.com",
