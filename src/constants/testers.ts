@@ -31,6 +31,7 @@ import { nullTester } from "../testers/null"
 import { numberTester } from "../testers/number"
 import { objectTester } from "../testers/object"
 import { portTester } from "../testers/port"
+import { regexpTester } from "../testers/regexp"
 import { stringTester } from "../testers/string"
 import { symbolTester } from "../testers/symbol"
 import { uppercaseTester } from "../testers/uppercase"
@@ -93,7 +94,9 @@ export const testers = {
 
   port: portTester,
 
-  // re
+  re: regexpTester,
+  regex: regexpTester,
+  regexp: regexpTester,
 
   string: stringTester,
   symbol: symbolTester,

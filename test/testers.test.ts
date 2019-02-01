@@ -269,8 +269,15 @@ describe("default testers testsuite", () => {
     expect(safen.create("port").validate(65536)).toBeFalsy()
   })
 
-  // it("test re", () => {
-  // })
+  it("test re", () => {
+    expect(safen.create("re(/^abc?$/i)").validate("abc")).toBeTruthy()
+    expect(safen.create("re(/^abc?$/i)").validate("ab")).toBeTruthy()
+    expect(safen.create("re(/^abc?$/i)").validate("ABC")).toBeTruthy()
+    expect(safen.create("re(/^abc?$/i)").validate("AB")).toBeTruthy()
+
+    expect(safen.create("re(/^abc?$/i)").validate("dabc")).toBeFalsy()
+    expect(safen.create("re(/^abc?$/i)").validate("abcd")).toBeFalsy()
+  })
 
   it("test string", () => {
     expect(safen.create("string").validate("string")).toBeTruthy()
