@@ -1,6 +1,4 @@
 
-export type Scalar = string | number | boolean | null
-
 export type Tester = (value: string, params: any[], generateVariable: () => string) => string
 
 export interface TesterMap {
@@ -10,10 +8,3 @@ export interface TesterMap {
 export interface MessageMap {
   [key: string]: [string, string]
 }
-
-export type Rule = string | RuleObject | RuleInvoker
-export type RuleInvoker = () => Rule
-export interface RuleObject {
-  [key: string]: RuleObject | Rule
-}
-

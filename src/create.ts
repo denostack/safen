@@ -1,6 +1,6 @@
 import { messages as defaultMessages } from "./constants/messages"
 import { testers as defaultTesters } from "./constants/testers"
-import { MessageMap, Rule, TesterMap } from "./interfaces/common"
+import { MessageMap, TesterMap } from "./interfaces/common"
 import { parse } from "./sfl/parser"
 import { Validator } from "./validator/validator"
 

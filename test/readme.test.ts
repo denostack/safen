@@ -2,8 +2,6 @@
 import "jest"
 
 import * as safen from "../lib" // lib!
-import { Tester } from "../lib";
-import { Scalar } from "../src";
 
 describe("usage", () => {
   it("usage default", () => {
