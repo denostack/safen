@@ -34,6 +34,14 @@ describe("default testers testsuite", () => {
     expect(safen.create("always_true").validate("äbc1")).toBeTruthy()
   })
 
+  it("test any", () => {
+    expect(safen.create("any").validate("abcdefghijklmnopqrstuvwxyz1")).toBeTruthy()
+    expect(safen.create("any").validate("1")).toBeTruthy()
+    expect(safen.create("any").validate("äbc1")).toBeTruthy()
+    expect(safen.create("any").validate(null)).toBeTruthy()
+    expect(safen.create("any").validate(undefined)).toBeTruthy()
+  })
+
   it("test ascii", () => {
     expect(safen.create("ascii").validate("abcdefghijklmnopqrstuvwxyz")).toBeTruthy()
     expect(safen.create("ascii").validate("0123456789")).toBeTruthy()

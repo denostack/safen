@@ -1,3 +1,3 @@
 import { Tester } from "../interfaces/common"
 
-export const alwaysFalseTester: Tester = (value) => "false"
+export const alwaysFalseTester: Tester = () => "false"

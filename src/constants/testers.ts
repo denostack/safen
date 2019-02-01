@@ -3,6 +3,7 @@ import { alphaTester } from "../testers/alpha"
 import { alphanumTester } from "../testers/alphanum"
 import { alwaysFalseTester } from "../testers/always-false"
 import { alwaysTrueTester } from "../testers/always-true"
+import { anyTester } from "../testers/any"
 import { asciiTester } from "../testers/ascii"
 import { base64Tester } from "../testers/base64"
 import { beforeTester } from "../testers/before"
@@ -44,6 +45,7 @@ export const testers = {
   alphanum: alphanumTester,
   always_false: alwaysFalseTester,
   always_true: alwaysTrueTester,
+  any: anyTester,
   ascii: asciiTester,
 
   base64: base64Tester,

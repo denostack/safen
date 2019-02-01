@@ -125,6 +125,7 @@ Validator                 | Description | Example
 **alphanum**              | check if the `string` contains only letters and numbers([a-zA-Z0-9]) | `alphanum`
 **always_false**          | return always false, for debugging. | `always_false`
 **always_true**           | return always true, for debugging. | `always_true`
+**any**                   | return always true. | `any`
 **ascii**                 | check if the `string` contains only ascii characters. | `ascii`
 **base64**                | check if the `string` is Base64. | `base64`
 **before({date = now})**   | check if the `string` is a date that's before the specified date. | `before("2017-10-01")`, `before("2017-10-01 14:30:00")`
