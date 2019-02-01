@@ -14,7 +14,7 @@ describe("usage", () => {
       areas: {
         lat: number & between(-90, 90),
         lng: number & between(-180, 180),
-      }[1:],
+      }[1:] | null,
       env: {
         referer: url,
         ip: ip("v4"),

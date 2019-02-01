@@ -12,6 +12,8 @@
 
 Super Fast Complex Object Validator for Javascript(& Typescript).
 
+Safen supports the syntax similar to the type script interface. This makes it easy to create complex validation rules.
+
 ## Install
 
 ```bash

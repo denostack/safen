@@ -12,6 +12,8 @@
 
 Super Fast Complex Object Validator for Javascript(& Typescript).
 
+Safen supports the syntax similar to the type script interface. This makes it easy to create complex validation rules.
+
 ## Install
 
 ```bash
@@ -37,7 +39,7 @@ const validator = safen.sfl`{
   areas: {
     lat: number & between(-90, 90),
     lng: number & between(-180, 180),
-  }[1:],
+  }[1:] | null,
   env: {
     referer: url,
     ip: ip("v4"),
