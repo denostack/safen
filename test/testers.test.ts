@@ -1,142 +1,13 @@
 import "jest"
-import { expectThrow } from "./utils"
 
 import * as safen from "../src"
 
-describe("safen.create", () => {
-  it("success", () => {
-    const v = safen.create("always_true")
-    expect(v.validate("")).toBeTruthy()
-  })
-
-  it("fail", () => {
-    const v = safen.create("always_false")
-    expect(v.validate("")).toBeFalsy()
-  })
-})
-
-describe("test target name", () => {
-
-  it("test simple", () => {
-    const v = safen.create("string")
-
-    v.assert("string")
-
-    expectThrow(() => v.assert(null), [{path: "", reason: "string", params: [], message: "It must be a string."}])
-    expectThrow(() => v.assert(undefined), [{path: "", reason: "string", params: [], message: "It must be a string."}])
-    expectThrow(() => v.assert([]), [{path: "", reason: "string", params: [], message: "It must be a string."}])
-    expectThrow(() => v.assert({}), [{path: "", reason: "string", params: [], message: "It must be a string."}])
-  })
-
-  it("test multiple", () => {
-    const v = safen.create("string & email")
-
-    v.assert("corgidisco@gmail.com")
-
-    expectThrow(() => v.assert("string"), [{path: "", reason: "email", params: [], message: "It must be a valid email address."}])
-    expectThrow(() => v.assert(null), [{path: "", reason: "string", params: [], message: "It must be a string."}])
-    expectThrow(() => v.assert(undefined), [{path: "", reason: "string", params: [], message: "It must be a string."}])
-    expectThrow(() => v.assert([]), [{path: "", reason: "string", params: [], message: "It must be a string."}])
-    expectThrow(() => v.assert({}), [{path: "", reason: "string", params: [], message: "It must be a string."}])
-  })
-
-  it("test normal", () => {
-    const v = safen.create({users: "string"})
-
-    v.assert({users: "user1"})
-
-    expectThrow(() => v.assert({}), [{path: "users", reason: "required", params: [], message: "The users is required."}])
-    expectThrow(() => v.assert({users: undefined}), [{path: "users", reason: "required", params: [], message: "The users is required."}])
-    expectThrow(() => v.assert({users: null}), [{path: "users", reason: "string", params: [], message: "The users must be a string."}])
-
-    expectThrow(() => v.assert({users: []}), [{path: "users", reason: "string", params: [], message: "The users must be a string."}])
-    expectThrow(() => v.assert({users: ["user1"]}), [{path: "users", reason: "string", params: [], message: "The users must be a string."}])
-  })
-
-  it("test array", () => {
-    const v = safen.create({"users[]": "string"})
-
-    v.assert({users: []})
-    v.assert({users: ["user1"]})
-
-    expectThrow(() => v.assert({}), [{path: "users", reason: "required", params: [], message: "The users is required."}])
-    expectThrow(() => v.assert({users: undefined}), [{path: "users", reason: "required", params: [], message: "The users is required."}])
-    expectThrow(() => v.assert({users: null}), [{path: "users", reason: "array", params: [], message: "The users must be an array."}])
-    expectThrow(() => v.assert({users: "user1"}), [{path: "users", reason: "array", params: [], message: "The users must be an array."}])
-  })
-
-  it("test options", () => {
-    const v = safen.create({"users?": "string"})
-
-    v.assert({})
-    v.assert({users: undefined})
-
-    expectThrow(() => v.assert({users: null}), [{path: "users", reason: "string", params: [], message: "The users must be a string."}])
-    v.assert({users: "user1"})
-
-    expectThrow(() => v.assert({users: []}), [{path: "users", reason: "string", params: [], message: "The users must be a string."}])
-    expectThrow(() => v.assert({users: ["user1"]}), [{path: "users", reason: "string", params: [], message: "The users must be a string."}])
-  })
-
-  it("test array options", () => {
-    const v = safen.create({"users[]?": "string"})
-
-    v.assert({})
-    v.assert({users: undefined})
-    v.assert({users: []})
-    v.assert({users: ["user1"]})
-
-    expectThrow(() => v.assert({users: null}), [{path: "users", reason: "array", params: [], message: "The users must be an array."}])
-    expectThrow(() => v.assert({users: "user1"}), [{path: "users", reason: "array", params: [], message: "The users must be an array."}])
-  })
-
-  it("test array length", () => {
-    const v = safen.create({"users[2]": "string"})
-
-    v.assert({users: ["1", "2"]})
-
-    expectThrow(() => v.assert({users: []}), [{path: "users", reason: "array_length", params: [2], message: "The users's length must be 2."}])
-    expectThrow(() => v.assert({users: ["1"]}), [{path: "users", reason: "array_length", params: [2], message: "The users's length must be 2."}])
-    expectThrow(() => v.assert({users: ["1", "2", "3"]}), [{path: "users", reason: "array_length", params: [2], message: "The users's length must be 2."}])
-  })
-
-  it("test array length max", () => {
-    const v = safen.create({"users[:2]": "string"})
-
-    v.assert({users: []})
-    v.assert({users: ["1"]})
-    v.assert({users: ["1", "2"]})
-
-    expectThrow(() => v.assert({users: ["1", "2", "3"]}), [{path: "users", reason: "array_length_max", params: [2], message: "The users's length may not be greater than 2."}])
-  })
-
-  it("test array length min", () => {
-    const v = safen.create({"users[2:]": "string"})
-
-    v.assert({users: ["1", "2"]})
-    v.assert({users: ["1", "2", "3"]})
-
-    expectThrow(() => v.assert({users: []}), [{path: "users", reason: "array_length_min", params: [2], message: "The users's length must be at least 2."}])
-    expectThrow(() => v.assert({users: ["1"]}), [{path: "users", reason: "array_length_min", params: [2], message: "The users's length must be at least 2."}])
-  })
-
-  it("test array length between", () => {
-    const v = safen.create({"users[1:2]": "string"})
-
-    v.assert({users: ["1"]})
-    v.assert({users: ["1", "2"]})
-
-    expectThrow(() => v.assert({users: []}), [{path: "users", reason: "array_length_between", params: [1, 2], message: "The users's length must be between 1 and 2."}])
-    expectThrow(() => v.assert({users: ["1", "2", "3"]}), [{path: "users", reason: "array_length_between", params: [1, 2], message: "The users's length must be between 1 and 2."}])
-  })
-})
-
-describe("load all testers", () => {
+describe("default testers testsuite", () => {
   it("test after", () => {
-    expect(safen.create("after:'2017-12-01 00:00:01'").validate("2017-12-01 00:00:00")).toBeFalsy()
-    expect(safen.create("after:'2017-12-01 00:00:01'").validate("2017-12-01 00:00:01")).toBeFalsy()
-    expect(safen.create("after:'2017-12-01 00:00:01'").validate("2017-12-01 00:00:02")).toBeTruthy()
-    expect(safen.create("after:'2017-12-01 00:00:01'").validate("2017-12-01 00:00:03")).toBeTruthy()
+    expect(safen.create("after('2017-12-01 00:00:01')").validate("2017-12-01 00:00:00")).toBeFalsy()
+    expect(safen.create("after('2017-12-01 00:00:01')").validate("2017-12-01 00:00:01")).toBeFalsy()
+    expect(safen.create("after('2017-12-01 00:00:01')").validate("2017-12-01 00:00:02")).toBeTruthy()
+    expect(safen.create("after('2017-12-01 00:00:01')").validate("2017-12-01 00:00:03")).toBeTruthy()
   })
 
   it("test alpha", () => {
@@ -177,25 +48,25 @@ describe("load all testers", () => {
   })
 
   it("test before", () => {
-    expect(safen.create("before:'2017-12-01 00:00:02'").validate("2017-12-01 00:00:00")).toBeTruthy()
-    expect(safen.create("before:'2017-12-01 00:00:02'").validate("2017-12-01 00:00:01")).toBeTruthy()
-    expect(safen.create("before:'2017-12-01 00:00:02'").validate("2017-12-01 00:00:02")).toBeFalsy()
-    expect(safen.create("before:'2017-12-01 00:00:02'").validate("2017-12-01 00:00:03")).toBeFalsy()
+    expect(safen.create("before('2017-12-01 00:00:02')").validate("2017-12-01 00:00:00")).toBeTruthy()
+    expect(safen.create("before('2017-12-01 00:00:02')").validate("2017-12-01 00:00:01")).toBeTruthy()
+    expect(safen.create("before('2017-12-01 00:00:02')").validate("2017-12-01 00:00:02")).toBeFalsy()
+    expect(safen.create("before('2017-12-01 00:00:02')").validate("2017-12-01 00:00:03")).toBeFalsy()
   })
 
   it("test between", () => {
-    expect(safen.create("between:2,3").validate(1)).toBeFalsy()
-    expect(safen.create("between:2,3").validate(2)).toBeTruthy()
-    expect(safen.create("between:2,3").validate(3)).toBeTruthy()
-    expect(safen.create("between:2,3").validate(4)).toBeFalsy()
+    expect(safen.create("between(2, 3)").validate(1)).toBeFalsy()
+    expect(safen.create("between(2, 3)").validate(2)).toBeTruthy()
+    expect(safen.create("between(2, 3)").validate(3)).toBeTruthy()
+    expect(safen.create("between(2, 3)").validate(4)).toBeFalsy()
 
-    expect(safen.create("between:2,3").validate(11)).toBeFalsy()
-    expect(safen.create("between:2,3").validate(22)).toBeFalsy()
-    expect(safen.create("between:2,3").validate(33)).toBeFalsy()
+    expect(safen.create("between(2, 3)").validate(11)).toBeFalsy()
+    expect(safen.create("between(2, 3)").validate(22)).toBeFalsy()
+    expect(safen.create("between(2, 3)").validate(33)).toBeFalsy()
 
-    expect(safen.create("between:'2','3'").validate("11")).toBeFalsy()
-    expect(safen.create("between:'2','3'").validate("22")).toBeTruthy()
-    expect(safen.create("between:'2','3'").validate("33")).toBeFalsy()
+    expect(safen.create("between('2', '3')").validate("11")).toBeFalsy()
+    expect(safen.create("between('2', '3')").validate("22")).toBeTruthy()
+    expect(safen.create("between('2', '3')").validate("33")).toBeFalsy()
   })
 
   it("test boolean", () => {
@@ -250,21 +121,21 @@ describe("load all testers", () => {
   })
 
   it("test in", () => {
-    expect(safen.create("in:a,b,c").validate("a")).toBeTruthy()
-    expect(safen.create("in:a,b,c").validate("d")).toBeFalsy()
+    expect(safen.create("in('a', 'b', 'c')").validate("a")).toBeTruthy()
+    expect(safen.create("in('a', 'b', 'c')").validate("d")).toBeFalsy()
 
-    expect(safen.create("in:1,2,3").validate(1)).toBeTruthy()
-    expect(safen.create("in:1,2,3").validate(4)).toBeFalsy()
-    expect(safen.create("in:1,2,3").validate("1")).toBeFalsy()
-    expect(safen.create("in:1,2,3").validate("4")).toBeFalsy()
+    expect(safen.create("in(1, 2, 3)").validate(1)).toBeTruthy()
+    expect(safen.create("in(1, 2, 3)").validate(4)).toBeFalsy()
+    expect(safen.create("in(1, 2, 3)").validate("1")).toBeFalsy()
+    expect(safen.create("in(1, 2, 3)").validate("4")).toBeFalsy()
 
-    expect(safen.create("in:'1','2','3'").validate("1")).toBeTruthy()
-    expect(safen.create("in:'1','2','3'").validate("4")).toBeFalsy()
-    expect(safen.create("in:'1','2','3'").validate(1)).toBeFalsy()
-    expect(safen.create("in:'1','2','3'").validate(4)).toBeFalsy()
+    expect(safen.create("in('1','2','3')").validate("1")).toBeTruthy()
+    expect(safen.create("in('1','2','3')").validate("4")).toBeFalsy()
+    expect(safen.create("in('1','2','3')").validate(1)).toBeFalsy()
+    expect(safen.create("in('1','2','3')").validate(4)).toBeFalsy()
 
-    expect(safen.create("in:1.1,2.2,3.3").validate(1.1)).toBeTruthy()
-    expect(safen.create("in:1.1,2.2,3.3").validate(4.4)).toBeFalsy()
+    expect(safen.create("in(1.1,2.2,3.3)").validate(1.1)).toBeTruthy()
+    expect(safen.create("in(1.1,2.2,3.3)").validate(4.4)).toBeFalsy()
   })
 
   it("test integer", () => {
@@ -277,12 +148,12 @@ describe("load all testers", () => {
     expect(safen.create("ip").validate("2001:db8:0000:1:1:1:1:1")).toBeTruthy()
     expect(safen.create("ip").validate("256.0.0.0")).toBeFalsy()
 
-    expect(safen.create("ip:v4").validate("127.0.0.1")).toBeTruthy()
-    expect(safen.create("ip:v4").validate("256.0.0.0")).toBeFalsy()
-    expect(safen.create("ip:v4").validate("2001:db8:0000:1:1:1:1:1")).toBeFalsy()
+    expect(safen.create("ip('v4')").validate("127.0.0.1")).toBeTruthy()
+    expect(safen.create("ip('v4')").validate("256.0.0.0")).toBeFalsy()
+    expect(safen.create("ip('v4')").validate("2001:db8:0000:1:1:1:1:1")).toBeFalsy()
 
-    expect(safen.create("ip:v6").validate("127.0.0.1")).toBeFalsy()
-    expect(safen.create("ip:v6").validate("2001:db8:0000:1:1:1:1:1")).toBeTruthy()
+    expect(safen.create("ip('v6')").validate("127.0.0.1")).toBeFalsy()
+    expect(safen.create("ip('v6')").validate("2001:db8:0000:1:1:1:1:1")).toBeTruthy()
   })
 
   it("test json", () => {
@@ -301,39 +172,39 @@ describe("load all testers", () => {
   })
 
   it("test length", () => {
-    expect(safen.create("length:3").validate("abc")).toBeTruthy()
-    expect(safen.create("length:3").validate("abcd")).toBeFalsy()
-    expect(safen.create("length:3").validate([1, 2, 3])).toBeTruthy()
-    expect(safen.create("length:3").validate([1, 2, 3, 4])).toBeFalsy()
+    expect(safen.create("length(3)").validate("abc")).toBeTruthy()
+    expect(safen.create("length(3)").validate("abcd")).toBeFalsy()
+    expect(safen.create("length(3)").validate([1, 2, 3])).toBeTruthy()
+    expect(safen.create("length(3)").validate([1, 2, 3, 4])).toBeFalsy()
   })
 
   it("test length_between", () => {
-    expect(safen.create("length_between:2,3").validate("a")).toBeFalsy()
-    expect(safen.create("length_between:2,3").validate("ab")).toBeTruthy()
-    expect(safen.create("length_between:2,3").validate("abc")).toBeTruthy()
-    expect(safen.create("length_between:2,3").validate("abcd")).toBeFalsy()
-    expect(safen.create("length_between:2,3").validate([1])).toBeFalsy()
-    expect(safen.create("length_between:2,3").validate([1, 2])).toBeTruthy()
-    expect(safen.create("length_between:2,3").validate([1, 2, 3])).toBeTruthy()
-    expect(safen.create("length_between:2,3").validate([1, 2, 3, 4])).toBeFalsy()
+    expect(safen.create("length_between(2, 3)").validate("a")).toBeFalsy()
+    expect(safen.create("length_between(2, 3)").validate("ab")).toBeTruthy()
+    expect(safen.create("length_between(2, 3)").validate("abc")).toBeTruthy()
+    expect(safen.create("length_between(2, 3)").validate("abcd")).toBeFalsy()
+    expect(safen.create("length_between(2, 3)").validate([1])).toBeFalsy()
+    expect(safen.create("length_between(2, 3)").validate([1, 2])).toBeTruthy()
+    expect(safen.create("length_between(2, 3)").validate([1, 2, 3])).toBeTruthy()
+    expect(safen.create("length_between(2, 3)").validate([1, 2, 3, 4])).toBeFalsy()
   })
 
   it("test length_max", () => {
-    expect(safen.create("length_max:3").validate("ab")).toBeTruthy()
-    expect(safen.create("length_max:3").validate("abc")).toBeTruthy()
-    expect(safen.create("length_max:3").validate("abcd")).toBeFalsy()
-    expect(safen.create("length_max:3").validate([1, 2])).toBeTruthy()
-    expect(safen.create("length_max:3").validate([1, 2, 3])).toBeTruthy()
-    expect(safen.create("length_max:3").validate([1, 2, 3, 4])).toBeFalsy()
+    expect(safen.create("length_max(3)").validate("ab")).toBeTruthy()
+    expect(safen.create("length_max(3)").validate("abc")).toBeTruthy()
+    expect(safen.create("length_max(3)").validate("abcd")).toBeFalsy()
+    expect(safen.create("length_max(3)").validate([1, 2])).toBeTruthy()
+    expect(safen.create("length_max(3)").validate([1, 2, 3])).toBeTruthy()
+    expect(safen.create("length_max(3)").validate([1, 2, 3, 4])).toBeFalsy()
   })
 
   it("test length_min", () => {
-    expect(safen.create("length_min:2").validate("a")).toBeFalsy()
-    expect(safen.create("length_min:2").validate("ab")).toBeTruthy()
-    expect(safen.create("length_min:2").validate("abc")).toBeTruthy()
-    expect(safen.create("length_min:2").validate([1])).toBeFalsy()
-    expect(safen.create("length_min:2").validate([1, 2])).toBeTruthy()
-    expect(safen.create("length_min:2").validate([1, 2, 3])).toBeTruthy()
+    expect(safen.create("length_min(2)").validate("a")).toBeFalsy()
+    expect(safen.create("length_min(2)").validate("ab")).toBeTruthy()
+    expect(safen.create("length_min(2)").validate("abc")).toBeTruthy()
+    expect(safen.create("length_min(2)").validate([1])).toBeFalsy()
+    expect(safen.create("length_min(2)").validate([1, 2])).toBeTruthy()
+    expect(safen.create("length_min(2)").validate([1, 2, 3])).toBeTruthy()
   })
 
   it("test macaddress", () => {
@@ -342,25 +213,25 @@ describe("load all testers", () => {
   })
 
   it("test max", () => {
-    expect(safen.create("max:3").validate(2)).toBeTruthy()
-    expect(safen.create("max:3").validate(3)).toBeTruthy()
-    expect(safen.create("max:3").validate(4)).toBeFalsy()
+    expect(safen.create("max(3)").validate(2)).toBeTruthy()
+    expect(safen.create("max(3)").validate(3)).toBeTruthy()
+    expect(safen.create("max(3)").validate(4)).toBeFalsy()
 
-    expect(safen.create("max:3").validate(22)).toBeFalsy()
-    expect(safen.create("max:3").validate(33)).toBeFalsy()
-    expect(safen.create("max:'3'").validate("22")).toBeTruthy()
-    expect(safen.create("max:'3'").validate("33")).toBeFalsy()
+    expect(safen.create("max(3)").validate(22)).toBeFalsy()
+    expect(safen.create("max(3)").validate(33)).toBeFalsy()
+    expect(safen.create("max('3')").validate("22")).toBeTruthy()
+    expect(safen.create("max('3')").validate("33")).toBeFalsy()
   })
 
   it("test min", () => {
-    expect(safen.create("min:2").validate(1)).toBeFalsy()
-    expect(safen.create("min:2").validate(2)).toBeTruthy()
-    expect(safen.create("min:2").validate(3)).toBeTruthy()
+    expect(safen.create("min(2)").validate(1)).toBeFalsy()
+    expect(safen.create("min(2)").validate(2)).toBeTruthy()
+    expect(safen.create("min(2)").validate(3)).toBeTruthy()
 
-    expect(safen.create("min:2").validate(11)).toBeTruthy()
-    expect(safen.create("min:2").validate(22)).toBeTruthy()
-    expect(safen.create("min:'2'").validate("11")).toBeFalsy()
-    expect(safen.create("min:'2'").validate("22")).toBeTruthy()
+    expect(safen.create("min(2)").validate(11)).toBeTruthy()
+    expect(safen.create("min(2)").validate(22)).toBeTruthy()
+    expect(safen.create("min('2')").validate("11")).toBeFalsy()
+    expect(safen.create("min('2')").validate("22")).toBeTruthy()
   })
 
   it("test nan", () => {

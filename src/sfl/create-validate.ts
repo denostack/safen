@@ -1,19 +1,17 @@
 import { TesterMap } from "../interfaces/common"
-import {
-  SflAndTester,
-  SflOrTester,
-  SflScalarTester,
-  SflTester
-  } from "../interfaces/sfl"
+import { SflTester } from "../interfaces/sfl"
+
+// tslint:disable function-constructor
 
 let uniq = 0
+let testers: TesterMap = {}
 const uid = () => `t${uniq++}`
 
-
-function tester(curr: SflTester, val: string, testers: TesterMap): string {
+function tester(curr: SflTester, val: string): string {
   let nxt = ""
   switch (curr.type) {
     case "object":
+      nxt += `(function(){`
       for (const [key, {optional, value}] of Object.entries(curr.properties)) {
         const nxtval = `${val}.${key}`
         if (optional) { // optional start
@@ -21,13 +19,15 @@ function tester(curr: SflTester, val: string, testers: TesterMap): string {
         } else {
           nxt += `if(typeof ${nxtval}==="undefined"){return false}`
         }
-        nxt += tester(value, nxtval, testers)
+        nxt += `if(!(${tester(value, nxtval)})){return false}`
         if (optional) { // optional end
           nxt += `}`
         }
       }
+      nxt += `;return true})()`
       return nxt
     case "array":
+      nxt += `(function(){`
       const hasMin = typeof curr.min !== "undefined" && curr.min !== null
       const hasMax = typeof curr.max !== "undefined" && curr.max !== null
       if (hasMin && hasMax) {
@@ -40,37 +40,25 @@ function tester(curr: SflTester, val: string, testers: TesterMap): string {
         nxt += `if(!Array.isArray(${val})){return false}`
       }
       const i = uid()
-      nxt += `var ${i};for(${i}=0;${i}<${val}.length;${i}++){`
-      nxt += tester(curr.value, `${val}[${i}]`, testers)
+      nxt += `for(var ${i}=0;${i}<${val}.length;${i}++){`
+      nxt += `if(!(${tester(curr.value, `${val}[${i}]`)})){return false}`
       nxt += "}"
+      nxt += `return true})()`
       return nxt
     case "and":
+      return `(${curr.params.map((param) => tester(param, val)).join("&&")})`
     case "or":
-    case "scalar":
-      return `if(!(${astcondition(curr, val, testers)})){return false}`
-  }
-}
-
-function astcondition(curr: SflOrTester | SflAndTester | SflScalarTester, val: string, testers: TesterMap): string {
-  switch (curr.type) {
+      return `(${curr.params.map((param) => tester(param, val)).join("||")})`
     case "scalar":
       return testers[curr.name](val, curr.params, uid)
   }
-  const conditions = curr.params.map((param) => {
-    switch (param.type) {
-      case "object":
-      case "array":
-        return `(function(){${tester(param, val, testers)} return true})()`
-    }
-    return astcondition(param, val, testers)
-  })
-  return `(${conditions.join(curr.type === "and" ? "&&" : "||")})`
 }
 
-export function createValidate(rule: SflTester, testers: TesterMap = {}): (value: any) => boolean {
+export function createValidate(rule: SflTester, testerMap: TesterMap = {}): (data: any) => boolean {
   uniq = 0
+  testers = testerMap
   return new Function(
     "v",
-    `${tester(rule, "v", testers)} return true`
-  ) as (value: any) => boolean // tslint:disable-line function-constructor
+    `return ${tester(rule, "v")}`
+  ) as (data: any) => boolean
 }
