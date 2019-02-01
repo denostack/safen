@@ -178,12 +178,31 @@ function memberexpr(): SflTester {
     white()
     if (buf[0] === "]") {
       next()
-      nxt = {
-        type: "array",
-        ...(min ? {min} : {}),
-        ...(max ? {max} : {}),
-        value: nxt,
-      }
+      const hasMin = typeof min !== "undefined"
+      const hasMax = typeof max !== "undefined"
+      nxt = hasMin && hasMax
+        ? {
+          type: "array",
+          min,
+          max,
+          value: nxt,
+        }
+        : hasMax
+        ? {
+          type: "array",
+          max,
+          value: nxt,
+        }
+        : hasMin
+        ? {
+          type: "array",
+          min,
+          value: nxt,
+        }
+        : {
+          type: "array",
+          value: nxt,
+        }
     } else {
       throw error("\"]\"")
     }

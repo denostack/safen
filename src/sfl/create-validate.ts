@@ -12,7 +12,8 @@ function tester(curr: SflTester, val: string): string {
   switch (curr.type) {
     case "object":
       nxt += `(function(){`
-      for (const [key, {optional, value}] of Object.entries(curr.properties)) {
+      for (const key of Object.keys(curr.properties)) {
+        const {optional, value} = curr.properties[key]
         const nxtval = `${val}.${key}`
         if (optional) { // optional start
           nxt += `if(typeof ${nxtval}!=="undefined"){`

@@ -19,7 +19,8 @@ function tester(curr: SflTester, val: string): string {
     case "object": {
       const merged = uid()
       let nxt = `(function(){var ${merged}=[];`
-      for (const [key, {optional, value}] of Object.entries(curr.properties)) {
+      for (const key of Object.keys(curr.properties)) {
+        const {optional, value} = curr.properties[key]
         const nxtval = `${val}.${key}`
         nxt += `path.push(".${key.replace("\"", "\\\"")}");`
         if (optional) { // optional start
