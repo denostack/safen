@@ -14,6 +14,8 @@ Super Fast Complex Object Validator for Javascript(& Typescript).
 
 Safen supports the syntax similar to the type script interface. This makes it easy to create complex validation rules.
 
+Please check [this link](https://github.com/corgidisco/safen/tree/1.x) for the 1.x version of the README.
+
 ## Install
 
 ```bash

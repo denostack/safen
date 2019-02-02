@@ -1,11 +1,12 @@
 {
   "name": "safen",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Super Fast Complex Object Validator for Javascript(& Typescript).",
   "keywords": [
     "validation",
     "validator",
     "validate",
+    "joi",
     "assert",
     "type",
     "safen",
@@ -20,7 +21,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "prepack": "npm run build",
+    "prepack": "npm run test && npm run build",
     "build": "rimraf ./lib && tsc --emitDeclarationOnly && babel src --out-dir lib --extensions \".ts\" --source-maps inline",
     "lint": "tslint -c ./tslint.json -p tsconfig.json 'src/**/*.ts' --format stylish",
     "jest": "jest test",
