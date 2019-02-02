@@ -1,5 +1,5 @@
+import { RE_CREDITCARD } from "../constants/regexp"
 import { Tester } from "../interfaces/common"
-import { RE_CREDITCARD } from "../regexp"
 
 // ref. https://github.com/chriso/validator.js/blob/master/src/lib/isCreditCard.js
 export const creditcardTester: Tester = (value, params, gen) => {
