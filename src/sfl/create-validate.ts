@@ -59,7 +59,6 @@ export function createValidate(rule: SflTester, testerMap: TesterMap = {}): (dat
   uniq = 0
   testers = testerMap
   return new Function(
-    "v",
-    `return ${tester(rule, "v")}`
-  ) as (data: any) => boolean
+    `return function(v){return ${tester(rule, "v")}}`
+  )() as (data: any) => boolean
 }

@@ -50,31 +50,46 @@ describe("usage", () => {
     // endsection
   })
 
-  it("usage validate and assert", () => {
-    expect.assertions(4)
+  it("usage validate", () => {
+    expect.assertions(3)
 
-    // section:usage-validate-and-assert
-    const validator = safen.create("(string & email & length_between(12, 100)) | null")
+    const data = "something" as any
 
-    // validate method
+    // section:usage-validate
+    const validator = safen.sfl`(string & email & length_between(12, 100)) | null`
+
+    // typescript with Generic
+    if (validator.validate<string>(data)) {
+      // now data is string!
+    }
+
+    validator.validate("corgidisco@gmail.com") // return true
+    validator.validate(null) // return true
+
+    validator.validate("corgidisco") // return false, it is not email!
+    // endsection
 
     expect(validator.validate("corgidisco@gmail.com")).toBeTruthy()
     expect(validator.validate(null)).toBeTruthy()
 
     expect(validator.validate("corgidisco")).toBeFalsy() // return false!!!
+  })
 
+  it("usage assert", () => {
+    expect.assertions(1)
 
-    // assert method
-
-    validator.assert("corgidisco@gmail.com") // safe
-    validator.assert(null) // safe
     try {
-      validator.assert("corgidisco") // // not safe!
+      // section:usage-assert
+      const validator = safen.sfl`(string & email & length_between(12, 100)) | null`
+
+      validator.assert("corgidisco@gmail.com") // nothing happens
+      validator.assert(null) // nothing happens
+
+      validator.assert("corgidisco") // safen.InvalidValudError occured!
+      // endsection
     } catch (e) {
       expect(e).toBeInstanceOf(safen.InvalidValueError)
     }
-
-    // endsection
   })
 })
 
@@ -83,9 +98,9 @@ describe("sample pipe", () => {
   it("sample pipe", () => {
     expect.assertions(1)
     // section:sample-pipe
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       username: (string & email & length_between(12, 100)) | null,
-    }`)
+    }`
 
     validator.assert({
       username: "corgidisco@gmail.com",
@@ -124,10 +139,10 @@ describe("sample optional", () => {
   it("sample optional", () => {
     expect.assertions(1)
     // section:sample-optional
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       username: string & length_between(4, 20),
       password?: length_between(8, 20),
-    }`)
+    }`
 
     validator.assert({
       username: "corgidisco",
@@ -188,13 +203,13 @@ describe("sample object in object", () => {
     expect.assertions(1)
 
     // section:sample-object-in-object
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       username: string & length_between(4, 20),
       areas: {
         lat: number & between(-90, 90),
         lng: number & between(-180, 180),
       },
-    }`)
+    }`
 
     validator.assert({
       username: "corgidisco",
@@ -241,12 +256,12 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-simple-array
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       areas: {
         lat: number,
         lng: number,
       }[],
-    }`)
+    }`
 
     validator.assert({
       areas: [], // empty is OK
@@ -282,12 +297,12 @@ describe("sample array", () => {
     expect.assertions(2)
 
     // section:sample-array-with-range-fixed
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       areas: {
         lat: number,
         lng: number,
       }[2],
-    }`)
+    }`
 
     validator.assert({
       areas: [
@@ -342,12 +357,12 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-array-with-range-min
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       areas: {
         lat: number,
         lng: number,
       }[1:],
-    }`)
+    }`
 
     validator.assert({
       areas: [
@@ -385,12 +400,12 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-array-with-range-max
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       areas: {
         lat: number,
         lng: number,
       }[:2],
-    }`)
+    }`
 
     validator.assert({
       areas: [
@@ -432,12 +447,12 @@ describe("sample array", () => {
     expect.assertions(2)
 
     // section:sample-array-with-range-between
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       areas: {
         lat: number,
         lng: number,
       }[1:2],
-    }`)
+    }`
 
     validator.assert({
       areas: [
@@ -496,12 +511,12 @@ describe("sample array", () => {
     expect.assertions(1)
 
     // section:sample-array-with-multi-dims
-    const validator = safen.create(`{
+    const validator = safen.sfl`{
       areas: {
         lat: number,
         lng: number,
       }[][],
-    }`)
+    }`
 
     validator.assert({
       areas: [
