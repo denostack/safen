@@ -107,6 +107,7 @@ Validator                 | Description
 ------------------------- | -----------
 **bool**                  | check if it is a `boolean`(alias to `boolean`).
 **boolean**               | check if it is a `boolean`.
+**false**                 | check if it is a `false`.
 **float**                 | check if it is a `float`(alias to `number`).
 **int**                   | check if it is a `integer`(alias to `integer`).
 **integer**               | check if it is a `integer`.
@@ -115,6 +116,7 @@ Validator                 | Description
 **object**                | check if it is a `object`.
 **string**                | check if it is a `string`.
 **symbol**                | check if it is a `symbol`.
+**true**                  | check if it is a `true`.
 
 ### Other Validations
 

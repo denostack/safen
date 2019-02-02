@@ -12,6 +12,7 @@ import { booleanTester } from "../testers/boolean"
 import { creditcardTester } from "../testers/creditcard"
 import { dateTester } from "../testers/date"
 import { emailTester } from "../testers/email"
+import { falseTester } from "../testers/false"
 import { finiteTester } from "../testers/finite"
 import { hexcolorTester } from "../testers/hexcolor"
 import { inTester } from "../testers/in"
@@ -35,6 +36,7 @@ import { portTester } from "../testers/port"
 import { regexpTester } from "../testers/regexp"
 import { stringTester } from "../testers/string"
 import { symbolTester } from "../testers/symbol"
+import { trueTester } from "../testers/true"
 import { uppercaseTester } from "../testers/uppercase"
 import { urlTester } from "../testers/url"
 import { uuidTester } from "../testers/uuid"
@@ -62,6 +64,7 @@ export const testers = {
 
   email: emailTester,
 
+  false: falseTester,
   finite: finiteTester,
   float: numberTester,
 
@@ -103,6 +106,7 @@ export const testers = {
   string: stringTester,
   symbol: symbolTester,
 
+  true: trueTester,
   // timestamp
   // timezone
 

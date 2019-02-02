@@ -109,6 +109,16 @@ describe("default testers testsuite", () => {
     expect(safen.create("email").validate("corgidisco")).toBeFalsy()
   })
 
+  it("test false", () => {
+    expect(safen.create("false").validate(false)).toBeTruthy()
+    expect(safen.create("false").validate(0)).toBeFalsy()
+    expect(safen.create("false").validate("")).toBeFalsy()
+    expect(safen.create("false").validate(true)).toBeFalsy()
+    expect(safen.create("false").validate(100.1)).toBeFalsy()
+    expect(safen.create("false").validate(NaN)).toBeFalsy()
+    expect(safen.create("false").validate(Infinity)).toBeFalsy()
+  })
+
   it("test finite", () => {
     expect(safen.create("finite").validate(100)).toBeTruthy()
     expect(safen.create("finite").validate(100.1)).toBeTruthy()
@@ -295,6 +305,16 @@ describe("default testers testsuite", () => {
   it("test symbol", () => {
     expect(safen.create("symbol").validate(Symbol("symbol"))).toBeTruthy()
     expect(safen.create("symbol").validate(12345678)).toBeFalsy()
+  })
+
+  it("test true", () => {
+    expect(safen.create("true").validate(true)).toBeTruthy()
+    expect(safen.create("true").validate(1)).toBeFalsy()
+    expect(safen.create("true").validate("true")).toBeFalsy()
+    expect(safen.create("true").validate(false)).toBeFalsy()
+    expect(safen.create("true").validate(100.1)).toBeFalsy()
+    expect(safen.create("true").validate(NaN)).toBeFalsy()
+    expect(safen.create("true").validate(Infinity)).toBeFalsy()
   })
 
   // it("test timestamp", () => {
