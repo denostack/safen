@@ -10,8 +10,8 @@ export interface CreateOptions {
   messages?: MessageMap
 }
 
-export function create(rule: string, {testers, messages}: CreateOptions = {}): Validator {
-  return new Validator(
+export function create<P = any>(rule: string, {testers, messages}: CreateOptions = {}): Validator {
+  return new Validator<P>(
     parse(rule),
     Object.assign({}, defaultTesters, testers),
     Object.assign({}, defaultMessages, messages)

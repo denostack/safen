@@ -3,9 +3,9 @@ import { SflTester } from "../interfaces/sfl"
 import { createAssert } from "../sfl/create-assert"
 import { createValidate } from "../sfl/create-validate"
 
-export class Validator {
+export class Validator<P = any> {
 
-  public validate: <P = any>(data: any) => data is P
+  public validate: (data: any) => data is P
   public assert: (data: any) => void
   // public sanitize: (data: any) => any
 
