@@ -209,6 +209,8 @@ Validator                 | Description | Example
 
 ## Comparison
 
+If you have used another library, please refer to the following.
+
 ```sfl
 {
   username: (string & email & length_between(12, 100)) | null,
@@ -235,7 +237,7 @@ Validator                 | Description | Example
 ### Compare with JSON Schema
 
 <details>
-  <summary>Show JSON Schema</summary>
+  <summary>Show JSON Schema Source</summary>
 
 ```json
 {
@@ -345,7 +347,7 @@ Validator                 | Description | Example
 [JOI](https://github.com/hapijs/joi) is the most popular object schema validation library.
 
 <details>
-  <summary>Show JOI</summary>
+  <summary>Show JOI Source</summary>
 
 ```js
 Joi.object().keys({
@@ -386,7 +388,10 @@ Safen parses the grammar and internally generates an AST similar to the Json Sch
 }
 ```
 
-The generated AST is as follows.
+The generated AST is as follows:
+
+<details>
+  <summary>Show AST</summary>
 
 ```json
 {
@@ -478,6 +483,8 @@ The generated AST is as follows.
   }
 }
 ```
+
+</details>
 
 It then generates validate and assert functions based on AST.
 And, it is very fast because it generates native functions. The `validate` function is generated as follows:
