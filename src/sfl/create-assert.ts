@@ -19,6 +19,7 @@ function tester(curr: SflTester, val: string): string {
     case "object": {
       const merged = uid()
       let nxt = `(function(){var ${merged}=[];`
+      nxt += `if(typeof ${val}!=="object"||${val}===null){return [${error("object")}]}`
       for (const key of Object.keys(curr.properties)) {
         const {optional, value} = curr.properties[key]
         const nxtval = `${val}.${key}`

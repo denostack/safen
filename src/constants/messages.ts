@@ -10,6 +10,7 @@ export const messages: MessageMap = {
   array_length_between: ["The :path's length must be between :param0 and :param1.", "Its length must be between :param0 and :param1."],
   array_length_max: ["The :path's length may not be greater than :param0.", "Its length may not be greater than :param0."],
   array_length_min: ["The :path's length must be at least :param0.", "Its length must be at least :param0."],
+  object: ["The :path must be an object.", "It must be an object."],
 
   // testers
   after: ["The :path must be a date after :param0.", "It must be a date after :param0."],

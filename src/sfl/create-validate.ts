@@ -12,6 +12,7 @@ function tester(curr: SflTester, val: string): string {
   switch (curr.type) {
     case "object":
       nxt += `(function(){`
+      nxt += `if(typeof ${val}!=="object"||${val}===null){return false}`
       for (const key of Object.keys(curr.properties)) {
         const {optional, value} = curr.properties[key]
         const nxtval = `${val}.${key}`

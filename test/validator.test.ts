@@ -145,11 +145,16 @@ describe("default validator testsuite", () => {
       username?: string
     }`)
 
-    
     expect(v.validate({})).toBeTruthy()
     expect(v.validate({username: undefined})).toBeTruthy()
     expect(v.validate({username: "user1"})).toBeTruthy()
 
+    expect(v.validate(undefined)).toBeFalsy()
+    expect(v.validate(null)).toBeFalsy()
+    expect(v.validate(true)).toBeFalsy()
+    expect(v.validate(false)).toBeFalsy()
+    expect(v.validate("string")).toBeFalsy()
+    expect(v.validate(3.141592)).toBeFalsy()
     expect(v.validate({username: null})).toBeFalsy()
     expect(v.validate({username: []})).toBeFalsy()
     expect(v.validate({username: ["user1"]})).toBeFalsy()
@@ -158,6 +163,12 @@ describe("default validator testsuite", () => {
     v.assert({username: undefined})
     v.assert({username: "user1"})
 
+    expectThrow(() => v.assert(undefined),  [{path: "", reason: "object", params: [], message: "It must be an object."}])
+    expectThrow(() => v.assert(null),  [{path: "", reason: "object", params: [], message: "It must be an object."}])
+    expectThrow(() => v.assert(true),  [{path: "", reason: "object", params: [], message: "It must be an object."}])
+    expectThrow(() => v.assert(false),  [{path: "", reason: "object", params: [], message: "It must be an object."}])
+    expectThrow(() => v.assert("string"),  [{path: "", reason: "object", params: [], message: "It must be an object."}])
+    expectThrow(() => v.assert(3.141592),  [{path: "", reason: "object", params: [], message: "It must be an object."}])
     expectThrow(() => v.assert({username: null}), [{path: "username", reason: "string", params: [], message: "The username must be a string."}])
     expectThrow(() => v.assert({username: []}), [{path: "username", reason: "string", params: [], message: "The username must be a string."}])
     expectThrow(() => v.assert({username: ["user1"]}), [{path: "username", reason: "string", params: [], message: "The username must be a string."}])
@@ -350,6 +361,12 @@ describe("default validator testsuite", () => {
 
     expect(v.validate({name: "corgidisco", location: {lat: 10, lng: 20}})).toBeTruthy()
 
+    expect(v.validate({name: "corgidisco"})).toBeFalsy()
+    expect(v.validate({name: "corgidisco", location: null})).toBeFalsy()
+    expect(v.validate({name: "corgidisco", location: true})).toBeFalsy()
+    expect(v.validate({name: "corgidisco", location: false})).toBeFalsy()
+    expect(v.validate({name: "corgidisco", location: "string"})).toBeFalsy()
+    expect(v.validate({name: "corgidisco", location: 3.141592})).toBeFalsy()
     expect(v.validate({name: "corgidisco", location: {lat: "10", lng: 20}})).toBeFalsy()
     expect(v.validate({name: "corgidisco", location: {lat: 10, lng: "20"}})).toBeFalsy()
     expect(v.validate({name: "corgidisco", location: {lat: 10.3, lng: 20}})).toBeFalsy()
@@ -357,6 +374,25 @@ describe("default validator testsuite", () => {
     expect(v.validate({name: "corgidisco", location: {}})).toBeFalsy()
 
     v.assert({name: "corgidisco", location: {lat: 10, lng: 20}})
+
+    expectThrow(() => v.assert({name: "corgidisco"}), [
+      {path: "location", reason: "required", params: [], message: "The location is required."},
+    ])
+    expectThrow(() => v.assert({name: "corgidisco", location: null}), [
+      {path: "location", reason: "object", params: [], message: "The location must be an object."},
+    ])
+    expectThrow(() => v.assert({name: "corgidisco", location: true}), [
+      {path: "location", reason: "object", params: [], message: "The location must be an object."},
+    ])
+    expectThrow(() => v.assert({name: "corgidisco", location: false}), [
+      {path: "location", reason: "object", params: [], message: "The location must be an object."},
+    ])
+    expectThrow(() => v.assert({name: "corgidisco", location: "string"}), [
+      {path: "location", reason: "object", params: [], message: "The location must be an object."},
+    ])
+    expectThrow(() => v.assert({name: "corgidisco", location: 3.141592}), [
+      {path: "location", reason: "object", params: [], message: "The location must be an object."},
+    ])
 
     expectThrow(() => v.assert({name: "corgidisco", location: {lat: "10", lng: 20}}), [
       {path: "location.lat", reason: "int", params: [], message: "The location.lat must be an integer."},
