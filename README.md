@@ -109,7 +109,7 @@ There are two method in `Safen`, named `validate`, `assert`. `validate` is retur
 ### validate method
 
 ```typescript
-const validator = safen.sfl<string>`(string & email & length_between(12, 100)) | null`
+const validator = safen.sfl<string | null>`(string & email & length_between(12, 100)) | null`
 
 // typescript with Generic
 if (validator.validate(data)) {
