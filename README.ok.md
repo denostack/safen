@@ -34,6 +34,9 @@ Safen supports the syntax similar to the type script interface. This makes it ea
 - [Support Validators](#support-validators)
   - [Type Validations](#type-validations)
   - [Other Validations](#other-validations)
+- [Comparison](#comparison)
+  - [Compare with JSON Schema](#compare-with-json-schema)
+  - [Compare with JOI](#compare-with-joi)
 - [How Safen works](#how-safen-works)
 - [License](#license)
 
@@ -203,6 +206,171 @@ Validator                 | Description | Example
 **uppercase**             | check if the `string` is uppercase. | `uppercase`
 **url**                   | check if the `string` is valid URL. | `url`
 **uuid({version = all})**  | check if the `string` is valid UUID.<br />version is one of `all`(default), `v3`, `v4`, and `v5`. | `uuid`, `uuid("v3")`, `uuid("v4")`, `uuid("v5")`
+
+## Comparison
+
+```sfl
+{
+  username: (string & email & length_between(12, 100)) | null,
+  password?: string & length_between(8, 20),
+  areas: {
+    lat: number & between(-90, 90),
+    lng: number & between(-180, 180),
+  }[1:] | null,
+  env: {
+    referer: url,
+    ip: ip("v4"),
+    os: {
+      name: in("window", "osx", "android", "iphone"),
+      version: string,
+    },
+    browser: {
+      name: in("chrome", "firefox", "edge", "ie"),
+      version: string,
+    },
+  },
+}
+```
+
+### Compare with JSON Schema
+
+<details>
+  <summary>Show JSON Schema</summary>
+
+```json
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "username",
+    "areas",
+    "env"
+  ],
+  "properties": {
+    "username": {
+      "type": ["string", "null"],
+      "format": "email",
+      "minLength": 12,
+      "maxLength": 100
+    },
+    "password": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 20
+    },
+    "areas": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "properties": {
+          "lat": {
+            "type": "integer",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lng": {
+            "type": "integer",
+            "minimum": -180,
+            "maximum": 180
+          }
+        }
+      }
+    },
+    "env": {
+      "type": "object",
+      "required": [
+        "referer",
+        "ip",
+        "os",
+        "browser"
+      ],
+      "properties": {
+        "referer": {
+          "type": "string",
+          "format": "uri"
+        },
+        "ip": {
+          "type": "string",
+          "format": "ipv4"
+        },
+        "os": {
+          "type": "object",
+          "required": [
+            "name",
+            "version"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": ["window", "osx", "android", "iphone"],
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^(.*)$"
+            }
+          }
+        },
+        "browser": {
+          "type": "object",
+          "required": [
+            "name",
+            "version"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": ["chrome", "firefox", "edge", "ie"],
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^(.*)$"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+
+### Compare with JOI
+
+[JOI](https://github.com/hapijs/joi) is the most popular object schema validation library.
+
+<details>
+  <summary>Show JOI</summary>
+
+```js
+Joi.object().keys({
+  username: Joi.string().required().allow(null).email().min(12).max(100),
+  password: Joi.string().min(8).max(20),
+  areas: Joi.array().required().allow(null).min(1).items(Joi.object().keys({
+    lat: Joi.number().required().min(-90).max(90),
+    lng: Joi.number().required().min(-180).max(180),
+  })),
+  env: Joi.object().required().keys({
+    referer: Joi.string().uri().required(),
+    ip: Joi.string().required().ip({version: ["ipv4"]}),
+    os: Joi.object().required().keys({
+      name: Joi.any().required().only("window", "osx", "android", "iphone"),
+      version: Joi.string().required(),
+    }),
+    browser: Joi.object().required().keys({
+      name: Joi.any().required().only("chrome", "firefox", "edge", "ie"),
+      version: Joi.string().required(),
+    }),
+  }),
+})
+```
+
+</details>
 
 ## How Safen works
 
