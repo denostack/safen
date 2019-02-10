@@ -38,6 +38,7 @@ Safen supports the syntax similar to the type script interface. This makes it ea
   - [Compare with JSON Schema](#compare-with-json-schema)
   - [Compare with JOI](#compare-with-joi)
 - [How Safen works](#how-safen-works)
+- [Examples](#examples)
 - [License](#license)
 
 ## 1.x
@@ -1081,6 +1082,10 @@ The assert function also creates a native function like this. You can see the co
 ```js
 console.log(create("{..}").assert.toString())
 ```
+
+## Examples
+
+- [with express](./examples/with-express)
 
 ## License
 

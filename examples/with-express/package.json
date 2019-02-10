@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "ts-node ./src/entry.ts"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "safen": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.1",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.2.2"
+  }
+}

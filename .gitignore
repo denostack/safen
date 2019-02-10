@@ -2,3 +2,6 @@
 /lib
 
 yarn-error.log
+
+examples/**/package-lock.json
+examples/**/node_modules
