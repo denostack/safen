@@ -1038,6 +1038,9 @@ And, it is very fast because it generates native functions. The `validate` funct
 ```js
 function(v) {
   return (function() {
+    if (typeof v !== "object" || v === null) {
+      return false
+    }
     if (typeof v.username === "undefined") {
       return false
     }
@@ -1053,6 +1056,9 @@ function(v) {
         }
         for (var t0 = 0; t0 < v.areas.length; t0++) {
           if (!((function() {
+              if (typeof v.areas[t0] !== "object" || v.areas[t0] === null) {
+                return false
+              }
               if (typeof v.areas[t0].lat !== "undefined") {
                 if (!(((typeof(v.areas[t0].lat) === "number") && (v.areas[t0].lat >= -90 && v.areas[t0].lat <= 90)))) {
                   return false
