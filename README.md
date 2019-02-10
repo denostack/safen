@@ -10,21 +10,48 @@
 
 [![NPM](https://nodei.co/npm/safen.png)](https://www.npmjs.com/package/safen)
 
-Super Fast Complex Object Validator for Javascript(& Typescript).
+Super Fast Object Validator for Javascript(& Typescript).
 
-Safen supports the syntax similar to the type script interface. This makes it easy to create complex validation rules.
+Safen supports the syntax similar to the type script interface. This makes it easy to create validation rules.
 
-## 2.x
+- [How to use](#how-to-use)
+  - [Setup](#setup)
+  - [`validate` method](#validate-method)
+  - [`assert` method](#assert-method)
+- [Syntax](#syntax)
+  - [Type Syntax](#type-syntax)
+  - [Object Syntax](#object-syntax)
+    - [Optional field](#optional-field)
+    - [Nested object](#nested-object)
+  - [Array Syntax](#array-syntax)
+    - [Fixed size array](#fixed-size-array)
+    - [Array with minimum size](#array-with-minimum-size)
+    - [Array with maximum size](#array-with-maximum-size)
+    - [Sized array](#sized-array)
+    - [Nested array](#nested-array)
+- [Custom Tester](#custom-tester)
+- [Custom Error Messages](#custom-error-messages)
+- [Support Validators](#support-validators)
+  - [Type Validations](#type-validations)
+  - [Other Validations](#other-validations)
+- [How Safen works](#how-safen-works)
+- [License](#license)
+
+## 1.x
 
 Please check [this link](https://github.com/corgidisco/safen/tree/1.x) for the 1.x version of the README.
 
-## Install
+## How to use
+
+### Setup
+
+install,
 
 ```bash
 npm install safen --save
 ```
 
-## Getting started
+import,
 
 ```js
 import * as safen from "safen"
@@ -106,164 +133,6 @@ validator.assert(null) // nothing happens
 validator.assert("corgidisco") // safen.InvalidValudError occured!
 ```
 
-## How Safen works
-
-Safen parses the grammar and internally generates an AST similar to the Json Schema.
-
-```sfl
-{
-  username: (string & email) | null,
-  areas: {
-    lat?: number & between(-90, 90),
-    lng?: number & between(-180, 180),
-  }[1]
-}
-```
-
-The generated AST is as follows.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "username": {
-      "optional": false,
-      "value": {
-        "type": "or",
-        "params": [
-          {
-            "type": "and",
-            "params": [
-              {
-                "type": "scalar",
-                "name": "string",
-                "params": []
-              },
-              {
-                "type": "scalar",
-                "name": "email",
-                "params": []
-              }
-            ]
-          },
-          {
-            "type": "scalar",
-            "name": "null",
-            "params": []
-          }
-        ]
-      }
-    },
-    "areas": {
-      "optional": false,
-      "value": {
-        "type": "array",
-        "min": 1,
-        "max": 1,
-        "value": {
-          "type": "object",
-          "properties": {
-            "lat": {
-              "optional": true,
-              "value": {
-                "type": "and",
-                "params": [
-                  {
-                    "type": "scalar",
-                    "name": "number",
-                    "params": []
-                  },
-                  {
-                    "type": "scalar",
-                    "name": "between",
-                    "params": [
-                      -90,
-                      90
-                    ]
-                  }
-                ]
-              }
-            },
-            "lng": {
-              "optional": true,
-              "value": {
-                "type": "and",
-                "params": [
-                  {
-                    "type": "scalar",
-                    "name": "number",
-                    "params": []
-                  },
-                  {
-                    "type": "scalar",
-                    "name": "between",
-                    "params": [
-                      -180,
-                      180
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-It then generates validate and assert functions based on AST.
-And, it is very fast because it generates native functions. The `validate` function is generated as follows:
-
-```js
-function(v) {
-  return (function() {
-    if (typeof v.username === "undefined") {
-      return false
-    }
-    if (!((((typeof(v.username) === "string") && /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v.username)) || v.username === null))) {
-      return false
-    }
-    if (typeof v.areas === "undefined") {
-      return false
-    }
-    if (!((function() {
-        if (!Array.isArray(v.areas) || v.areas.length < 1 || v.areas.length > 1) {
-          return false
-        }
-        for (var t0 = 0; t0 < v.areas.length; t0++) {
-          if (!((function() {
-              if (typeof v.areas[t0].lat !== "undefined") {
-                if (!(((typeof(v.areas[t0].lat) === "number") && (v.areas[t0].lat >= -90 && v.areas[t0].lat <= 90)))) {
-                  return false
-                }
-              }
-              if (typeof v.areas[t0].lng !== "undefined") {
-                if (!(((typeof(v.areas[t0].lng) === "number") && (v.areas[t0].lng >= -180 && v.areas[t0].lng <= 180)))) {
-                  return false
-                }
-              };
-              return true
-            })())) {
-            return false
-          }
-        }
-        return true
-      })())) {
-      return false
-    };
-    return true
-  })()
-}
-```
-
-The assert function also creates a native function like this. You can see the code generated by the following code.
-
-```js
-console.log(create("{..}").assert.toString())
-```
-
 ## Syntax
 
 ### Type Syntax
@@ -306,7 +175,9 @@ try {
 }
 ```
 
-### Optional
+### Object Syntax
+
+#### Optional field
 
 The optional grammar is available through the "?" character. You can allow no key value in the object, or undefined.
 
@@ -368,7 +239,7 @@ try {
 }
 ```
 
-### Object in Object
+#### Nested object
 
 Objects in objects are also easy to use. In addition, the error message makes it easy to check the error path.
 
@@ -420,9 +291,9 @@ validator.assert({
 ```
 
 
-### Array Support
+### Array Syntax
 
-**Simple Array**
+#### Simple array
 
 ```typescript
 const validator = safen.sfl`{
@@ -461,7 +332,7 @@ try {
 }
 ```
 
-**Array With Range - Fixed**
+#### Fixed size array
 
 ```typescript
 const validator = safen.sfl`{
@@ -519,7 +390,7 @@ try {
 }
 ```
 
-**Array With Range - Min**
+#### Array with minimum size
 
 ```typescript
 const validator = safen.sfl`{
@@ -560,7 +431,7 @@ try {
 }
 ```
 
-**Array With Range - Max**
+#### Array with maximum size
 
 ```typescript
 const validator = safen.sfl`{
@@ -605,7 +476,7 @@ try {
 }
 ```
 
-**Array With Range - Between**
+#### Sized array
 
 ```typescript
 const validator = safen.sfl`{
@@ -667,7 +538,7 @@ try {
 }
 ```
 
-**Array with Multi Dimension**
+#### Nested array
 
 ```typescript
 const validator = safen.sfl`{
@@ -877,6 +748,164 @@ Validator                 | Description | Example
 **uppercase**             | check if the `string` is uppercase. | `uppercase`
 **url**                   | check if the `string` is valid URL. | `url`
 **uuid({version = all})**  | check if the `string` is valid UUID.<br />version is one of `all`(default), `v3`, `v4`, and `v5`. | `uuid`, `uuid("v3")`, `uuid("v4")`, `uuid("v5")`
+
+## How Safen works
+
+Safen parses the grammar and internally generates an AST similar to the Json Schema.
+
+```sfl
+{
+  username: (string & email) | null,
+  areas: {
+    lat?: number & between(-90, 90),
+    lng?: number & between(-180, 180),
+  }[1]
+}
+```
+
+The generated AST is as follows.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "username": {
+      "optional": false,
+      "value": {
+        "type": "or",
+        "params": [
+          {
+            "type": "and",
+            "params": [
+              {
+                "type": "scalar",
+                "name": "string",
+                "params": []
+              },
+              {
+                "type": "scalar",
+                "name": "email",
+                "params": []
+              }
+            ]
+          },
+          {
+            "type": "scalar",
+            "name": "null",
+            "params": []
+          }
+        ]
+      }
+    },
+    "areas": {
+      "optional": false,
+      "value": {
+        "type": "array",
+        "min": 1,
+        "max": 1,
+        "value": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "optional": true,
+              "value": {
+                "type": "and",
+                "params": [
+                  {
+                    "type": "scalar",
+                    "name": "number",
+                    "params": []
+                  },
+                  {
+                    "type": "scalar",
+                    "name": "between",
+                    "params": [
+                      -90,
+                      90
+                    ]
+                  }
+                ]
+              }
+            },
+            "lng": {
+              "optional": true,
+              "value": {
+                "type": "and",
+                "params": [
+                  {
+                    "type": "scalar",
+                    "name": "number",
+                    "params": []
+                  },
+                  {
+                    "type": "scalar",
+                    "name": "between",
+                    "params": [
+                      -180,
+                      180
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+It then generates validate and assert functions based on AST.
+And, it is very fast because it generates native functions. The `validate` function is generated as follows:
+
+```js
+function(v) {
+  return (function() {
+    if (typeof v.username === "undefined") {
+      return false
+    }
+    if (!((((typeof(v.username) === "string") && /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v.username)) || v.username === null))) {
+      return false
+    }
+    if (typeof v.areas === "undefined") {
+      return false
+    }
+    if (!((function() {
+        if (!Array.isArray(v.areas) || v.areas.length < 1 || v.areas.length > 1) {
+          return false
+        }
+        for (var t0 = 0; t0 < v.areas.length; t0++) {
+          if (!((function() {
+              if (typeof v.areas[t0].lat !== "undefined") {
+                if (!(((typeof(v.areas[t0].lat) === "number") && (v.areas[t0].lat >= -90 && v.areas[t0].lat <= 90)))) {
+                  return false
+                }
+              }
+              if (typeof v.areas[t0].lng !== "undefined") {
+                if (!(((typeof(v.areas[t0].lng) === "number") && (v.areas[t0].lng >= -180 && v.areas[t0].lng <= 180)))) {
+                  return false
+                }
+              };
+              return true
+            })())) {
+            return false
+          }
+        }
+        return true
+      })())) {
+      return false
+    };
+    return true
+  })()
+}
+```
+
+The assert function also creates a native function like this. You can see the code generated by the following code.
+
+```js
+console.log(create("{..}").assert.toString())
+```
 
 ## License
 
