@@ -58,6 +58,10 @@ describe("usage", () => {
     // section:usage-validate
     const validator = safen.sfl<string | null>`(string & email & length_between(12, 100)) | null`
 
+    // in javascript,
+    // const validator = safen.sfl`(string & email & length_between(12, 100)) | null`
+    // const validator = safen.create(`(string & email & length_between(12, 100)) | null`)
+
     // typescript with Generic
     if (validator.validate(data)) {
       // now data is string!
@@ -80,7 +84,11 @@ describe("usage", () => {
 
     try {
       // section:usage-assert
-      const validator = safen.sfl`(string & email & length_between(12, 100)) | null`
+      const validator = safen.sfl<string | null>`(string & email & length_between(12, 100)) | null`
+
+      // in javascript,
+      // const validator = safen.sfl`(string & email & length_between(12, 100)) | null`
+      // const validator = safen.create(`(string & email & length_between(12, 100)) | null`)
 
       validator.assert("corgidisco@gmail.com") // nothing happens
       validator.assert(null) // nothing happens
