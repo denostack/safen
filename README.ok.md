@@ -547,6 +547,7 @@ console.log(create("{..}").assert.toString())
 ## Examples
 
 - [with express](./examples/with-express)
+- [with axios](./examples/with-axios)
 
 ## License
 
