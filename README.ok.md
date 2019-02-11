@@ -1,16 +1,20 @@
-# Safen
+<p align="center">
+  <img src="./safen.png" alt="safen" width="500" />
+</p>
 
-[![Build](https://img.shields.io/travis/corgidisco/safen.svg)](https://travis-ci.org/corgidisco/safen)
-[![Downloads](https://img.shields.io/npm/dt/safen.svg)](https://npmcharts.com/compare/safen?minimal=true)
-[![Version](https://img.shields.io/npm/v/safen.svg)](https://www.npmjs.com/package/safen)
-[![License](https://img.shields.io/npm/l/safen.svg)](https://www.npmjs.com/package/safen)
+<p align="center">Super Fast Object Validator<br />for Javascript(& Typescript).</p>
 
-[![dependencies Status](https://david-dm.org/corgidisco/safen/status.svg)](https://david-dm.org/corgidisco/safen)
-[![devDependencies Status](https://david-dm.org/corgidisco/safen/dev-status.svg)](https://david-dm.org/corgidisco/safen?type=dev)
-
-[![NPM](https://nodei.co/npm/safen.png)](https://www.npmjs.com/package/safen)
-
-Super Fast Object Validator for Javascript(& Typescript).
+<p align="center">
+  <a href="https://travis-ci.org/corgidisco/safen"><img alt="Build" src="https://img.shields.io/travis/corgidisco/safen.svg" /></a>
+  <a href="https://npmcharts.com/compare/safen?minimal=true"><img alt="Downloads" src="https://img.shields.io/npm/dt/safen.svg" /></a>
+  <a href="https://www.npmjs.com/package/safen"><img alt="Version" src="https://img.shields.io/npm/v/safen.svg" /></a>
+  <a href="https://www.npmjs.com/package/safen"><img alt="License" src="https://img.shields.io/npm/l/safen.svg" /></a>
+  <br />
+  <a href="https://david-dm.org/corgidisco/safen"><img alt="dependencies Status" src="https://david-dm.org/corgidisco/safen/status.svg" /></a>
+  <a href="https://david-dm.org/corgidisco/safen?type=dev"><img alt="devDependencies Status" src="https://david-dm.org/corgidisco/safen/dev-status.svg" /></a>
+  <br />
+  <a href="https://www.npmjs.com/package/safen"><img alt="NPM" src="https://nodei.co/npm/safen.png" /></a>
+</p>
 
 Safen supports the syntax similar to the type script interface. This makes it easy to create validation rules.
 
