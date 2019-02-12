@@ -757,8 +757,8 @@ Validator                 | Description | Example
 **max({max})**             | check if the value(`string`, `number`) is less than {min}. | `max(5)`
 **min({min})**             | check if the value(`string`, `number`) is greater than {max}. | `min(3)`
 **nan**                   | check if the value(`any`) is NaN. | `nan`
-**re**                   | check if the value(`any`) match RegExp(alias to `regexp`). | `regexp(/.+/)`
-**regex**                   | check if the value(`any`) match RegExp(alias to `regexp`). | `regexp(/.+/)`
+**re**                   | check if the value(`any`) match RegExp(alias to `regexp`). | `re(/.+/)`
+**regex**                   | check if the value(`any`) match RegExp(alias to `regexp`). | `regex(/.+/)`
 **regexp**                   | check if the value(`any`) match RegExp. | `regexp(/.+/)`
 **port**                  | check if the `string` is valid PORT(0-65535). | `port`
 **uppercase**             | check if the `string` is uppercase. | `uppercase`
