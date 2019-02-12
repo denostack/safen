@@ -1,3 +1,4 @@
+import { UndefinedError } from "../errors/undefined-error"
 import { TesterMap } from "../interfaces/common"
 import { SflTester } from "../interfaces/sfl"
 
@@ -52,6 +53,9 @@ function tester(curr: SflTester, val: string): string {
     case "or":
       return `(${curr.params.map((param) => tester(param, val)).join("||")})`
     case "scalar":
+      if (typeof testers[curr.name] !== "function") {
+        throw new UndefinedError(`Undefined Error: "${curr.name}" is an undefined tester.`, curr)
+      }
       return testers[curr.name](val, curr.params, uid)
   }
 }

@@ -9,6 +9,8 @@ export { messages } from "./constants/messages"
 export { Validator } from "./validator/validator"
 
 export { InvalidValueError } from "./errors/invalid-value-error"
+export { SyntaxError } from "./errors/syntax-error"
+export { UndefinedError } from "./errors/undefined-error"
 
 export { parse } from "./sfl/parser"
 export { create, CreateOptions } from "./sfl/create"

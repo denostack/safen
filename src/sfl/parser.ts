@@ -1,3 +1,4 @@
+import { SyntaxError } from "../errors/syntax-error"
 import {
   SflObjectProperty,
   SflObjectTester,
@@ -362,21 +363,8 @@ function scalar(): SflScalarTester {
   }
 }
 
-
 function error(expected = "") {
-  // Error Example
-  // something wrong (1:7)
-  // 1: email || null
-  //           ^
-  const lines = origin.split("\n")
-  return Object.assign(new Error(`Syntax Error: ${expected ? `expected ${expected}, ` : ""}unexpected token "${buf[0]}" (${ln}:${col})
-${ln}: ${lines[ln - 1]}
-${padStart("^", col + 2 + ln.toString().length)}`), {
-    code: "SYNTAX_ERROR",
-    position: pos,
-    line: ln,
-    column: col,
-  })
+  return new SyntaxError(origin, expected, buf[0], pos, ln, col)
 }
 
 

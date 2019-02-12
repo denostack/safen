@@ -1,4 +1,5 @@
 import { InvalidValueError } from "../errors/invalid-value-error"
+import { UndefinedError } from "../errors/undefined-error"
 import { MessageMap, TesterMap } from "../interfaces/common"
 import { SflTester } from "../interfaces/sfl"
 
@@ -89,6 +90,9 @@ function tester(curr: SflTester, val: string): string {
         + `})()`
     }
     case "scalar":
+      if (typeof testers[curr.name] !== "function") {
+        throw new UndefinedError(`Undefined Error: "${curr.name}" is an undefined tester.`, curr)
+      }
       return `(function(){`
         + `if(!(${testers[curr.name](val, curr.params, uid)})){`
         +   `return[${error(curr.name, curr.params)}]`
@@ -109,7 +113,7 @@ export function createAssert(rule: SflTester, testerMap: TesterMap = {}, message
       + `if(errors.length)throw new InvalidValueError(errors)`
       + `}`
   ))(InvalidValueError, (path: string, reason: string, params: any[]) => {
-    let message = (messages[reason] || ["something wrong", "something wrong"])[path ? 0 : 1]
+    let message = (messages[reason] || ["The :path is invalid value.", "It is invalid value."])[path ? 0 : 1]
     message = message.replace(":path", path)
     params.forEach((param, index) => {
       message = message.replace(`:param${index}`, JSON.stringify(param))
