@@ -2,7 +2,7 @@ import { messages as defaultMessages } from "../constants/messages"
 import { testers as defaultTesters } from "../constants/testers"
 import { MessageMap, TesterMap } from "../interfaces/common"
 import { Validator } from "../validator/validator"
-import { parse } from "./parser"
+import { parse } from "./parse"
 
 
 export interface CreateOptions {

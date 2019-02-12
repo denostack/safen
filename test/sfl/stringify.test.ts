@@ -1,6 +1,6 @@
 import "jest"
 
-import { parse } from "../../src/sfl/parser"
+import { parse } from "../../src/sfl/parse"
 import { stringify } from "../../src/sfl/stringify"
 
 
