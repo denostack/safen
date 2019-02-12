@@ -13,5 +13,7 @@ export { SyntaxError } from "./errors/syntax-error"
 export { UndefinedError } from "./errors/undefined-error"
 
 export { parse } from "./sfl/parser"
+export { stringify } from "./sfl/stringify"
+
 export { create, CreateOptions } from "./sfl/create"
 export { sfl } from "./sfl/sfl"
