@@ -112,7 +112,7 @@ validator.assert({
 }) // ok
 ```
 
-There are two method in `Safen`, named `validate`, `assert`. `validate` is return boolean, `assert` occure Exception.
+There are two method in `Safen`, named `validate`, `assert`. `validate` returns `boolean` and `assert` throws Exception.
 
 ### validate method
 
