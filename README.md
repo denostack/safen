@@ -1050,7 +1050,7 @@ The generated AST is as follows:
   </details>
 </p>
 
-Safen generates native `validate` and `assert` functions based on AST, which make safen even faster.
+Safen generates native `validate` and `assert` functions based on AST, which make safen lightning fast.
 
 Native `validate` function sample:
 
