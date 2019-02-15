@@ -94,13 +94,13 @@ You can easily set the validation by supporting the `and`, `or` syntax.
 
 #### Optional field
 
-The optional grammar is available through the "?" character. You can allow no key value in the object, or undefined.
+The "?" character can be used to define optional field, which allows no key value or undefined for objects.
 
 @code("./test/readme.test.ts@sample-optional", "typescript")
 
 #### Nested object
 
-Objects in objects are also easy to use. In addition, the error message makes it easy to check the error path.
+Validating nested objects also can be easily done. In addition, the error message makes it easier to check the error path.
 
 @code("./test/readme.test.ts@sample-object-in-object", "typescript")
 
@@ -176,45 +176,45 @@ Validator                 | Description
 
 Validator                 | Description | Example
 ------------------------- | ----------- | ------- |
-**afte({date = now})**     | check if the `string` is a date that's after the specified date. | `after`, `after("2017-10-01")`, `after("2017-10-01 14:30:00")`
-**alpha**                 | check if the `string` contains only letters([a-zA-Z]). | `alpha`
-**alphanum**              | check if the `string` contains only letters and numbers([a-zA-Z0-9]) | `alphanum`
+**after({date = now})**   | check if `string` is a date and is after than specified date. | `after`, `after("2017-10-01")`, `after("2017-10-01 14:30:00")`
+**alpha**                 | check if `string` contains only letters([a-zA-Z]). | `alpha`
+**alphanum**              | check if `string` contains only letters and numbers([a-zA-Z0-9]) | `alphanum`
 **always_false**          | return always false, for debugging. | `always_false`
 **always_true**           | return always true, for debugging. | `always_true`
 **any**                   | return always true. | `any`
-**ascii**                 | check if the `string` contains only ascii characters. | `ascii`
-**base64**                | check if the `string` is Base64. | `base64`
-**before({date = now})**   | check if the `string` is a date that's before the specified date. | `before("2017-10-01")`, `before("2017-10-01 14:30:00")`
-**between({min},{max})**   | check if the value(`string`, `number`) is between `{min}` and `{max}`. | `between("aaa","zzz")`, `between(1,100)`
-**creditcard**            | check if the `string` is valid Credit Card number. cf. `0000-0000-0000-0000` | `creditcard`
-**date**                  | check if the `string` is valid Date string(RFC2822, ISO8601). cf. `2018-12-25`, `12/25/2018`, `Dec 25, 2018` | `date`
-**email**                 | check if the `string` is valid E-mail string. | `email`
-**finite**                | check if the `number` is not `NaN`, `Infinity`, `-Infinity`. | `finite`
-**hexcolor**              | check if the `string` is valid Hex Color string. cf. `#ffffff` | `hexcolor`
-**in({...params})**        | check if the value(`any`) is in an array `{params}`. | `in(1,2,3)`, `in("safari","edge","firefox","other browser")`
-**ip({version = all})**    | check if the `string` is valid UUID.<br />version is one of `all`(default), `v4`, and `v6`. | `ip`, `ip("v4")`, `ip("v6")`
-**json**                  | check if the `string` is valid JSON. | `json`
-**jwt**                   | check if the `string` is valid JWT. | `jwt`
-**length({size})**              | check if the value(`string`)'s length is `{size}`. | `length(16)`
-**length_between({min},{max})** | check if the value(`string`)'s length is between `{min}` and `{max}`. | `length_between(4,20)`
-**length_max({max})**           | check if the value(`string`)'s length is less than `{max}`. | `length_max(20)`
-**length_min({min})**           | check if the value(`string`)'s length is greater than `{min}`. | `length_min(4)`
-**lowercase**             | check if the `string` is lowercase. | `lowercase`
-**macaddress**            | check if the `string` is valid Mac Address. | `macaddress`
-**max({max})**             | check if the value(`string`, `number`) is less than {min}. | `max(5)`
-**min({min})**             | check if the value(`string`, `number`) is greater than {max}. | `min(3)`
-**nan**                   | check if the value(`any`) is NaN. | `nan`
-**re**                   | check if the value(`any`) match RegExp(alias to `regexp`). | `re(/.+/)`
-**regex**                   | check if the value(`any`) match RegExp(alias to `regexp`). | `regex(/.+/)`
-**regexp**                   | check if the value(`any`) match RegExp. | `regexp(/.+/)`
-**port**                  | check if the `string` is valid PORT(0-65535). | `port`
-**uppercase**             | check if the `string` is uppercase. | `uppercase`
-**url**                   | check if the `string` is valid URL. | `url`
-**uuid({version = all})**  | check if the `string` is valid UUID.<br />version is one of `all`(default), `v3`, `v4`, and `v5`. | `uuid`, `uuid("v3")`, `uuid("v4")`, `uuid("v5")`
+**ascii**                 | check if `string` contains only ascii characters. | `ascii`
+**base64**                | check if `string` is Base64. | `base64`
+**before({date = now})**   | check if `string` is a date that's before the specified date. | `before("2017-10-01")`, `before("2017-10-01 14:30:00")`
+**between({min},{max})**   | check if value(`string`, `number`) is between `{min}` and `{max}`. | `between("aaa","zzz")`, `between(1,100)`
+**creditcard**            | check if `string` is valid Credit Card number. cf. `0000-0000-0000-0000` | `creditcard`
+**date**                  | check if `string` is valid Date string(RFC2822, ISO8601). cf. `2018-12-25`, `12/25/2018`, `Dec 25, 2018` | `date`
+**email**                 | check if `string` is valid E-mail string. | `email`
+**finite**                | check if `number` is not `NaN`, `Infinity`, `-Infinity`. | `finite`
+**hexcolor**              | check if `string` is valid Hex Color string. cf. `#ffffff` | `hexcolor`
+**in({...params})**        | check if value(`any`) is in an array `{params}`. | `in(1,2,3)`, `in("safari","edge","firefox","other browser")`
+**ip({version = all})**    | check if `string` is valid UUID.<br />version is one of `all`(default), `v4`, and `v6`. | `ip`, `ip("v4")`, `ip("v6")`
+**json**                  | check if `string` is valid JSON. | `json`
+**jwt**                   | check if `string` is valid JWT. | `jwt`
+**length({size})**              | check if value(`string`)'s length is `{size}`. | `length(16)`
+**length_between({min},{max})** | check if value(`string`)'s length is between `{min}` and `{max}`. | `length_between(4,20)`
+**length_max({max})**           | check if value(`string`)'s length is less than `{max}`. | `length_max(20)`
+**length_min({min})**           | check if value(`string`)'s length is greater than `{min}`. | `length_min(4)`
+**lowercase**             | check if `string` is lowercase. | `lowercase`
+**macaddress**            | check if `string` is valid Mac Address. | `macaddress`
+**max({max})**             | check if value(`string`, `number`) is less than {min}. | `max(5)`
+**min({min})**             | check if value(`string`, `number`) is greater than {max}. | `min(3)`
+**nan**                   | check if value(`any`) is NaN. | `nan`
+**re**                   | check if value(`any`) match RegExp(alias to `regexp`). | `re(/.+/)`
+**regex**                   | check if value(`any`) match RegExp(alias to `regexp`). | `regex(/.+/)`
+**regexp**                   | check if value(`any`) match RegExp. | `regexp(/.+/)`
+**port**                  | check if `string` is valid PORT(0-65535). | `port`
+**uppercase**             | check if `string` is uppercase. | `uppercase`
+**url**                   | check if `string` is valid URL. | `url`
+**uuid({version = all})**  | check if `string` is valid UUID.<br />version is one of `all`(default), `v3`, `v4`, and `v5`. | `uuid`, `uuid("v3")`, `uuid("v4")`, `uuid("v5")`
 
 ## Comparison
 
-If you have used another library, please refer to the following.
+Using another library? Safen is lot easier to use.
 
 ```sfl
 {
@@ -497,10 +497,9 @@ The generated AST is as follows:
   </details>
 </p>
 
-It then generates `validate` and `assert` functions based on AST.
-And, it is very fast because it generates native functions.
+Safen generates native `validate` and `assert` functions based on AST, which make safen lightning fast.
 
-The `validate` function is generated as follows:
+Native `validate` function sample:
 
 <p>
   <details>
@@ -557,7 +556,7 @@ function(v) {
   </details>
 </p>
 
-The assert function also creates a native function like this.
+Native `assert` function sample:
 
 <p>
   <details>
