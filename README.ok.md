@@ -385,7 +385,7 @@ Joi.object().keys({
 
 ## How Safen works
 
-Safen parses the grammar and internally generates an AST similar to the Json Schema.
+Safen parses the grammar and internally generates an AST(Abstract Syntax Tree) similar to the Json Schema.
 
 ```sfl
 {
