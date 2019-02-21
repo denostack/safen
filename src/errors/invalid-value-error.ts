@@ -2,7 +2,7 @@
 import { InvalidValueErrorReason } from "../interfaces/error"
 
 export class InvalidValueError extends Error {
-  constructor(public errors: InvalidValueErrorReason[]) {
+  public constructor(public errors: InvalidValueErrorReason[]) {
     super("invalid value")
     Object.setPrototypeOf(this, InvalidValueError.prototype)
   }

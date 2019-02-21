@@ -4,7 +4,7 @@ import {
   SflObjectTester,
   SflScalarTester,
   SflTester
-  } from "../interfaces/sfl"
+} from "../interfaces/sfl"
 
 const RE_WHITESPACE = /^[ \t\r\v\f]+/
 const RE_NEWLINE = /^[\n]+/
@@ -14,14 +14,6 @@ const RE_TESTERPARAM = /^(null|true|false)|("(?:[^"\\]*|\\")*")|('(?:[^'\\]*|\\'
 
 const RE_OBJECTKEY = /^([a-zA-Z_][a-zA-Z0-9_]*)(\?)?/
 const RE_NUMBER = /^(\d+)/
-
-function padStart(text: string, length: number) {
-  if (text.length > length) {
-    return text
-  }
-  length = length - text.length
-  return " ".repeat(length).slice(0, length) + text
-}
 
 /*
 SFL Grammar
@@ -189,29 +181,11 @@ function memberexpr(): SflTester {
       next()
       const hasMin = typeof min !== "undefined"
       const hasMax = typeof max !== "undefined"
-      nxt = hasMin && hasMax
-        ? {
-          type: "array",
-          min,
-          max,
-          value: nxt,
-        }
-        : hasMax
-        ? {
-          type: "array",
-          max,
-          value: nxt,
-        }
-        : hasMin
-        ? {
-          type: "array",
-          min,
-          value: nxt,
-        }
-        : {
-          type: "array",
-          value: nxt,
-        }
+      nxt = hasMin && hasMax ? {type: "array", min, max, value: nxt} :
+        hasMax ? {type: "array", max, value: nxt} :
+        hasMin ? {type: "array", min, value: nxt} :
+        /* else */ {type: "array", value: nxt}
+
     } else {
       throw error("\"]\"")
     }

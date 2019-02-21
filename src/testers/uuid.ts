@@ -3,7 +3,7 @@ import {
   RE_UUID_V3,
   RE_UUID_V4,
   RE_UUID_V5
-  } from "../constants/regexp"
+} from "../constants/regexp"
 import { Tester } from "../interfaces/common"
 
 // ref. https://github.com/chriso/validator.js/blob/master/src/lib/isUUID.js

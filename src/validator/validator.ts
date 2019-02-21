@@ -9,10 +9,11 @@ export class Validator<P = any> {
   public assert: (data: any) => void
   // public sanitize: (data: any) => any
 
-  constructor(
-      public ast: SflTester,
-      public testers: TesterMap,
-      public messages: MessageMap) {
+  public constructor(
+    public ast: SflTester,
+    public testers: TesterMap,
+    public messages: MessageMap
+  ) {
     this.validate = createValidate(ast, testers) as any
     this.assert = createAssert(ast, testers, messages)
   }

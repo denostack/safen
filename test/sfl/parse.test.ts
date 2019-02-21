@@ -83,8 +83,8 @@ describe("parse", () => {
 
     expect(parse("string & email | string & phone")).toEqual({type: "or", params: [
       {type: "and", params: [
-          {type: "scalar", name: "string", params: []},
-          {type: "scalar", name: "email", params: []},
+        {type: "scalar", name: "string", params: []},
+        {type: "scalar", name: "email", params: []},
       ]},
       {type: "and", params: [
         {type: "scalar", name: "string", params: []},
@@ -103,8 +103,8 @@ describe("parse", () => {
 
     expect(parse("(string | email) & (string | phone)")).toEqual({type: "and", params: [
       {type: "or", params: [
-          {type: "scalar", name: "string", params: []},
-          {type: "scalar", name: "email", params: []},
+        {type: "scalar", name: "string", params: []},
+        {type: "scalar", name: "email", params: []},
       ]},
       {type: "or", params: [
         {type: "scalar", name: "string", params: []},
