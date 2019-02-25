@@ -442,4 +442,29 @@ describe("default validator testsuite", () => {
       {path: "username", reason: "required", params: [], message: "The username is required."},
     ])
   })
+
+  it("test error params", () => {
+    const v = safen.create(`{
+      something: test(true, false, null, "string", 3.14, -500.5, /ab\\/c/igm)
+    }`, {
+      testers: {
+        test: () => "false",
+      },
+      messages: {
+        test: ["this is just test", "this is just test"],
+      },
+    })
+
+    expectThrow(() => v.assert({something: "something"}), [
+      {path: "something", reason: "test", params: [
+        true,
+        false,
+        null,
+        "string",
+        3.14,
+        -500.5,
+        "/ab\\/c/gim", // regexp param must be string for JSON
+      ], message: "this is just test"},
+    ])
+  })
 })

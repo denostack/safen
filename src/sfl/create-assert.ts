@@ -11,8 +11,12 @@ const uid = () => `t${uniq++}`
 
 function error(name: string, args: any[] = []) {
   const escapedName = name.replace("\"", "\\\"")
-  const escapedParams = JSON.stringify(args)
-  return `{message:message(path.join("").replace(/^\\./,""),"${escapedName}",${escapedParams}),path:path.join("").replace(/^\\./,""),reason:"${escapedName}",params:${escapedParams}}`
+  const escapedParams = args.map((arg) => {
+    return arg instanceof RegExp ?
+      `"${(arg + "").replace("\\", "\\\\").replace("\"", "\\\"")}"` :
+      JSON.stringify(arg)
+  }).join(",")
+  return `{message:message(path.join("").replace(/^\\./,""),"${escapedName}",[${escapedParams}]),path:path.join("").replace(/^\\./,""),reason:"${escapedName}",params:[${escapedParams}]}`
 }
 
 function tester(curr: SflTester, val: string): string {
