@@ -7,6 +7,7 @@
     "comma-spacing": ["error", {"after": true}],
     "indent": ["error", 2, {"SwitchCase": 1, "flatTernaryExpressions": true}],
     "no-use-before-define": ["error", {"functions": false, "classes": false}],
+    "semi": ["error", "never"],
     "@typescript-eslint/indent": ["error", 2, {"SwitchCase": 1, "flatTernaryExpressions": true}],
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
