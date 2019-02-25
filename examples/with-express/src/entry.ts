@@ -1,5 +1,5 @@
 import * as express from "express"
-import * as safen from "./safen-middleware"
+import * as safen from "@safen/express"
 
 const app = express()
 app.use(express.json())

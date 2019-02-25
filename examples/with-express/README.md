@@ -1,6 +1,6 @@
 # Example Safen with Express
 
-If you use Express, it is better to create and use middleware.
+If you use Express, it is better to use [@safen/express](https://github.com/corgidisco/safen-express).
 
 ## How to use
 
