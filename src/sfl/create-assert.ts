@@ -106,7 +106,7 @@ function tester(curr: SflTester, val: string): string {
   return "[]"
 }
 
-export function createAssert(rule: SflTester, testerMap: TesterMap = {}, messages: MessageMap = {}): (value: any) => boolean {
+export function createAssert(rule: SflTester, testerMap: TesterMap = {}, messages: MessageMap = {}): (value: any) => any {
   uniq = 0
   testers = testerMap
   return (new Function(
@@ -114,7 +114,8 @@ export function createAssert(rule: SflTester, testerMap: TesterMap = {}, message
     "message",
     `return function(v){`
       + `var path=[];var errors=${tester(rule, "v")};`
-      + `if(errors.length)throw new InvalidValueError(errors)`
+      + `if(errors.length)throw new InvalidValueError(errors);`
+      + `return v`
       + `}`
   ))(InvalidValueError, (path: string, reason: string, params: any[]) => {
     let message = (messages[reason] || ["The :path is invalid value.", "It is invalid value."])[path ? 0 : 1]
@@ -123,5 +124,5 @@ export function createAssert(rule: SflTester, testerMap: TesterMap = {}, message
       message = message.replace(`:param${index}`, JSON.stringify(param))
     })
     return message.replace(/\:param[0-9]+/g, "").replace(/\:params/g, JSON.stringify(params))
-  }) as (value: any) => boolean
+  }) as (value: any) => any
 }

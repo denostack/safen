@@ -6,7 +6,7 @@ import { createValidate } from "../sfl/create-validate"
 export class Validator<P = any> {
 
   public validate: (data: any) => data is P
-  public assert: (data: any) => void
+  public assert: (data: any) => P
   // public sanitize: (data: any) => any
 
   public constructor(

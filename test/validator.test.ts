@@ -14,7 +14,7 @@ describe("default validator testsuite", () => {
     expect(v.validate([])).toBeFalsy()
     expect(v.validate({})).toBeFalsy()
 
-    v.assert("string")
+    expect(v.assert("string")).toEqual("string")
 
     expectThrow(() => v.assert(null), [{path: "", reason: "string", params: [], message: "It must be a string."}])
     expectThrow(() => v.assert(undefined), [{path: "", reason: "string", params: [], message: "It must be a string."}])
@@ -33,7 +33,7 @@ describe("default validator testsuite", () => {
     expect(v.validate([])).toBeFalsy()
     expect(v.validate({})).toBeFalsy()
 
-    v.assert("corgidisco@gmail.com")
+    expect(v.assert("corgidisco@gmail.com")).toEqual("corgidisco@gmail.com")
 
     expectThrow(() => v.assert("string"), [{path: "", reason: "email", params: [], message: "It must be a valid email address."}])
     expectThrow(() => v.assert(null), [{path: "", reason: "string", params: [], message: "It must be a string."}])
@@ -56,9 +56,9 @@ describe("default validator testsuite", () => {
     expect(v.validate([])).toBeFalsy()
     expect(v.validate({})).toBeFalsy()
 
-    v.assert("corgidisco")
-    v.assert(10)
-    v.assert(3.141592)
+    expect(v.assert("corgidisco")).toEqual("corgidisco")
+    expect(v.assert(10)).toEqual(10)
+    expect(v.assert(3.141592)).toEqual(3.141592)
 
     expectThrow(() => v.assert(undefined), [
       {path: "", reason: "string", params: [], message: "It must be a string."},
@@ -103,7 +103,7 @@ describe("default validator testsuite", () => {
     expect(v.validate({username: []})).toBeFalsy()
     expect(v.validate({username: {}})).toBeFalsy()
 
-    v.assert({username: "corgidisco"})
+    expect(v.assert({username: "corgidisco"})).toEqual({username: "corgidisco"})
 
     expectThrow(() => v.assert({}), [{path: "username", reason: "required", params: [], message: "The username is required."}])
     expectThrow(() => v.assert({username: undefined}), [{path: "username", reason: "required", params: [], message: "The username is required."}])
@@ -131,8 +131,8 @@ describe("default validator testsuite", () => {
     expect(v.validate({usernames: 3.141592})).toBeFalsy()
     expect(v.validate({usernames: {}})).toBeFalsy()
 
-    v.assert({usernames: []})
-    v.assert({usernames: ["user1"]})
+    expect(v.assert({usernames: []})).toEqual({usernames: []})
+    expect(v.assert({usernames: ["user1"]})).toEqual({usernames: ["user1"]})
 
     expectThrow(() => v.assert({}), [{path: "usernames", reason: "required", params: [], message: "The usernames is required."}])
     expectThrow(() => v.assert({usernames: undefined}), [{path: "usernames", reason: "required", params: [], message: "The usernames is required."}])
@@ -159,9 +159,9 @@ describe("default validator testsuite", () => {
     expect(v.validate({username: []})).toBeFalsy()
     expect(v.validate({username: ["user1"]})).toBeFalsy()
 
-    v.assert({})
-    v.assert({username: undefined})
-    v.assert({username: "user1"})
+    expect(v.assert({})).toEqual({})
+    expect(v.assert({username: undefined})).toEqual({username: undefined})
+    expect(v.assert({username: "user1"})).toEqual({username: "user1"})
 
     expectThrow(() => v.assert(undefined),  [{path: "", reason: "object", params: [], message: "It must be an object."}])
     expectThrow(() => v.assert(null),  [{path: "", reason: "object", params: [], message: "It must be an object."}])
@@ -188,10 +188,10 @@ describe("default validator testsuite", () => {
     expect(v.validate({usernames: null})).toBeFalsy()
     expect(v.validate({usernames: "user1"})).toBeFalsy()
 
-    v.assert({})
-    v.assert({usernames: undefined})
-    v.assert({usernames: []})
-    v.assert({usernames: ["user1"]})
+    expect(v.assert({})).toEqual({})
+    expect(v.assert({usernames: undefined})).toEqual({usernames: undefined})
+    expect(v.assert({usernames: []})).toEqual({usernames: []})
+    expect(v.assert({usernames: ["user1"]})).toEqual({usernames: ["user1"]})
 
     expectThrow(() => v.assert({usernames: null}), [{path: "usernames", reason: "array", params: [], message: "The usernames must be an array."}])
     expectThrow(() => v.assert({usernames: "user1"}), [{path: "usernames", reason: "array", params: [], message: "The usernames must be an array."}])
@@ -208,7 +208,7 @@ describe("default validator testsuite", () => {
     expect(v.validate({usernames: ["1"]})).toBeFalsy()
     expect(v.validate({usernames: ["1", "2", "3"]})).toBeFalsy()
 
-    v.assert({usernames: ["1", "2"]})
+    expect(v.assert({usernames: ["1", "2"]})).toEqual({usernames: ["1", "2"]})
 
     expectThrow(() => v.assert({usernames: []}), [{path: "usernames", reason: "array_length", params: [2], message: "The usernames's length must be 2."}])
     expectThrow(() => v.assert({usernames: ["1"]}), [{path: "usernames", reason: "array_length", params: [2], message: "The usernames's length must be 2."}])
@@ -226,9 +226,9 @@ describe("default validator testsuite", () => {
 
     expect(v.validate({usernames: ["1", "2", "3"]})).toBeFalsy()
 
-    v.assert({usernames: []})
-    v.assert({usernames: ["1"]})
-    v.assert({usernames: ["1", "2"]})
+    expect(v.assert({usernames: []})).toEqual({usernames: []})
+    expect(v.assert({usernames: ["1"]})).toEqual({usernames: ["1"]})
+    expect(v.assert({usernames: ["1", "2"]})).toEqual({usernames: ["1", "2"]})
 
     expectThrow(() => v.assert({usernames: ["1", "2", "3"]}), [{path: "usernames", reason: "array_length_max", params: [2], message: "The usernames's length may not be greater than 2."}])
   })
@@ -244,8 +244,8 @@ describe("default validator testsuite", () => {
     expect(v.validate({usernames: []})).toBeFalsy()
     expect(v.validate({usernames: ["1"]})).toBeFalsy()
 
-    v.assert({usernames: ["1", "2"]})
-    v.assert({usernames: ["1", "2", "3"]})
+    expect(v.assert({usernames: ["1", "2"]})).toEqual({usernames: ["1", "2"]})
+    expect(v.assert({usernames: ["1", "2", "3"]})).toEqual({usernames: ["1", "2", "3"]})
 
     expectThrow(() => v.assert({usernames: []}), [{path: "usernames", reason: "array_length_min", params: [2], message: "The usernames's length must be at least 2."}])
     expectThrow(() => v.assert({usernames: ["1"]}), [{path: "usernames", reason: "array_length_min", params: [2], message: "The usernames's length must be at least 2."}])
@@ -262,8 +262,8 @@ describe("default validator testsuite", () => {
     expect(v.validate({usernames: []})).toBeFalsy()
     expect(v.validate({usernames: ["1", "2", "3"]})).toBeFalsy()
 
-    v.assert({usernames: ["1"]})
-    v.assert({usernames: ["1", "2"]})
+    expect(v.assert({usernames: ["1"]})).toEqual({usernames: ["1"]})
+    expect(v.assert({usernames: ["1", "2"]})).toEqual({usernames: ["1", "2"]})
 
     expectThrow(() => v.assert({usernames: []}), [{path: "usernames", reason: "array_length_between", params: [1, 2], message: "The usernames's length must be between 1 and 2."}])
     expectThrow(() => v.assert({usernames: ["1", "2", "3"]}), [{path: "usernames", reason: "array_length_between", params: [1, 2], message: "The usernames's length must be between 1 and 2."}])
@@ -283,7 +283,7 @@ describe("default validator testsuite", () => {
     expect(v.validate({name: "string"})).toBeFalsy()
     expect(v.validate({name: [["a1", "a2", "a3"], ["a1", "a2", "a3"]]})).toBeFalsy()
 
-    v.assert({name: [["a1", "a2"], ["a1", "a2"], ["a1", "a2"]]})
+    expect(v.assert({name: [["a1", "a2"], ["a1", "a2"], ["a1", "a2"]]})).toEqual({name: [["a1", "a2"], ["a1", "a2"], ["a1", "a2"]]})
 
     expectThrow(() => v.assert({name: null}), [{path: "name", reason: "array", params: [], message: "The name must be an array."}])
     expectThrow(() => v.assert({name: 10}), [{path: "name", reason: "array", params: [], message: "The name must be an array."}])
@@ -307,8 +307,8 @@ describe("default validator testsuite", () => {
     expect(v.validate({name: false})).toBeFalsy()
     expect(v.validate({name: "string"})).toBeFalsy()
 
-    v.assert({name: "corgidisco@gmail.com"})
-    v.assert({name: null})
+    expect(v.assert({name: "corgidisco@gmail.com"})).toEqual({name: "corgidisco@gmail.com"})
+    expect(v.assert({name: null})).toEqual({name: null})
 
     expectThrow(() => v.assert({name: 10}), [
       {path: "name", reason: "string", params: [], message: "The name must be a string."},
@@ -341,8 +341,8 @@ describe("default validator testsuite", () => {
     expect(v.validate({name: false})).toBeFalsy()
     expect(v.validate({name: "string"})).toBeFalsy()
 
-    v.assert({name: ["corgidisco@gmail.com", "corgidisco2@gmail.com"]})
-    v.assert({name: []})
+    expect(v.assert({name: ["corgidisco@gmail.com", "corgidisco2@gmail.com"]})).toEqual({name: ["corgidisco@gmail.com", "corgidisco2@gmail.com"]})
+    expect(v.assert({name: []})).toEqual({name: []})
 
     expectThrow(() => v.assert({name: 10}), [{path: "name", reason: "array", params: [], message: "The name must be an array."}])
     expectThrow(() => v.assert({name: true}), [{path: "name", reason: "array", params: [], message: "The name must be an array."}])
@@ -373,7 +373,7 @@ describe("default validator testsuite", () => {
     expect(v.validate({name: "corgidisco", location: {lat: 10, lng: 20.5}})).toBeFalsy()
     expect(v.validate({name: "corgidisco", location: {}})).toBeFalsy()
 
-    v.assert({name: "corgidisco", location: {lat: 10, lng: 20}})
+    expect(v.assert({name: "corgidisco", location: {lat: 10, lng: 20}})).toEqual({name: "corgidisco", location: {lat: 10, lng: 20}})
 
     expectThrow(() => v.assert({name: "corgidisco"}), [
       {path: "location", reason: "required", params: [], message: "The location is required."},
@@ -429,8 +429,8 @@ describe("default validator testsuite", () => {
     expect(v.validate({name: "corgidisco", locations: []})).toBeFalsy()
     expect(v.validate([{username: "corgidisco"}])).toBeFalsy()
 
-    v.assert({username: "corgidisco"})
-    v.assert([{name: "corgidisco", locations: []}])
+    expect(v.assert({username: "corgidisco"})).toEqual({username: "corgidisco"})
+    expect(v.assert([{name: "corgidisco", locations: []}])).toEqual([{name: "corgidisco", locations: []}])
 
     expectThrow(() => v.assert({name: "corgidisco", locations: []}), [
       {path: "", reason: "array", params: [], message: "It must be an array."},

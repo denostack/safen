@@ -126,13 +126,6 @@ describe("default testers testsuite", () => {
     expect(safen.create("finite").validate(Infinity)).toBeFalsy()
   })
 
-//   it("test hash", () => {
-//     expect(safen.create("hash:md5").validate("d94f3f01")).toBeFalsy()
-//     expect(safen.create("hash:md5").validate("d94f3f016ae679c3008de268209132f2")).toBeTruthy()
-//     expect(safen.create("hash:crc32").validate("d94f3f016ae679c3008de268209132f2")).toBeFalsy()
-//     expect(safen.create("hash:crc32").validate("d94f3f01")).toBeTruthy()
-//   })
-
   it("test hexcolor", () => {
     expect(safen.create("hexcolor").validate("#CCCCCC")).toBeTruthy()
     expect(safen.create("hexcolor").validate("#ff")).toBeFalsy()
