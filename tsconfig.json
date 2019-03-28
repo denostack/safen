@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
     "lib": [
@@ -12,7 +12,8 @@
     "pretty": true,
     "sourceMap": true,
     "strict": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*"
