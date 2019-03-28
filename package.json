@@ -1,6 +1,6 @@
 {
   "name": "safen",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Super Fast Object Validator for Javascript(& Typescript).",
   "keywords": [
     "validation",
