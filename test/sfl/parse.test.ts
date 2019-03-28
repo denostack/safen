@@ -1,6 +1,6 @@
 import "jest"
 
-import { parse } from "../../src/sfl/parse"
+import { parse } from "../../lib/sfl/parse"
 
 function createError(message: string, code: string, line: number, column: number) {
   return Object.assign(new Error(message), {

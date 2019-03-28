@@ -1,6 +1,6 @@
 import "jest"
 
-import { create } from "../../src/index"
+import { create } from "../../lib/index"
 
 function createError(message: string, code: string) {
   return Object.assign(new Error(message), {

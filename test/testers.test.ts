@@ -1,6 +1,6 @@
 import "jest"
 
-import * as safen from "../src"
+import * as safen from "../lib"
 
 describe("default testers testsuite", () => {
   it("test after", () => {

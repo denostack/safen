@@ -1,7 +1,7 @@
 import "jest"
 
-import { parse } from "../../src/sfl/parse"
-import { stringify } from "../../src/sfl/stringify"
+import { parse } from "../../lib/sfl/parse"
+import { stringify } from "../../lib/sfl/stringify"
 
 
 describe("stringify simple", () => {

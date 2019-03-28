@@ -1,6 +1,6 @@
 import "jest"
 import { expectThrow } from "./utils"
-import * as safen from "../src"
+import * as safen from "../lib"
 
 describe("default validator testsuite", () => {
 
