@@ -7,6 +7,7 @@
     "comma-spacing": ["error", {"after": true}],
     "indent": ["error", 2, {"SwitchCase": 1, "flatTernaryExpressions": true}],
     "no-use-before-define": ["error", {"functions": false, "classes": false}],
+    "no-trailing-spaces": "error",
     "semi": ["error", "never"],
     "@typescript-eslint/indent": ["error", 2, {"SwitchCase": 1, "flatTernaryExpressions": true}],
     "@typescript-eslint/camelcase": "off",
@@ -18,11 +19,18 @@
       "singleline": {
         "delimiter": "comma",
         "requireLast": false
+      },
+      "overrides": {
+        "interface": {
+          "multiline": {
+            "delimiter": "none"
+          }
+        }
       }
     }],
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-parameter-properties": ["error", {"allows": ["public", "public readonly"]}],
-    "@typescript-eslint/no-use-before-define": ["error", {"functions": false, "classes": false}],
-    "@typescript-eslint/no-non-null-assertion": "off"
+    "@typescript-eslint/no-use-before-define": ["error", {"functions": false, "classes": false}]
   }
 }
