@@ -279,6 +279,9 @@ function scalar(): SflScalarTester {
         }
       }
       match = buf.match(RE_TESTERPARAM)
+      if (!match) {
+        throw error(")")
+      }
       while (match) {
         if (match[1]) {
           switch (match[1]) {
@@ -316,6 +319,9 @@ function scalar(): SflScalarTester {
               }
             }
             match = buf.match(RE_TESTERPARAM)
+            if (!match) {
+              throw error(")")
+            }
             continue
           case ")":
             next()
