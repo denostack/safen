@@ -1,38 +1,37 @@
-import { UndefinedError } from "../errors/undefined-error"
-import { TesterMap } from "../interfaces/common"
-import { SflTester } from "../interfaces/sfl"
-
-// tslint:disable function-constructor
+/* eslint-disable no-new-func */
+import { UndefinedError } from '../errors/undefined-error'
+import { TesterMap } from '../interfaces/common'
+import { SflTester } from '../interfaces/sfl'
 
 let uniq = 0
 let testers: TesterMap = {}
 const uid = () => `t${uniq++}`
 
 function tester(curr: SflTester, val: string): string {
-  let nxt = ""
+  let nxt = ''
   switch (curr.type) {
-    case "object":
-      nxt += `(function(){`
-      nxt += `if(typeof ${val}!=="object"||${val}===null){return false}`
+    case 'object':
+      nxt += '(function(){'
+      nxt += `if(typeof ${val}!=='object'||${val}===null){return false}`
       for (const key of Object.keys(curr.properties)) {
-        const {optional, value} = curr.properties[key]
+        const { optional, value } = curr.properties[key]
         const nxtval = `${val}.${key}`
         if (optional) { // optional start
-          nxt += `if(typeof ${nxtval}!=="undefined"){`
+          nxt += `if(typeof ${nxtval}!=='undefined'){`
         } else {
-          nxt += `if(typeof ${nxtval}==="undefined"){return false}`
+          nxt += `if(typeof ${nxtval}==='undefined'){return false}`
         }
         nxt += `if(!(${tester(value, nxtval)})){return false}`
         if (optional) { // optional end
-          nxt += `}`
+          nxt += '}'
         }
       }
-      nxt += `;return true})()`
+      nxt += ';return true})()'
       return nxt
-    case "array":
-      nxt += `(function(){`
-      const hasMin = typeof curr.min !== "undefined" && curr.min !== null
-      const hasMax = typeof curr.max !== "undefined" && curr.max !== null
+    case 'array': {
+      nxt += '(function(){'
+      const hasMin = typeof curr.min !== 'undefined' && curr.min !== null
+      const hasMax = typeof curr.max !== 'undefined' && curr.max !== null
       if (hasMin && hasMax) {
         nxt += `if(!Array.isArray(${val})||${val}.length<${curr.min}||${val}.length>${curr.max}){return false}`
       } else if (hasMin) {
@@ -45,15 +44,16 @@ function tester(curr: SflTester, val: string): string {
       const i = uid()
       nxt += `for(var ${i}=0;${i}<${val}.length;${i}++){`
       nxt += `if(!(${tester(curr.value, `${val}[${i}]`)})){return false}`
-      nxt += "}"
-      nxt += `return true})()`
+      nxt += '}'
+      nxt += 'return true})()'
       return nxt
-    case "and":
-      return `(${curr.params.map((param) => tester(param, val)).join("&&")})`
-    case "or":
-      return `(${curr.params.map((param) => tester(param, val)).join("||")})`
-    case "scalar":
-      if (typeof testers[curr.name] !== "function") {
+    }
+    case 'and':
+      return `(${curr.params.map((param) => tester(param, val)).join('&&')})`
+    case 'or':
+      return `(${curr.params.map((param) => tester(param, val)).join('||')})`
+    case 'scalar':
+      if (typeof testers[curr.name] !== 'function') {
         throw new UndefinedError(`Undefined Error: "${curr.name}" is an undefined tester.`, curr)
       }
       return testers[curr.name](val, curr.params, uid)
@@ -64,6 +64,6 @@ export function createValidate(rule: SflTester, testerMap: TesterMap = {}): (dat
   uniq = 0
   testers = testerMap
   return new Function(
-    `return function(v){return ${tester(rule, "v")}}`
+    `return function(v){return ${tester(rule, 'v')}}`
   )() as (data: any) => boolean
 }

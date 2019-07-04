@@ -1,17 +1,18 @@
 
-import { InvalidValueErrorReason } from "../interfaces/error"
+import { InvalidValueErrorReason } from '../interfaces/error'
 
 export class InvalidValueError extends Error {
   public constructor(public errors: InvalidValueErrorReason[]) {
-    super("invalid value")
+    super('invalid value')
+    this.name = 'InvalidValueError'
     Object.setPrototypeOf(this, InvalidValueError.prototype)
   }
 
   public reasons(): string[] {
-    return this.errors.map(({reason, path}) => path ? `${reason}@${path}` : reason)
+    return this.errors.map(({ reason, path }) => path ? `${reason}@${path}` : reason)
   }
 
   public messages(): string[] {
-    return this.errors.map(({message}) => message)
+    return this.errors.map(({ message }) => message)
   }
 }

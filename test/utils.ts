@@ -8,7 +8,7 @@ export function expectThrow(handler: () => void, expected: any) {
     if (errors) {
       expect(errors).toEqual(expected)
     } else {
-      console.error(e) // tslint:disable-line
+      console.error(e)
     }
   }
 }

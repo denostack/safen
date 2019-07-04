@@ -1,18 +1,15 @@
-import { SyntaxError } from "../errors/syntax-error"
-import {
-  SflObjectProperty,
-  SflObjectTester,
-  SflScalarTester,
-  SflTester
-} from "../interfaces/sfl"
+/* eslint-disable unicorn/no-unsafe-regex */
+import { SyntaxError } from '../errors/syntax-error'
+import { SflObjectProperty, SflObjectTester, SflScalarTester, SflTester } from '../interfaces/sfl'
+
 
 const RE_WHITESPACE = /^[ \t\r\v\f]+/
 const RE_NEWLINE = /^[\n]+/
 
-const RE_TESTERNAME = /^([a-zA-Z_][a-zA-Z0-9_]*)/
-const RE_TESTERPARAM = /^(null|true|false)|("(?:[^"\\]*|\\")*")|('(?:[^'\\]*|\\')*')|(-?[0-9]+(?:\.[0-9]*)?)|\/((?:[^\/\\]*|\\\/)+)\/(igm|img|gim|gmi|mig|mgi|ig|im|gi|gm|mi|mg|i|g|m)?/
+const RE_TESTERNAME = /^([a-zA-Z_]\w*)/
+const RE_TESTERPARAM = /^(null|true|false)|("(?:[^"\\]*|\\")*")|('(?:[^'\\]*|\\')*')|(-?\d+(?:\.\d*)?)|\/((?:[^/\\]*|\\\/)+)\/(igm|img|gim|gmi|mig|mgi|ig|im|gi|gm|mi|mg|i|g|m)?/
 
-const RE_OBJECTKEY = /^([a-zA-Z_][a-zA-Z0-9_]*)(\?)?/
+const RE_OBJECTKEY = /^([a-zA-Z_]\w*)(\?)?/
 const RE_NUMBER = /^(\d+)/
 
 /*
@@ -78,13 +75,12 @@ function white() {
       match = buf.match(RE_NEWLINE)
       if (!match) {
         return
-      } else {
-        len = match[0].length
-        pos += len
-        ln += len
-        col = 1
-        buf = buf.slice(len)
       }
+      len = match[0].length
+      pos += len
+      ln += len
+      col = 1
+      buf = buf.slice(len)
     } else {
       len = match[0].length
       pos += len
@@ -114,7 +110,7 @@ function expr(): SflTester {
 function orexpr(): SflTester {
   const params = [andexpr()]
   white()
-  while (buf[0] === "|") {
+  while (buf[0] === '|') {
     next()
     params.push(andexpr())
     white()
@@ -123,7 +119,7 @@ function orexpr(): SflTester {
     return params[0]
   }
   return {
-    type: "or",
+    type: 'or',
     params,
   }
 }
@@ -131,7 +127,7 @@ function orexpr(): SflTester {
 function andexpr(): SflTester {
   const params = [memberexpr()]
   white()
-  while (buf[0] === "&") {
+  while (buf[0] === '&') {
     next()
     params.push(memberexpr())
     white()
@@ -140,7 +136,7 @@ function andexpr(): SflTester {
     return params[0]
   }
   return {
-    type: "and",
+    type: 'and',
     params,
   }
 }
@@ -148,11 +144,11 @@ function andexpr(): SflTester {
 function memberexpr(): SflTester {
   let nxt = unaryexpr()
   white()
-  while (buf[0] === "[") {
+  while (buf[0] === '[') {
     next()
     let min: number | undefined
     let max: number | undefined
-    if (buf[0] === ":") {
+    if (buf[0] === ':') {
       next()
       match = buf.match(RE_NUMBER)
       if (match) {
@@ -164,7 +160,7 @@ function memberexpr(): SflTester {
       if (match) {
         min = +match[0]
         next(match[0].length)
-        if (buf[0] === ":") {
+        if (buf[0] === ':') {
           next()
           match = buf.match(RE_NUMBER)
           if (match) {
@@ -177,48 +173,67 @@ function memberexpr(): SflTester {
       }
     }
     white()
-    if (buf[0] === "]") {
+    if (buf[0] === ']') {
       next()
-      const hasMin = typeof min !== "undefined"
-      const hasMax = typeof max !== "undefined"
-      nxt = hasMin && hasMax ? {type: "array", min, max, value: nxt} :
-        hasMax ? {type: "array", max, value: nxt} :
-        hasMin ? {type: "array", min, value: nxt} :
-        /* else */ {type: "array", value: nxt}
+      const hasMin = typeof min !== 'undefined'
+      const hasMax = typeof max !== 'undefined'
+      nxt = hasMin && hasMax
+        ? {
+          type: 'array',
+          min,
+          max,
+          value: nxt,
+        }
+        : hasMax
+          ? {
+            type: 'array',
+            max,
+            value: nxt,
+          }
+          : hasMin
+            ? {
+              type: 'array',
+              min,
+              value: nxt,
+            }
+            : /* else */ {
+              type: 'array',
+              value: nxt,
+            }
 
     } else {
-      throw error("\"]\"")
+      throw error('"]"')
     }
   }
   return nxt
 }
 
 function unaryexpr(): SflTester {
-  if (buf[0] === "(") {
+  if (buf[0] === '(') {
     next()
     const nxt = expr()
     white()
-    if (buf[0] === ")") {
+    if (buf[0] === ')') {
       pos += 1
       col += 1
       buf = buf.slice(1)
       return nxt
     }
-    throw error("\")\"")
+    throw error('")"')
   }
   return tester()
 }
 
 function tester(): SflTester {
-  return buf[0] === "{" ? object() : scalar()
+  return buf[0] === '{' ? object() : scalar()
 }
 
 function object(): SflObjectTester {
   next()
-  if (buf[0] === "}") {
+  if (buf[0] === '}') {
     next()
     return {
-      type: "object",
+      type: 'object',
       properties: {},
     }
   }
@@ -226,11 +241,11 @@ function object(): SflObjectTester {
   const properties: {[key: string]: SflObjectProperty} = {}
   while (match) {
     const key = match[1]
-    const optional = !!(match[2])
+    const optional = !!match[2]
     next(match[0].length)
     white()
-    if (buf[0] !== ":") {
-      throw error("\":\"")
+    if (buf[0] !== ':') {
+      throw error('":"')
     }
     next()
     properties[key] = {
@@ -239,27 +254,27 @@ function object(): SflObjectTester {
     }
     white()
     switch (buf[0]) {
-      case ",":
+      case ',':
         next()
-        if (buf[0] === "}") {
+        if (buf[0] === '}') {
           next()
           return {
-            type: "object",
+            type: 'object',
             properties,
           }
         }
         match = buf.match(RE_OBJECTKEY)
         continue
-      case "}":
+      case '}':
         next()
         return {
-          type: "object",
+          type: 'object',
           properties,
         }
     }
     break
   }
-  throw error("\"}\"")
+  throw error('"}"')
 }
 
 function scalar(): SflScalarTester {
@@ -268,65 +283,65 @@ function scalar(): SflScalarTester {
     const name = match[0]
     const params: any[] = []
     next(name.length)
-    if (buf[0] === "(") {
+    if (buf[0] === '(') {
       next()
-      if (buf[0] === ")") {
+      if (buf[0] === ')') {
         next()
         return {
-          type: "scalar",
+          type: 'scalar',
           name,
           params,
         }
       }
       match = buf.match(RE_TESTERPARAM)
       if (!match) {
-        throw error(")")
+        throw error(')')
       }
       while (match) {
         if (match[1]) {
           switch (match[1]) {
-            case "null":
+            case 'null':
               params.push(null)
               break
-            case "true":
+            case 'true':
               params.push(true)
               break
-            case "false":
+            case 'false':
               params.push(false)
               break
           }
         } else if (match[2]) {
-          params.push(match[2].replace(/^"|"$/g, "").replace(/\\\"/g, "\""))
+          params.push(match[2].replace(/^"|"$/g, '').replace(/\\"/g, '"'))
         } else if (match[3]) {
-          params.push(match[3].replace(/^'|'$/g, "").replace(/\\'/g, "'"))
+          params.push(match[3].replace(/^'|'$/g, '').replace(/\\'/g, '\''))
         } else if (match[4]) {
           params.push(+match[4])
         } else if (match[5]) {
-          params.push(new RegExp(match[5].replace(/\\\//g, "/"), match[6] || undefined))
+          params.push(new RegExp(match[5].replace(/\\\//g, '/'), match[6] || undefined))
         } else {
-          throw error("tester param")
+          throw error('tester param')
         }
         next(match[0].length)
         switch (buf[0]) {
-          case ",":
+          case ',':
             next()
-            if (buf[0] === ")") {
+            if (buf[0] === ')') {
               next()
               return {
-                type: "scalar",
+                type: 'scalar',
                 name,
                 params,
               }
             }
             match = buf.match(RE_TESTERPARAM)
             if (!match) {
-              throw error(")")
+              throw error(')')
             }
             continue
-          case ")":
+          case ')':
             next()
             return {
-              type: "scalar",
+              type: 'scalar',
               name,
               params,
             }
@@ -334,16 +349,15 @@ function scalar(): SflScalarTester {
       }
     }
     return {
-      type: "scalar",
+      type: 'scalar',
       name,
       params,
     }
-  } else {
-    throw error("tester")
   }
+  throw error('tester')
 }
 
-function error(expected = "") {
+function error(expected = '') {
   return new SyntaxError(origin, expected, buf[0], pos, ln, col)
 }
 
@@ -357,8 +371,8 @@ export function parse(ctx: string): SflTester {
   const result = root()
   white()
 
-  if (buf.length) {
-    throw error("EOF")
+  if (buf.length > 0) {
+    throw error('EOF')
   }
   return result
 }

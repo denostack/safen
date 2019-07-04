@@ -1,3 +1,3 @@
-import { Tester } from "../interfaces/common"
+import { Tester } from '../interfaces/common'
 
-export const anyTester: Tester = () => "true"
+export const anyTester: Tester = () => 'true'

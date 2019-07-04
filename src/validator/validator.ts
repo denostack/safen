@@ -1,12 +1,12 @@
-import { MessageMap, TesterMap } from "../interfaces/common"
-import { SflTester } from "../interfaces/sfl"
-import { createAssert } from "../sfl/create-assert"
-import { createValidate } from "../sfl/create-validate"
+import { MessageMap, TesterMap } from '../interfaces/common'
+import { SflTester } from '../interfaces/sfl'
+import { createAssert } from '../sfl/create-assert'
+import { createValidate } from '../sfl/create-validate'
 
-export class Validator<P = any> {
+export class Validator<T = any> {
 
-  public validate: (data: any) => data is P
-  public assert: (data: any) => P
+  public validate: (data: any) => data is T
+  public assert: (data: any) => T
   // public sanitize: (data: any) => any
 
   public constructor(

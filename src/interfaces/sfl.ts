@@ -4,7 +4,7 @@ export type SflParam = RegExp | string | number | boolean | null
 export type SflTester = SflObjectTester | SflArrayTester | SflOrTester | SflAndTester | SflScalarTester
 
 export interface SflObjectTester {
-  type: "object"
+  type: 'object'
   properties: {
     [key: string]: SflObjectProperty
   }
@@ -16,29 +16,29 @@ export interface SflObjectProperty {
 }
 
 export interface SflArrayTester {
-  type: "array"
+  type: 'array'
   min?: number
   max?: number
   value: SflTester
 }
 
 export interface SflNotTester {
-  type: "not"
+  type: 'not'
   value: SflTester
 }
 
 export interface SflOrTester {
-  type: "or"
+  type: 'or'
   params: SflTester[]
 }
 
 export interface SflAndTester {
-  type: "and"
+  type: 'and'
   params: SflTester[]
 }
 
 export interface SflScalarTester {
-  type: "scalar"
+  type: 'scalar'
   name: string
   params: SflParam[]
 }
