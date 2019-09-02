@@ -5,13 +5,13 @@
 <p align="center">Super Fast Object Validator<br />for Javascript(& Typescript).</p>
 
 <p align="center">
-  <a href="https://travis-ci.org/corgidisco/safen"><img alt="Build" src="https://img.shields.io/travis/corgidisco/safen.svg" /></a>
+  <a href="https://travis-ci.org/wan2land/safen"><img alt="Build" src="https://img.shields.io/travis/wan2land/safen.svg" /></a>
   <a href="https://npmcharts.com/compare/safen?minimal=true"><img alt="Downloads" src="https://img.shields.io/npm/dt/safen.svg" /></a>
   <a href="https://www.npmjs.com/package/safen"><img alt="Version" src="https://img.shields.io/npm/v/safen.svg" /></a>
   <a href="https://www.npmjs.com/package/safen"><img alt="License" src="https://img.shields.io/npm/l/safen.svg" /></a>
   <br />
-  <a href="https://david-dm.org/corgidisco/safen"><img alt="dependencies Status" src="https://david-dm.org/corgidisco/safen/status.svg" /></a>
-  <a href="https://david-dm.org/corgidisco/safen?type=dev"><img alt="devDependencies Status" src="https://david-dm.org/corgidisco/safen/dev-status.svg" /></a>
+  <a href="https://david-dm.org/wan2land/safen"><img alt="dependencies Status" src="https://david-dm.org/wan2land/safen/status.svg" /></a>
+  <a href="https://david-dm.org/wan2land/safen?type=dev"><img alt="devDependencies Status" src="https://david-dm.org/wan2land/safen/dev-status.svg" /></a>
   <br />
   <a href="https://www.npmjs.com/package/safen"><img alt="NPM" src="https://nodei.co/npm/safen.png" /></a>
 </p>
@@ -47,7 +47,7 @@ Safen supports the syntax similar to the type script interface. This makes it ea
 
 ## 1.x
 
-Please check [this link](https://github.com/corgidisco/safen/tree/1.x) for the 1.x version of the README.
+Please check [this link](https://github.com/wan2land/safen/tree/1.x) for the 1.x version of the README.
 
 ## How to use
 
@@ -93,12 +93,12 @@ const validator = safen.sfl`{
 }`
 
 validator.assert({
-  username: "corgidisco@gmail.com",
+  username: "wan2land@gmail.com",
   areas: [
     {lat: 0, lng: 0},
   ],
   env: {
-    referer: "http://corgidisco.github.io",
+    referer: "http://wan2land.github.io",
     ip: "127.0.0.1",
     os: {
       name: "osx",
@@ -128,10 +128,10 @@ if (validator.validate(data)) {
   // now data is string!
 }
 
-validator.validate("corgidisco@gmail.com") // return true
+validator.validate("wan2land@gmail.com") // return true
 validator.validate(null) // return true
 
-validator.validate("corgidisco") // return false, it is not email!
+validator.validate("wan2land") // return false, it is not email!
 ```
 
 ### assert method
@@ -143,10 +143,10 @@ const validator = safen.sfl<string | null>`(string & email & length_between(12, 
 // const validator = safen.sfl`(string & email & length_between(12, 100)) | null`
 // const validator = safen.create(`(string & email & length_between(12, 100)) | null`)
 
-validator.assert("corgidisco@gmail.com") // nothing happens
+validator.assert("wan2land@gmail.com") // nothing happens
 validator.assert(null) // nothing happens
 
-validator.assert("corgidisco") // safen.InvalidValudError occured!
+validator.assert("wan2land") // safen.InvalidValudError occured!
 ```
 
 ## Syntax
@@ -161,7 +161,7 @@ const validator = safen.sfl`{
 }`
 
 validator.assert({
-  username: "corgidisco@gmail.com",
+  username: "wan2land@gmail.com",
 }) // ok
 validator.assert({
   username: null,
@@ -169,7 +169,7 @@ validator.assert({
 
 try {
   validator.assert({
-    username: "corgidisco",
+    username: "wan2land",
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
@@ -204,17 +204,17 @@ const validator = safen.sfl`{
 }`
 
 validator.assert({
-  username: "corgidisco",
+  username: "wan2land",
   password: "password!@#",
 }) // ok
 
 validator.assert({
-  username: "corgidisco",
+  username: "wan2land",
   // undefined password is OK.
 }) // ok
 
 validator.assert({
-  username: "corgidisco",
+  username: "wan2land",
   password: undefined, // undefined password is also OK.
 }) // ok
 
@@ -238,7 +238,7 @@ try {
 
 try {
   validator.assert({
-    username: "corgidisco",
+    username: "wan2land",
     password: null, // null is not allowed
   }) // fail
 } catch (e) {
@@ -269,7 +269,7 @@ const validator = safen.sfl`{
 }`
 
 validator.assert({
-  username: "corgidisco",
+  username: "wan2land",
   areas: {
     lat: 37,
     lng: 126,
@@ -278,7 +278,7 @@ validator.assert({
 
 try {
   validator.assert({
-    username: "corgidisco",
+    username: "wan2land",
     areas: {
       lat: "37",
       lng: 126,
@@ -298,7 +298,7 @@ try {
 }
 
 validator.assert({
-  username: "corgidisco",
+  username: "wan2land",
   areas: {
     lat: 37,
     lng: 126,
@@ -657,7 +657,7 @@ const validator = safen.create(`{
 
 try {
   validator.assert({
-    username: "corgidisco",
+    username: "wan2land",
   }) // fail
 } catch (e) {
   if (e instanceof safen.InvalidValueError) {
