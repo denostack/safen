@@ -6,7 +6,7 @@ export type SflTester = SflObjectTester | SflArrayTester | SflOrTester | SflAndT
 export interface SflObjectTester {
   type: 'object'
   properties: {
-    [key: string]: SflObjectProperty
+    [key: string]: SflObjectProperty,
   }
 }
 
