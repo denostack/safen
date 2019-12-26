@@ -40,10 +40,10 @@ describe('parse', () => {
       params: [true],
     })
 
-    expect(parse('email(true, false, null, "string", \'string\', "line\\"", \'line\\\'\', 3.14, -500.5, /ab\\/c/igm)')).toEqual({
+    expect(parse('email(true, false, null, "string", \'string\', "line\\"", \'line\\\'\', 3.14, -500.5, /abc/, /ab\\/c/igm,)')).toEqual({
       type: 'scalar',
       name: 'email',
-      params: [true, false, null, 'string', 'string', 'line"', 'line\'', 3.14, -500.5, /ab\/c/gim],
+      params: [true, false, null, 'string', 'string', 'line"', 'line\'', 3.14, -500.5, /abc/, /ab\/c/gim],
     })
 
     expect(parse(`  
