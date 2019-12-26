@@ -7,7 +7,7 @@ const RE_WHITESPACE = /^[ \t\r\v\f]+/
 const RE_NEWLINE = /^[\n]+/
 
 const RE_TESTERNAME = /^([a-zA-Z_]\w*)/
-const RE_TESTERPARAM = /^(null|true|false)|("(?:[^"\\]*|\\")*")|('(?:[^'\\]*|\\')*')|(-?\d+(?:\.\d*)?)|\/((?:[^/\\]*|\\\/)+)\/(igm|img|gim|gmi|mig|mgi|ig|im|gi|gm|mi|mg|i|g|m)?/
+const RE_TESTERPARAM = /^(?:(null|true|false)|("(?:[^"\\]*|\\.)*")|('(?:[^'\\]*|\\.)*')|(-?\d+(?:\.\d*)?)|\/((?:[^/\\]*|\\\/)+)\/(igm|img|gim|gmi|mig|mgi|ig|im|gi|gm|mi|mg|i|g|m))?/
 
 const RE_OBJECTKEY = /^([a-zA-Z_]\w*)(\?)?/
 const RE_NUMBER = /^(\d+)/

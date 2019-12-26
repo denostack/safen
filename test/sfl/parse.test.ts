@@ -40,10 +40,10 @@ describe('parse', () => {
       params: [true],
     })
 
-    expect(parse('email(true, false, null, "string", 3.14, -500.5, /ab\\/c/igm)')).toEqual({
+    expect(parse('email(true, false, null, "string", \'string\', "line\\"", \'line\\\'\', 3.14, -500.5, /ab\\/c/igm)')).toEqual({
       type: 'scalar',
       name: 'email',
-      params: [true, false, null, 'string', 3.14, -500.5, /ab\/c/gim],
+      params: [true, false, null, 'string', 'string', 'line"', 'line\'', 3.14, -500.5, /ab\/c/gim],
     })
 
     expect(parse(`  
@@ -77,11 +77,11 @@ describe('parse', () => {
 2:       ?string
          ^`, 'SYNTAX_ERROR', 2, 7))
 
-    expect(() => parse('email(,)')).toThrowError(createError(`Syntax Error: expected ), unexpected token "," (1:7)
+    expect(() => parse('email(,)')).toThrowError(createError(`Syntax Error: expected tester param, unexpected token "," (1:7)
 1: email(,)
          ^`, 'SYNTAX_ERROR', 1, 7))
 
-    expect(() => parse('email(true,,)')).toThrowError(createError(`Syntax Error: expected ), unexpected token "," (1:12)
+    expect(() => parse('email(true,,)')).toThrowError(createError(`Syntax Error: expected tester param, unexpected token "," (1:12)
 1: email(true,,)
               ^`, 'SYNTAX_ERROR', 1, 12))
 
