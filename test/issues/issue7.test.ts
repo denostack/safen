@@ -1,6 +1,4 @@
-import "jest"
-
-import { create } from "../../lib/index"
+import { create } from '../../lib'
 
 function createError(message: string, code: string) {
   return Object.assign(new Error(message), {
@@ -8,8 +6,8 @@ function createError(message: string, code: string) {
   })
 }
 
-describe("issue #7", () => {
-  it("test scalar success", () => {
-    expect(() => create("unknown")).toThrowError(createError("Undefined Error: \"unknown\" is an undefined tester.", "UNDEFINED_ERROR"))
+describe('issue #7', () => {
+  it('test scalar success', () => {
+    expect(() => create('unknown')).toThrowError(createError('Undefined Error: "unknown" is an undefined tester.', 'UNDEFINED_ERROR'))
   })
 })

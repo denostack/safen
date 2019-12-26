@@ -1,10 +1,7 @@
+import * as safen from '../lib' // eslint-disable-line import/no-namespace
 
-import "jest"
-
-import * as safen from "../lib"
-
-describe("usage", () => {
-  it("usage default", () => {
+describe('usage', () => {
+  it('usage default', () => {
     expect.assertions(0)
 
     // section:usage-default
@@ -30,30 +27,30 @@ describe("usage", () => {
     }`
 
     validator.assert({
-      username: "corgidisco@gmail.com",
+      username: 'corgidisco@gmail.com',
       areas: [
-        {lat: 0, lng: 0},
+        { lat: 0, lng: 0 },
       ],
       env: {
-        referer: "http://corgidisco.github.io",
-        ip: "127.0.0.1",
+        referer: 'http://corgidisco.github.io',
+        ip: '127.0.0.1',
         os: {
-          name: "osx",
-          version: "10.13.1",
+          name: 'osx',
+          version: '10.13.1',
         },
         browser: {
-          name: "chrome",
-          version: "62.0.3202.94",
+          name: 'chrome',
+          version: '62.0.3202.94',
         },
       },
     }) // ok
     // endsection
   })
 
-  it("usage validate", () => {
+  it('usage validate', () => {
     expect.assertions(3)
 
-    const data = "something" as any
+    const data = 'something' as any
 
     // section:usage-validate
     const validator = safen.sfl<string | null>`(string & email & length_between(12, 100)) | null`
@@ -67,19 +64,19 @@ describe("usage", () => {
       // now data is string!
     }
 
-    validator.validate("corgidisco@gmail.com") // return true
+    validator.validate('corgidisco@gmail.com') // return true
     validator.validate(null) // return true
 
-    validator.validate("corgidisco") // return false, it is not email!
+    validator.validate('corgidisco') // return false, it is not email!
     // endsection
 
-    expect(validator.validate("corgidisco@gmail.com")).toBeTruthy()
+    expect(validator.validate('corgidisco@gmail.com')).toBeTruthy()
     expect(validator.validate(null)).toBeTruthy()
 
-    expect(validator.validate("corgidisco")).toBeFalsy() // return false!!!
+    expect(validator.validate('corgidisco')).toBeFalsy() // return false!!!
   })
 
-  it("usage assert", () => {
+  it('usage assert', () => {
     expect.assertions(1)
 
     try {
@@ -90,10 +87,10 @@ describe("usage", () => {
       // const validator = safen.sfl`(string & email & length_between(12, 100)) | null`
       // const validator = safen.create(`(string & email & length_between(12, 100)) | null`)
 
-      validator.assert("corgidisco@gmail.com") // nothing happens
+      validator.assert('corgidisco@gmail.com') // nothing happens
       validator.assert(null) // nothing happens
 
-      validator.assert("corgidisco") // safen.InvalidValudError occured!
+      validator.assert('corgidisco') // safen.InvalidValudError occured!
       // endsection
     } catch (e) {
       expect(e).toBeInstanceOf(safen.InvalidValueError)
@@ -102,8 +99,8 @@ describe("usage", () => {
 })
 
 
-describe("sample pipe", () => {
-  it("sample pipe", () => {
+describe('sample pipe', () => {
+  it('sample pipe', () => {
     expect.assertions(1)
     // section:sample-pipe
     const validator = safen.sfl`{
@@ -111,7 +108,7 @@ describe("sample pipe", () => {
     }`
 
     validator.assert({
-      username: "corgidisco@gmail.com",
+      username: 'corgidisco@gmail.com',
     }) // ok
     validator.assert({
       username: null,
@@ -119,22 +116,22 @@ describe("sample pipe", () => {
 
     try {
       validator.assert({
-        username: "corgidisco",
+        username: 'corgidisco',
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "username",
-            reason: "email",
+            path: 'username',
+            reason: 'email',
             params: [],
-            message: "The username must be a valid email address.",
+            message: 'The username must be a valid email address.',
           },
           {
-            path: "username",
-            reason: "null",
+            path: 'username',
+            reason: 'null',
             params: [],
-            message: "The username must be a null.",
+            message: 'The username must be a null.',
           },
         ])
       }
@@ -143,8 +140,8 @@ describe("sample pipe", () => {
   })
 })
 
-describe("sample optional", () => {
-  it("sample optional", () => {
+describe('sample optional', () => {
+  it('sample optional', () => {
     expect.assertions(1)
     // section:sample-optional
     const validator = safen.sfl`{
@@ -153,33 +150,33 @@ describe("sample optional", () => {
     }`
 
     validator.assert({
-      username: "corgidisco",
-      password: "password!@#",
+      username: 'corgidisco',
+      password: 'password!@#',
     }) // ok
 
     validator.assert({
-      username: "corgidisco",
+      username: 'corgidisco',
       // undefined password is OK.
     }) // ok
 
     validator.assert({
-      username: "corgidisco",
+      username: 'corgidisco',
       password: undefined, // undefined password is also OK.
     }) // ok
 
     try {
       validator.assert({
         // undefined username is not ok.
-        password: "password!@#",
+        password: 'password!@#',
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "username",
-            reason: "required",
+            path: 'username',
+            reason: 'required',
             params: [],
-            message: "The username is required.",
+            message: 'The username is required.',
           },
         ])
       }
@@ -187,17 +184,17 @@ describe("sample optional", () => {
 
     try {
       validator.assert({
-        username: "corgidisco",
+        username: 'corgidisco',
         password: null, // null is not allowed
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "password",
-            reason: "length",
+            path: 'password',
+            reason: 'length',
             params: [],
-            message: "The username is required.",
+            message: 'The username is required.',
           },
         ])
       }
@@ -206,8 +203,8 @@ describe("sample optional", () => {
   })
 })
 
-describe("sample object in object", () => {
-  it("sample object in object", () => {
+describe('sample object in object', () => {
+  it('sample object in object', () => {
     expect.assertions(1)
 
     // section:sample-object-in-object
@@ -220,7 +217,7 @@ describe("sample object in object", () => {
     }`
 
     validator.assert({
-      username: "corgidisco",
+      username: 'corgidisco',
       areas: {
         lat: 37,
         lng: 126,
@@ -229,9 +226,9 @@ describe("sample object in object", () => {
 
     try {
       validator.assert({
-        username: "corgidisco",
+        username: 'corgidisco',
         areas: {
-          lat: "37",
+          lat: '37',
           lng: 126,
         },
       }) // fail
@@ -239,17 +236,17 @@ describe("sample object in object", () => {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas.lat",
-            reason: "number",
+            path: 'areas.lat',
+            reason: 'number',
             params: [],
-            message: "The areas.lat must be a number.",
+            message: 'The areas.lat must be a number.',
           },
         ])
       }
     }
 
     validator.assert({
-      username: "corgidisco",
+      username: 'corgidisco',
       areas: {
         lat: 37,
         lng: 126,
@@ -259,8 +256,8 @@ describe("sample object in object", () => {
   })
 })
 
-describe("sample array", () => {
-  it("sample simple array", () => {
+describe('sample array', () => {
+  it('sample simple array', () => {
     expect.assertions(1)
 
     // section:sample-simple-array
@@ -277,23 +274,23 @@ describe("sample array", () => {
 
     validator.assert({
       areas: [
-        {lat: 37, lng: 126},
-        {lat: 31, lng: 125},
+        { lat: 37, lng: 126 },
+        { lat: 31, lng: 125 },
       ],
     }) // ok
 
     try {
       validator.assert({
-        areas: "",
+        areas: '',
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas",
-            reason: "array",
+            path: 'areas',
+            reason: 'array',
             params: [],
-            message: "The areas must be an array.",
+            message: 'The areas must be an array.',
           },
         ])
       }
@@ -301,7 +298,7 @@ describe("sample array", () => {
     // endsection
   })
 
-  it("sample array with range, fixed", () => {
+  it('sample array with range, fixed', () => {
     expect.assertions(2)
 
     // section:sample-array-with-range-fixed
@@ -314,27 +311,27 @@ describe("sample array", () => {
 
     validator.assert({
       areas: [
-        {lat: 37, lng: 126},
-        {lat: 31, lng: 125},
+        { lat: 37, lng: 126 },
+        { lat: 31, lng: 125 },
       ],
     }) // ok
 
     try {
       validator.assert({
         areas: [
-          {lat: 37, lng: 126},
-          {lat: 31, lng: 125},
-          {lat: 31, lng: 125},
+          { lat: 37, lng: 126 },
+          { lat: 31, lng: 125 },
+          { lat: 31, lng: 125 },
         ],
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas",
-            reason: "array_length",
+            path: 'areas',
+            reason: 'array_length',
             params: [2],
-            message: "The areas's length must be 2.",
+            message: 'The areas\'s length must be 2.',
           },
         ])
       }
@@ -343,17 +340,17 @@ describe("sample array", () => {
     try {
       validator.assert({
         areas: [
-          {lat: 37, lng: 126},
+          { lat: 37, lng: 126 },
         ],
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas",
-            reason: "array_length",
+            path: 'areas',
+            reason: 'array_length',
             params: [2],
-            message: "The areas's length must be 2.",
+            message: 'The areas\'s length must be 2.',
           },
         ])
       }
@@ -361,7 +358,7 @@ describe("sample array", () => {
     // endsection
   })
 
-  it("sample array with range, min", () => {
+  it('sample array with range, min', () => {
     expect.assertions(1)
 
     // section:sample-array-with-range-min
@@ -374,14 +371,14 @@ describe("sample array", () => {
 
     validator.assert({
       areas: [
-        {lat: 31, lng: 125},
+        { lat: 31, lng: 125 },
       ],
     }) // ok
 
     validator.assert({
       areas: [
-        {lat: 37, lng: 126},
-        {lat: 31, lng: 125},
+        { lat: 37, lng: 126 },
+        { lat: 31, lng: 125 },
       ],
     }) // ok
 
@@ -393,10 +390,10 @@ describe("sample array", () => {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas",
-            reason: "array_length_min",
+            path: 'areas',
+            reason: 'array_length_min',
             params: [1],
-            message: "The areas's length must be at least 1.",
+            message: 'The areas\'s length must be at least 1.',
           },
         ])
       }
@@ -404,7 +401,7 @@ describe("sample array", () => {
     // endsection
   })
 
-  it("sample array with range, max", () => {
+  it('sample array with range, max', () => {
     expect.assertions(1)
 
     // section:sample-array-with-range-max
@@ -417,33 +414,33 @@ describe("sample array", () => {
 
     validator.assert({
       areas: [
-        {lat: 31, lng: 125},
+        { lat: 31, lng: 125 },
       ],
     }) // ok
 
     validator.assert({
       areas: [
-        {lat: 37, lng: 126},
-        {lat: 31, lng: 125},
+        { lat: 37, lng: 126 },
+        { lat: 31, lng: 125 },
       ],
     }) // ok
 
     try {
       validator.assert({
         areas: [
-          {lat: 37, lng: 126},
-          {lat: 31, lng: 125},
-          {lat: 32, lng: 121},
+          { lat: 37, lng: 126 },
+          { lat: 31, lng: 125 },
+          { lat: 32, lng: 121 },
         ],
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas",
-            reason: "array_length_max",
+            path: 'areas',
+            reason: 'array_length_max',
             params: [2],
-            message: "The areas's length may not be greater than 2.",
+            message: 'The areas\'s length may not be greater than 2.',
           },
         ])
       }
@@ -451,7 +448,7 @@ describe("sample array", () => {
     // endsection
   })
 
-  it("sample array with range, between", () => {
+  it('sample array with range, between', () => {
     expect.assertions(2)
 
     // section:sample-array-with-range-between
@@ -464,14 +461,14 @@ describe("sample array", () => {
 
     validator.assert({
       areas: [
-        {lat: 31, lng: 125},
+        { lat: 31, lng: 125 },
       ],
     }) // ok
 
     validator.assert({
       areas: [
-        {lat: 37, lng: 126},
-        {lat: 31, lng: 125},
+        { lat: 37, lng: 126 },
+        { lat: 31, lng: 125 },
       ],
     }) // ok
 
@@ -483,10 +480,10 @@ describe("sample array", () => {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas",
-            reason: "array_length_between",
+            path: 'areas',
+            reason: 'array_length_between',
             params: [1, 2],
-            message: "The areas's length must be between 1 and 2.",
+            message: 'The areas\'s length must be between 1 and 2.',
           },
         ])
       }
@@ -495,19 +492,19 @@ describe("sample array", () => {
     try {
       validator.assert({
         areas: [
-          {lat: 37, lng: 126},
-          {lat: 31, lng: 125},
-          {lat: 32, lng: 121},
+          { lat: 37, lng: 126 },
+          { lat: 31, lng: 125 },
+          { lat: 32, lng: 121 },
         ],
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas",
-            reason: "array_length_between",
+            path: 'areas',
+            reason: 'array_length_between',
             params: [1, 2],
-            message: "The areas's length must be between 1 and 2.",
+            message: 'The areas\'s length must be between 1 and 2.',
           },
         ])
       }
@@ -515,7 +512,7 @@ describe("sample array", () => {
     // endsection
   })
 
-  it("sample array with multi dims", () => {
+  it('sample array with multi dims', () => {
     expect.assertions(1)
 
     // section:sample-array-with-multi-dims
@@ -529,12 +526,12 @@ describe("sample array", () => {
     validator.assert({
       areas: [
         [
-          {lat: 37, lng: 126},
-          {lat: 31, lng: 125},
+          { lat: 37, lng: 126 },
+          { lat: 31, lng: 125 },
         ],
         [
-          {lat: 37, lng: 126},
-          {lat: 31, lng: 125},
+          { lat: 37, lng: 126 },
+          { lat: 31, lng: 125 },
         ],
       ],
     }) // ok
@@ -542,24 +539,24 @@ describe("sample array", () => {
     try {
       validator.assert({
         areas: [
-          {lat: 37, lng: 126},
-          {lat: 31, lng: 125},
+          { lat: 37, lng: 126 },
+          { lat: 31, lng: 125 },
         ],
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "areas[0]",
-            reason: "array",
+            path: 'areas[0]',
+            reason: 'array',
             params: [],
-            message: "The areas[0] must be an array.",
+            message: 'The areas[0] must be an array.',
           },
           {
-            path: "areas[1]",
-            reason: "array",
+            path: 'areas[1]',
+            reason: 'array',
             params: [],
-            message: "The areas[1] must be an array.",
+            message: 'The areas[1] must be an array.',
           },
         ])
       }
@@ -567,7 +564,7 @@ describe("sample array", () => {
     // endsection
   })
 
-  it("sample custom tester", () => {
+  it('sample custom tester', () => {
     // section:sample-custom-tester
     const oddTester: safen.Tester = (value, params, gen) => {
       return `(Number.isInteger(${value}) && ${value} % 2 === 1)`
@@ -587,16 +584,16 @@ describe("sample array", () => {
       },
     })
 
-    expect(validation.validate({even: 2, odd: 1})).toBeTruthy()
+    expect(validation.validate({ even: 2, odd: 1 })).toBeTruthy()
 
-    expect(validation.validate({even: 1, odd: 1})).toBeFalsy()
-    expect(validation.validate({even: 2, odd: 2})).toBeFalsy()
-    expect(validation.validate({even: 1, odd: 2})).toBeFalsy()
+    expect(validation.validate({ even: 1, odd: 1 })).toBeFalsy()
+    expect(validation.validate({ even: 2, odd: 2 })).toBeFalsy()
+    expect(validation.validate({ even: 1, odd: 2 })).toBeFalsy()
 
     // endsection
   })
 
-  it("sample custom error messages", () => {
+  it('sample custom error messages', () => {
     expect.assertions(1)
 
     // section:sample-custom-error-messages
@@ -605,24 +602,24 @@ describe("sample array", () => {
     }`, {
       messages: {
         email: [
-          "this is a custom error message in :path.", // exist `:path`
-          "this is a custom error message.", // no `:path`
+          'this is a custom error message in :path.', // exist `:path`
+          'this is a custom error message.', // no `:path`
         ],
       },
     })
 
     try {
       validator.assert({
-        username: "corgidisco",
+        username: 'corgidisco',
       }) // fail
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
           {
-            path: "username",
-            reason: "email",
+            path: 'username',
+            reason: 'email',
             params: [],
-            message: "this is a custom error message in username.",
+            message: 'this is a custom error message in username.',
           },
         ])
       }
@@ -630,7 +627,7 @@ describe("sample array", () => {
     // endsection
   })
 
-  it("sample custom error messages examples", () => {
+  it('sample custom error messages examples', () => {
     expect.assertions(1)
 
     // section:sample-custom-error-messages-examples
@@ -640,9 +637,9 @@ describe("sample array", () => {
       baz: in("a", "b", "c"),
     }`, {
       messages: {
-        required: ["The :path is required.", "It is required."],
-        between: ["The :path must be between :param0 and :param1.", "It must be between :param0 and :param1."],
-        in: ["The :path does not exist in :params.", "It does not exist in :params."],
+        required: ['The :path is required.', 'It is required.'],
+        between: ['The :path must be between :param0 and :param1.', 'It must be between :param0 and :param1.'],
+        in: ['The :path does not exist in :params.', 'It does not exist in :params.'],
       },
     })
 
@@ -650,14 +647,14 @@ describe("sample array", () => {
       validator.assert({
         // foo
         bar: 4,
-        baz: "d",
+        baz: 'd',
       })
     } catch (e) {
       if (e instanceof safen.InvalidValueError) {
         expect(e.errors).toEqual([
-          {path: "foo", reason: "required", params: [], message: "The foo is required."},
-          {path: "bar", reason: "between", params: [1, 2], message: "The bar must be between 1 and 2."},
-          {path: "baz", reason: "in", params: ["a", "b", "c"], message: "The baz does not exist in [\"a\",\"b\",\"c\"]."},
+          { path: 'foo', reason: 'required', params: [], message: 'The foo is required.' },
+          { path: 'bar', reason: 'between', params: [1, 2], message: 'The bar must be between 1 and 2.' },
+          { path: 'baz', reason: 'in', params: ['a', 'b', 'c'], message: 'The baz does not exist in ["a","b","c"].' },
         ])
       }
     }
