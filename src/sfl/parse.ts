@@ -148,7 +148,7 @@ function memberexpr(): SflTester {
     next()
     let min: number | undefined
     let max: number | undefined
-    if (buf[0] === ':') {
+    if ((buf as string)[0] === ':') {
       next()
       match = buf.match(RE_NUMBER)
       if (match) {
@@ -160,7 +160,7 @@ function memberexpr(): SflTester {
       if (match) {
         min = +match[0]
         next(match[0].length)
-        if (buf[0] === ':') {
+        if ((buf as string)[0] === ':') {
           next()
           match = buf.match(RE_NUMBER)
           if (match) {
@@ -173,7 +173,7 @@ function memberexpr(): SflTester {
       }
     }
     white()
-    if (buf[0] === ']') {
+    if ((buf as string)[0] === ']') {
       next()
       const hasMin = typeof min !== 'undefined'
       const hasMax = typeof max !== 'undefined'
@@ -213,7 +213,7 @@ function unaryexpr(): SflTester {
     next()
     const nxt = expr()
     white()
-    if (buf[0] === ')') {
+    if ((buf as string)[0] === ')') {
       pos += 1
       col += 1
       buf = buf.slice(1)
@@ -253,10 +253,10 @@ function object(): SflObjectTester {
       value: expr(),
     }
     white()
-    switch (buf[0]) {
+    switch ((buf as string)[0]) {
       case ',':
         next()
-        if (buf[0] === '}') {
+        if ((buf as string)[0] === '}') {
           next()
           return {
             type: 'object',
@@ -285,7 +285,7 @@ function scalar(): SflScalarTester {
     next(name.length)
     if (buf[0] === '(') {
       next()
-      if (buf[0] === ')') {
+      if ((buf as string)[0] === ')') {
         next()
         return {
           type: 'scalar',
@@ -322,10 +322,10 @@ function scalar(): SflScalarTester {
           throw error('tester param')
         }
         next(match[0].length)
-        switch (buf[0]) {
+        switch ((buf as string)[0]) {
           case ',':
             next()
-            if (buf[0] === ')') {
+            if ((buf as string)[0] === ')') {
               next()
               return {
                 type: 'scalar',
