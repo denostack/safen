@@ -1,4 +1,5 @@
 /* eslint-disable unicorn/no-unsafe-regex */
+
 import { SyntaxError } from '../errors/syntax-error'
 import { SflObjectProperty, SflObjectTester, SflScalarTester, SflTester } from '../interfaces/sfl'
 
@@ -25,14 +26,14 @@ orexpr: andexpr
 andexpr: memberexpr
   | memberexpr '&' andexpr
 
-memberexpr: unaryexpr
+memberexpr: parenexpr
   | memberexpr '[' ']'
   | memberexpr '[' RE_NUMBER ']'
   | memberexpr '[' RE_NUMBER ':' ']'
   | memberexpr '[' ':' RE_NUMBER ']'
   | memberexpr '[' RE_NUMBER ':' RE_NUMBER ']'
 
-unaryexpr: tester
+parenexpr: tester
   | '(' expr ')'
 
 tester: object
@@ -69,7 +70,7 @@ let match: RegExpMatchArray | null
 let len: number
 
 function white() {
-  while (1) {
+  for (;;) {
     match = buf.match(RE_WHITESPACE)
     if (!match) {
       match = buf.match(RE_NEWLINE)
@@ -142,13 +143,13 @@ function andexpr(): SflTester {
 }
 
 function memberexpr(): SflTester {
-  let nxt = unaryexpr()
+  let nxt = parenexpr()
   white()
   while (buf[0] === '[') {
     next()
     let min: number | undefined
     let max: number | undefined
-    if ((buf as string)[0] === ':') {
+    if (buf[0] as string === ':') {
       next()
       match = buf.match(RE_NUMBER)
       if (match) {
@@ -160,7 +161,7 @@ function memberexpr(): SflTester {
       if (match) {
         min = +match[0]
         next(match[0].length)
-        if ((buf as string)[0] === ':') {
+        if (buf[0] as string === ':') {
           next()
           match = buf.match(RE_NUMBER)
           if (match) {
@@ -173,7 +174,7 @@ function memberexpr(): SflTester {
       }
     }
     white()
-    if ((buf as string)[0] === ']') {
+    if (buf[0] as string === ']') {
       next()
       const hasMin = typeof min !== 'undefined'
       const hasMax = typeof max !== 'undefined'
@@ -208,12 +209,12 @@ function memberexpr(): SflTester {
   return nxt
 }
 
-function unaryexpr(): SflTester {
+function parenexpr(): SflTester {
   if (buf[0] === '(') {
     next()
     const nxt = expr()
     white()
-    if ((buf as string)[0] === ')') {
+    if (buf[0] as string === ')') {
       pos += 1
       col += 1
       buf = buf.slice(1)
@@ -253,10 +254,10 @@ function object(): SflObjectTester {
       value: expr(),
     }
     white()
-    switch ((buf as string)[0]) {
+    switch (buf[0] as string) {
       case ',':
         next()
-        if ((buf as string)[0] === '}') {
+        if (buf[0] as string === '}') {
           next()
           return {
             type: 'object',
@@ -285,7 +286,7 @@ function scalar(): SflScalarTester {
     next(name.length)
     if (buf[0] === '(') {
       next()
-      if ((buf as string)[0] === ')') {
+      if (buf[0] as string === ')') {
         next()
         return {
           type: 'scalar',
@@ -322,10 +323,10 @@ function scalar(): SflScalarTester {
           throw error('tester param')
         }
         next(match[0].length)
-        switch ((buf as string)[0]) {
+        switch (buf[0] as string) {
           case ',':
             next()
-            if ((buf as string)[0] === ')') {
+            if (buf[0] as string === ')') {
               next()
               return {
                 type: 'scalar',

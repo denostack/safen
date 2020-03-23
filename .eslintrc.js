@@ -1,9 +1,10 @@
 module.exports = {
-  env: {
-    jest: true,
-  },
   extends: [
-    '@stdjs',
-    '@stdjs/eslint-config/typescript',
+    'graphity',
+    'graphity/typescript',
   ],
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+    project: ['./tsconfig.json'],
+  },
 }
