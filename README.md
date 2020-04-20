@@ -5,7 +5,7 @@
 <p align="center">Super Fast Object Validator<br />for Javascript(& Typescript).</p>
 
 <p align="center">
-  <a href="https://travis-ci.org/wan2land/safen"><img alt="Build" src="https://img.shields.io/travis/wan2land/safen.svg?style=flat-square" /></a>
+  <a href="https://github.com/wan2land/safen/actions?query=workflow%3A%22Node.js+CI%22"><img alt="Build" src="https://img.shields.io/github/workflow/status/wan2land/safen/Node.js%20CI?logo=github&style=flat-square" /></a>
   <a href="https://npmcharts.com/compare/safen?minimal=true"><img alt="Downloads" src="https://img.shields.io/npm/dt/safen.svg?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/safen"><img alt="Version" src="https://img.shields.io/npm/v/safen.svg?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/safen"><img alt="License" src="https://img.shields.io/npm/l/safen.svg?style=flat-square" /></a>
