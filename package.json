@@ -32,19 +32,6 @@
     "test:lint": "eslint src/**/**/*.ts",
     "test:unit": "jest test"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "[^/]*\\.test.tsx?$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
-    ]
-  },
   "dependencies": {
     "core-js": "^3.2.1"
   },
