@@ -66,6 +66,6 @@
     "jest": "25.4.0",
     "rimraf": "3.0.2",
     "ts-jest": "25.4.0",
-    "typescript": "3.8.3"
+    "typescript": "3.9.3"
   }
 }
