@@ -65,7 +65,7 @@
     "eslint-plugin-unicorn": "18.0.1",
     "jest": "25.4.0",
     "rimraf": "3.0.2",
-    "ts-jest": "25.4.0",
+    "ts-jest": "26.0.0",
     "typescript": "3.9.3"
   }
 }
