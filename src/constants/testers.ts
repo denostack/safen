@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
-
 import { afterTester } from '../testers/after'
 import { alphaTester } from '../testers/alpha'
 import { alphanumTester } from '../testers/alphanum'

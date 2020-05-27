@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { MessageMap } from '../interfaces/common'
 
 
