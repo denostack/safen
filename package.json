@@ -36,12 +36,12 @@
     "core-js": "^3.2.1"
   },
   "devDependencies": {
-    "@babel/cli": "7.12.16",
-    "@babel/core": "7.12.16",
+    "@babel/cli": "7.12.17",
+    "@babel/core": "7.12.17",
     "@babel/plugin-proposal-class-properties": "7.12.13",
     "@babel/plugin-proposal-object-rest-spread": "7.12.13",
-    "@babel/preset-env": "7.12.16",
-    "@babel/preset-typescript": "7.12.16",
+    "@babel/preset-env": "7.12.17",
+    "@babel/preset-typescript": "7.12.17",
     "@types/jest": "26.0.20",
     "@types/node": "12.20.1",
     "eslint": "7.18.0",
