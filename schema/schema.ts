@@ -8,4 +8,8 @@ export type Schema =
   | undefined
   | { [key: string]: Schema }
   | [type: "array", of: Schema]
-  | [type: "or", types: Schema[]];
+  | [type: "or", types: Schema[]]
+  | string
+  | number
+  | boolean
+  | bigint;

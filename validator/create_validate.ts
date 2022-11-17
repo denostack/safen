@@ -46,6 +46,20 @@ function traverse(schema: Schema) {
     return;
   }
 
+  const type = typeof schema;
+  if (
+    type === "string" || type === "number" || type === "boolean"
+  ) {
+    schemaToIdx.set(schema, idx);
+    fns.push(`function ${name}(d){return d===${JSON.stringify(schema)}}`);
+    return;
+  }
+  if (type === "bigint") {
+    schemaToIdx.set(schema, idx);
+    fns.push(`function ${name}(d){return d===${schema!.toString()}n}`);
+    return;
+  }
+
   schemaToIdx.set(schema, idx);
   fns.push("");
 
@@ -108,15 +122,17 @@ function traverse(schema: Schema) {
   fns[idx] = result;
 }
 
+export function createValidateSource(schema: Schema) {
+  fns = [];
+  schemaToIdx.clear();
+  traverse(schema);
+  return fns.join("\n");
+}
+
 export function createValidate<T extends Schema>(
   schema: T,
 ): (data: unknown) => data is ParseSchema<T> {
-  fns = [];
-  schemaToIdx.clear();
-
-  traverse(schema);
-
   return new Function(
-    `${fns.join("\n")}\nreturn _0`,
+    `${createValidateSource(schema)}\nreturn _0`,
   )();
 }

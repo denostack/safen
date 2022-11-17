@@ -12,6 +12,14 @@ type TestPrimitiveTypes = [
   Expect<Equal<ParseSchema<undefined>, undefined>>,
 ];
 
+type TestScalarValueTypes = [
+  Expect<Equal<ParseSchema<"something">, "something">>,
+  Expect<Equal<ParseSchema<30>, 30>>,
+  Expect<Equal<ParseSchema<true>, true>>,
+  Expect<Equal<ParseSchema<false>, false>>,
+  Expect<Equal<ParseSchema<1n>, 1n>>,
+];
+
 type Point = { x: typeof Number; y: typeof Number };
 type TestObject = [
   Expect<Equal<ParseSchema<{ foo: typeof String }>, { foo: string }>>,

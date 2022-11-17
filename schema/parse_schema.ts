@@ -11,4 +11,5 @@ export type ParseSchema<T extends Schema> = T extends StringConstructor ? string
   : T extends { [key: string]: Schema } ? { [K in keyof T]: ParseSchema<T[K]> }
   : T extends [type: "array", of: Schema] ? ParseSchema<T[1]>[]
   : T extends [type: "or", types: Schema[]] ? ParseSchema<T[1][number]>
+  : T extends infer U extends (string | number | boolean | bigint) ? U
   : never;

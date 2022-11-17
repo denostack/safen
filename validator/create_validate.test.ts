@@ -53,6 +53,42 @@ Deno.test("validator/create_validate, createValidate bigint", () => {
   assertFalse(v(undefined));
 });
 
+Deno.test("validator/create_validate, createValidate string value", () => {
+  const v = createValidate("something");
+
+  assert(v("something"));
+  assertFalse(v("unknown"));
+});
+
+Deno.test("validator/create_validate, createValidate number value", () => {
+  const v = createValidate(1);
+
+  assert(v(1));
+  assertFalse(v(0));
+});
+
+Deno.test("validator/create_validate, createValidate boolean value", () => {
+  {
+    const v = createValidate(true);
+
+    assert(v(true));
+    assertFalse(v(false));
+  }
+  {
+    const v = createValidate(false);
+
+    assert(v(false));
+    assertFalse(v(true));
+  }
+});
+
+Deno.test("validator/create_validate, createValidate bigint value", () => {
+  const v = createValidate(1n);
+
+  assert(v(1n));
+  assertFalse(v(0n));
+});
+
 Deno.test("validator/create_validate, createValidate null", () => {
   const v = createValidate(null);
 
