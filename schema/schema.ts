@@ -3,6 +3,9 @@ export type Schema =
   | NumberConstructor
   | BooleanConstructor
   | BigIntConstructor
+  | ArrayConstructor
   | null
   | undefined
-  | { [key: string]: Schema };
+  | { [key: string]: Schema }
+  | [type: "array", of: Schema]
+  | [type: "or", types: Schema[]];

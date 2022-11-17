@@ -1,10 +1,11 @@
 import { assert, assertFalse } from "testing/asserts.ts";
+import { array, or } from "../schema/utils.ts";
 import { createValidate } from "./create_validate.ts";
 
 Deno.test("validator/create_validate, createValidate string", () => {
   const v = createValidate(String);
 
-  assert(v("string"));
+  assert(v("1"));
   assert(v(""));
 
   assertFalse(v(1));
@@ -20,7 +21,7 @@ Deno.test("validator/create_validate, createValidate number", () => {
   assert(v(30));
   assert(v(3.5));
 
-  assertFalse(v("string"));
+  assertFalse(v("1"));
   assertFalse(v(1n));
   assertFalse(v(true));
   assertFalse(v(null));
@@ -33,7 +34,7 @@ Deno.test("validator/create_validate, createValidate boolean", () => {
   assert(v(true));
   assert(v(false));
 
-  assertFalse(v("string"));
+  assertFalse(v("1"));
   assertFalse(v(1));
   assertFalse(v(1n));
   assertFalse(v(null));
@@ -45,7 +46,7 @@ Deno.test("validator/create_validate, createValidate bigint", () => {
 
   assert(v(1n));
 
-  assertFalse(v("string"));
+  assertFalse(v("1"));
   assertFalse(v(1));
   assertFalse(v(true));
   assertFalse(v(null));
@@ -57,7 +58,7 @@ Deno.test("validator/create_validate, createValidate null", () => {
 
   assert(v(null));
 
-  assertFalse(v("string"));
+  assertFalse(v("1"));
   assertFalse(v(1));
   assertFalse(v(1n));
   assertFalse(v(true));
@@ -69,7 +70,7 @@ Deno.test("validator/create_validate, createValidate undefined", () => {
 
   assert(v(undefined));
 
-  assertFalse(v("string"));
+  assertFalse(v("1"));
   assertFalse(v(1));
   assertFalse(v(1n));
   assertFalse(v(true));
@@ -84,7 +85,60 @@ Deno.test("validator/create_validate, createValidate object", () => {
   const v = createValidate({
     start: Point,
     end: Point,
+    empty: {},
   });
 
-  assert(v({ start: { x: 1, y: 2 }, end: { x: 3, y: 4 } }));
+  assert(v({ start: { x: 1, y: 2 }, end: { x: 3, y: 4 }, empty: {} }));
+});
+
+Deno.test("validator/create_validate, createValidate or", () => {
+  const v = createValidate(or([String, Number, BigInt]));
+
+  assert(v("1"));
+  assert(v(1));
+  assert(v(1n));
+
+  assertFalse(v(true));
+  assertFalse(v(null));
+  assertFalse(v(undefined));
+});
+
+Deno.test("validator/create_validate, createValidate array of any", () => {
+  const v = createValidate(Array);
+
+  assert(v([]));
+  assert(v(["1", 1, 1n]));
+
+  assert(v(["1"]));
+  assert(v([1]));
+  assert(v([1n]));
+  assert(v([true]));
+  assert(v([null]));
+  assert(v([undefined]));
+
+  assertFalse(v(1));
+  assertFalse(v(1n));
+  assertFalse(v(true));
+  assertFalse(v(null));
+  assertFalse(v(undefined));
+});
+
+Deno.test("validator/create_validate, createValidate array", () => {
+  const v = createValidate(array(or([String, Number, BigInt])));
+
+  assert(v([]));
+  assert(v(["1", 1, 1n]));
+
+  assert(v(["1"]));
+  assert(v([1]));
+  assert(v([1n]));
+  assertFalse(v([true]));
+  assertFalse(v([null]));
+  assertFalse(v([undefined]));
+
+  assertFalse(v(1));
+  assertFalse(v(1n));
+  assertFalse(v(true));
+  assertFalse(v(null));
+  assertFalse(v(undefined));
 });
