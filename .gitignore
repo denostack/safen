@@ -1,11 +1,4 @@
-/node_modules
-/lib
-
-.vscode
-.idea
-
-npm-debug.log*
-yarn-error.log
+.npm
 
 examples/**/package-lock.json
 examples/**/node_modules
