@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="./safen.png" alt="safen" width="500" />
-</p>
-
-<p align="center">Super Fast Object Validator<br />for Javascript(& Typescript).</p>
+# Safen
 
 <p>
   <a href="https://github.com/denostack/safen/actions"><img alt="Build" src="https://img.shields.io/github/workflow/status/denostack/safen/CI?style=flat-square" /></a>
@@ -12,6 +8,8 @@
   <a href="https://www.npmjs.com/package/safen"><img alt="License" src="https://img.shields.io/npm/l/safen.svg?style=flat-square" /></a>
   <img alt="Language Typescript" src="https://img.shields.io/badge/language-Typescript-007acc.svg?style=flat-square" />
 </p>
+
+Super Fast Object Validator<br />for Javascript(& Typescript).
 
 Safen supports the syntax similar to the type script interface. This makes it
 easy to create validation rules.
