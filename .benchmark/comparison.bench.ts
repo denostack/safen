@@ -1,10 +1,10 @@
-import { array, or } from "../mod.ts";
 import { z } from "https://deno.land/x/zod@v3.16.1/mod.ts";
-import { Static, Type } from "npm:@sinclair/typebox";
+import { Type } from "npm:@sinclair/typebox";
 import { TypeCompiler } from "npm:@sinclair/typebox/compiler";
+import { array, or } from "../mod.ts";
 
-import { generateRandomUser } from "./stubs/user.ts";
 import { createValidate } from "../validator/create_validate.ts";
+import { generateRandomUser } from "./stubs/user.ts";
 
 const isSafenUser = (() => {
   const DateType = {
