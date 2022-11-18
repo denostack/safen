@@ -113,7 +113,10 @@ function traverse(schema: Schema) {
       for (const decorator of decorators) {
         if (decorator.validate) {
           result += `if(!${decorator.validate("d")})${
-            throwError("It must be a valid value.", `#${decorator.name}`)
+            throwError(
+              "This is an invalid value from decorator.",
+              `#${decorator.name}`,
+            )
           };`;
         }
         if (decorator.sanitize) {

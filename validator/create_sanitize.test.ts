@@ -1,7 +1,11 @@
 import { assertEquals, assertThrows } from "testing/asserts.ts";
+import { email } from "../decorators/email.ts";
 import { ip } from "../decorators/ip.ts";
+import { lengthBetween } from "../decorators/length_between.ts";
+import { between } from "../decorators/between.ts";
+import { url } from "../decorators/url.ts";
 import { trim } from "../decorators/trim.ts";
-import { array, decorate, or } from "../schema/utils.ts";
+import { array, decorate, optional, or } from "../schema/utils.ts";
 import { createSanitize } from "./create_sanitize.ts";
 import { InvalidValueError } from "./invalid_value_error.ts";
 
@@ -291,8 +295,88 @@ Deno.test("validator/create_sanitize, createSanitize decorate", () => {
   const e = assertThrows(
     () => s("128.0.0.1.1"),
     InvalidValueError,
-    "It must be a valid value.",
+    "This is an invalid value from decorator.",
   );
   assertEquals(e.path, "");
   assertEquals(e.reason, "#ip(v4)");
+});
+
+Deno.test("validator/create_sanitize, createSanitize complex", () => {
+  const typeLat = decorate(Number, between(-90, 90));
+  const typeLng = decorate(Number, between(-180, 180));
+  const s = createSanitize({
+    username: optional(decorate(String, [
+      trim(),
+      email(),
+      lengthBetween(12, 100),
+    ])),
+    password: decorate(String, lengthBetween(8, 20)),
+    areas: array({
+      lat: typeLat,
+      lng: typeLng,
+    }),
+    env: {
+      referer: decorate(String, url()),
+      ip: decorate(String, ip("v4")),
+      os: {
+        name: or([
+          "window" as const,
+          "osx" as const,
+          "android" as const,
+          "iphone" as const,
+        ]),
+        version: String,
+      },
+      browser: {
+        name: or([
+          "chrome" as const,
+          "firefox" as const,
+          "edge" as const,
+          "ie" as const,
+        ]),
+        version: String,
+      },
+    },
+  });
+
+  assertEquals(
+    s({
+      username: "       corgidisco@gmail.com     ",
+      password: "12345678",
+      areas: [
+        { lat: 0, lng: 0 },
+      ],
+      env: {
+        referer: "http://corgidisco.github.io",
+        ip: "127.0.0.1",
+        os: {
+          name: "osx",
+          version: "10.13.1",
+        },
+        browser: {
+          name: "chrome",
+          version: "62.0.3202.94",
+        },
+      },
+    }),
+    {
+      username: "corgidisco@gmail.com", // trimmed!
+      password: "12345678",
+      areas: [
+        { lat: 0, lng: 0 },
+      ],
+      env: {
+        referer: "http://corgidisco.github.io",
+        ip: "127.0.0.1",
+        os: {
+          name: "osx",
+          version: "10.13.1",
+        },
+        browser: {
+          name: "chrome",
+          version: "62.0.3202.94",
+        },
+      },
+    },
+  );
 });
