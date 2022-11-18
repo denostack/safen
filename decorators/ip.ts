@@ -8,15 +8,18 @@ export const RE_IP_V6 =
 export function ip(version?: "v4" | "v6"): SchemaDecorator<string> {
   if (version === "v4") {
     return {
+      name: "ip(v4)",
       validate: (v) => `${RE_IP_V4}.test(${v})`,
     };
   }
   if (version === "v6") {
     return {
+      name: "ip(v6)",
       validate: (v) => `${RE_IP_V6}.test(${v})`,
     };
   }
   return {
+    name: "ip",
     validate: (v) => `(${RE_IP_V4}.test(${v})||${RE_IP_V6}.test(${v}))`,
   };
 }

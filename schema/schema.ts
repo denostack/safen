@@ -35,6 +35,7 @@ export type SchemaDecorateType<T extends Schema> = [
 export type SchemaValueType = string | number | boolean | bigint;
 
 export interface SchemaDecorator<T> {
+  name: string;
   validate?(v: string): string;
   sanitize?(v: string): string;
 }

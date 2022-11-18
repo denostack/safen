@@ -1,60 +1,31 @@
 import { ParseSchema } from "../schema/parse_schema.ts";
 import { Schema } from "../schema/schema.ts";
+import { primitiveTemplates } from "./template.ts";
 
 const schemaToIdx = new Map<unknown, number>();
 let fns: string[] = [];
-
-const scalarTemplates = new Map<
-  unknown,
-  [valid: (value: string) => string, invalid: (value: string) => string]
->([
-  [String, [
-    (v) => `typeof ${v} === "string"`,
-    (v) => `typeof ${v} !== "string"`,
-  ]],
-  [Number, [
-    (v) => `typeof ${v} === "number"`,
-    (v) => `typeof ${v} !== "number"`,
-  ]],
-  [Boolean, [
-    (v) => `typeof ${v} === "boolean"`,
-    (v) => `typeof ${v} !== "boolean"`,
-  ]],
-  [BigInt, [
-    (v) => `typeof ${v} === "bigint"`,
-    (v) => `typeof ${v} !== "bigint"`,
-  ]],
-  [Array, [
-    (v) => `Array.isArray(${v})`,
-    (v) => `!Array.isArray(${v})`,
-  ]],
-  [null, [(v) => `${v} === null`, (v) => `${v} !== null`]],
-  [undefined, [
-    (v) => `typeof ${v} === "undefined"`,
-    (v) => `typeof ${v} !== "undefined"`,
-  ]],
-]);
 
 function traverse(schema: Schema) {
   const idx = fns.length;
   const name = `_${idx}`;
 
-  const template = scalarTemplates.get(schema);
+  const template = primitiveTemplates.get(schema);
   if (template) {
     schemaToIdx.set(schema, idx);
     fns.push(`function ${name}(d){return ${template[0]("d")}}`);
     return;
   }
 
-  const type = typeof schema;
+  const schemaType = typeof schema;
   if (
-    type === "string" || type === "number" || type === "boolean"
+    schemaType === "string" || schemaType === "number" ||
+    schemaType === "boolean"
   ) {
     schemaToIdx.set(schema, idx);
     fns.push(`function ${name}(d){return d===${JSON.stringify(schema)}}`);
     return;
   }
-  if (type === "bigint") {
+  if (schemaType === "bigint") {
     schemaToIdx.set(schema, idx);
     fns.push(`function ${name}(d){return d===${schema!.toString()}n}`);
     return;
@@ -68,11 +39,11 @@ function traverse(schema: Schema) {
     if (schema[0] === "or") {
       const [_, children] = schema;
       if (children.length === 0) {
-        result += `return false`;
+        throw new Error("Empty or");
       }
       result += `return `;
       result += children.map((child) => {
-        const template = scalarTemplates.get(child);
+        const template = primitiveTemplates.get(child);
         if (template) {
           return template[0]("d");
         }
@@ -86,7 +57,7 @@ function traverse(schema: Schema) {
       const [_, of] = schema;
       result += `if(!Array.isArray(d)) return false;`;
       result += `for(let i=0;i<d.length;i++){`;
-      const template = scalarTemplates.get(of);
+      const template = primitiveTemplates.get(of);
       if (template) {
         result += `if (${template[1]("d[i]")}) return false;`;
       } else {
@@ -120,19 +91,20 @@ function traverse(schema: Schema) {
       result += `if(typeof d !== "object" || d === null) return false;`;
       result += `return `;
       result += entries.map(([key, nextSchema]) => {
-        const template = scalarTemplates.get(nextSchema);
+        const nextKey = `d[${JSON.stringify(key)}]`;
+        const template = primitiveTemplates.get(nextSchema);
         if (template) {
-          return template[0](`d.${key}`);
+          return template[0](nextKey);
         }
         if (!schemaToIdx.has(nextSchema)) {
           traverse(nextSchema);
         }
         const idx = schemaToIdx.get(nextSchema)!;
-        return `_${idx}(d.${key})`;
+        return `_${idx}(${nextKey})`;
       }).join("&&");
     }
   } else {
-    result += `return false`;
+    throw new Error("Invalid schema");
   }
   result += `}`; // end fn
 
