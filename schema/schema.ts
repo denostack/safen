@@ -15,6 +15,7 @@ export type SchemaPrimitiveType =
   | NumberConstructor
   | BooleanConstructor
   | BigIntConstructor
+  | SymbolConstructor
   | ArrayConstructor;
 
 export type SchemaEmptyType = null | undefined;

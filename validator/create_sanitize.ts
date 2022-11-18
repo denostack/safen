@@ -158,7 +158,6 @@ export function createSanitizeSource(schema: Schema) {
   fns = [];
   schemaToIdx.clear();
   traverse(schema);
-  console.log(fns.join("\n"));
   return fns.join("\n");
 }
 

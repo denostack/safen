@@ -12,6 +12,7 @@ export type ParseSchema<T extends Schema> = T extends StringConstructor ? string
   : T extends NumberConstructor ? number
   : T extends BooleanConstructor ? boolean
   : T extends BigIntConstructor ? bigint
+  : T extends SymbolConstructor ? symbol
   // deno-lint-ignore no-explicit-any
   : T extends ArrayConstructor ? any[]
   : T extends infer U extends SchemaEmptyType ? U

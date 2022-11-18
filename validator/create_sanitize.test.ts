@@ -64,6 +64,21 @@ Deno.test("validator/create_sanitize, createSanitize bigint", () => {
   assertEquals(e.reason, "bigint");
 });
 
+Deno.test("validator/create_sanitize, createSanitize symbol", () => {
+  const s = createSanitize(Symbol);
+
+  const sym = Symbol(30);
+  assertEquals(s(sym), sym);
+
+  const e = assertThrows(
+    () => s(30),
+    InvalidValueError,
+    "It must be a symbol.",
+  );
+  assertEquals(e.path, "");
+  assertEquals(e.reason, "symbol");
+});
+
 Deno.test("validator/create_sanitize, createSanitize string value", () => {
   const s = createSanitize("something");
 

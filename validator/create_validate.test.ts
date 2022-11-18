@@ -54,6 +54,18 @@ Deno.test("validator/create_validate, createValidate bigint", () => {
   assertFalse(v(undefined));
 });
 
+Deno.test("validator/create_validate, createValidate symbol", () => {
+  const v = createValidate(Symbol);
+
+  assert(v(Symbol(1)));
+
+  assertFalse(v("1"));
+  assertFalse(v(1));
+  assertFalse(v(true));
+  assertFalse(v(null));
+  assertFalse(v(undefined));
+});
+
 Deno.test("validator/create_validate, createValidate string value", () => {
   const v = createValidate("something");
 

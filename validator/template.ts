@@ -26,6 +26,11 @@ export const primitiveTemplates = new Map<
     (v) => `typeof ${v} !== "bigint"`,
     "bigint",
   ]],
+  [Symbol, [
+    (v) => `typeof ${v} === "symbol"`,
+    (v) => `typeof ${v} !== "symbol"`,
+    "symbol",
+  ]],
   [Array, [
     (v) => `Array.isArray(${v})`,
     (v) => `!Array.isArray(${v})`,

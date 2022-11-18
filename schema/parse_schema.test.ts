@@ -7,6 +7,7 @@ type TestPrimitiveTypes = [
   Expect<Equal<ParseSchema<typeof Number>, number>>,
   Expect<Equal<ParseSchema<typeof Boolean>, boolean>>,
   Expect<Equal<ParseSchema<typeof BigInt>, bigint>>,
+  Expect<Equal<ParseSchema<typeof Symbol>, symbol>>,
   Expect<Equal<ParseSchema<null>, null>>,
   Expect<Equal<ParseSchema<undefined>, undefined>>,
 ];
