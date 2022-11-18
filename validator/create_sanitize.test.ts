@@ -1,9 +1,8 @@
 import { assertEquals, assertThrows } from "testing/asserts.ts";
+import { between } from "../decorators/between.ts";
 import { email } from "../decorators/email.ts";
 import { ip } from "../decorators/ip.ts";
 import { lengthBetween } from "../decorators/length_between.ts";
-import { between } from "../decorators/between.ts";
-import { url } from "../decorators/url.ts";
 import { trim } from "../decorators/trim.ts";
 import { any, array, decorate, optional, or } from "../schema/utils.ts";
 import { createSanitize } from "./create_sanitize.ts";
@@ -315,18 +314,15 @@ Deno.test("validator/create_sanitize, createSanitize complex", () => {
   const typeLat = decorate(Number, between(-90, 90));
   const typeLng = decorate(Number, between(-180, 180));
   const s = createSanitize({
-    username: optional(decorate(String, [
-      trim(),
-      email(),
-      lengthBetween(12, 100),
-    ])),
+    id: Number,
+    email: decorate(String, [trim(), email()]),
+    name: optional(String),
     password: decorate(String, lengthBetween(8, 20)),
     areas: array({
       lat: typeLat,
       lng: typeLng,
     }),
     env: {
-      referer: decorate(String, url()),
       ip: decorate(String, ip("v4")),
       os: {
         name: or([
@@ -351,13 +347,14 @@ Deno.test("validator/create_sanitize, createSanitize complex", () => {
 
   assertEquals(
     s({
-      username: "       corgidisco@gmail.com     ",
+      id: 30,
+      email: "       wan2land@gmail.com     ",
+      name: "wan2land",
       password: "12345678",
       areas: [
         { lat: 0, lng: 0 },
       ],
       env: {
-        referer: "http://corgidisco.github.io",
         ip: "127.0.0.1",
         os: {
           name: "osx",
@@ -370,13 +367,14 @@ Deno.test("validator/create_sanitize, createSanitize complex", () => {
       },
     }),
     {
-      username: "corgidisco@gmail.com", // trimmed!
+      id: 30,
+      email: "wan2land@gmail.com", // trimmed!
+      name: "wan2land",
       password: "12345678",
       areas: [
         { lat: 0, lng: 0 },
       ],
       env: {
-        referer: "http://corgidisco.github.io",
         ip: "127.0.0.1",
         os: {
           name: "osx",
