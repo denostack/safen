@@ -99,6 +99,25 @@
     "https://deno.land/x/ts_morph@15.1.0/common/ts_morph_common.js": "e43476019b9c74ca9116eb82b97a14e6bc2d1bba55b0575d933d98069c0c0c37",
     "https://deno.land/x/ts_morph@15.1.0/common/typescript.d.ts": "3fa86a2c33804b6a4221dda3714a6a2f8a2f26983ea6c63d2bf6f2839fbb778a",
     "https://deno.land/x/ts_morph@15.1.0/common/typescript.js": "4d7a5d2090a2ba739c02207bd8c49a60c9475dea7725a9cabfaf0f26cbf85f53",
+    "https://deno.land/x/zod@v3.16.1/ZodError.ts": "6e56e6416bbbad3539b577b7636dc198e5d87cf59f1ceb4e7b58d1d38190c2f7",
+    "https://deno.land/x/zod@v3.16.1/external.ts": "433e13ff774fef22d416027308db33cacb719774898372ec5faa32bb572f11dc",
+    "https://deno.land/x/zod@v3.16.1/helpers/errorUtil.ts": "7a77328240be7b847af6de9189963bd9f79cab32bbc61502a9db4fe6683e2ea7",
+    "https://deno.land/x/zod@v3.16.1/helpers/parseUtil.ts": "2611b41b579f551fcf0799415f9793709637bc7c7778bf53aab73cea92e859db",
+    "https://deno.land/x/zod@v3.16.1/helpers/partialUtil.ts": "8dc921a02b47384cf52217c7e539268daf619f89319b75bdf13ea178815725df",
+    "https://deno.land/x/zod@v3.16.1/helpers/typeAliases.ts": "a1a8d039eb98925f242f5ea1e21e6d3cabd7f05e9747680165c914695c979b4f",
+    "https://deno.land/x/zod@v3.16.1/helpers/util.ts": "1d28cc4dfde641f20d8544a1a747cf745d5eda0c5cdeaca8a29837991254a67d",
+    "https://deno.land/x/zod@v3.16.1/index.ts": "035a7422d9f2be54daa0fe464254b69225b443000673e4794095d672471e8792",
+    "https://deno.land/x/zod@v3.16.1/mod.ts": "64e55237cb4410e17d968cd08975566059f27638ebb0b86048031b987ba251c4",
+    "https://deno.land/x/zod@v3.16.1/types.ts": "fff4c7909b1919989c4cc1abe6218dfbdb53e197cacb2dfad2831dbd71dc56d2",
     "https://esm.sh/@type-challenges/utils@0.1.1/index.d.ts": "5a3ca19fbe13c3611f2c360ed7a4e526cd2a732de200b8b080389599066a231e"
+  },
+  "npm": {
+    "specifiers": { "@sinclair/typebox": "@sinclair/typebox@0.25.8" },
+    "packages": {
+      "@sinclair/typebox@0.25.8": {
+        "integrity": "sha512-/7GXgMOCfnxpIov52cPetqQ7bxRBaTBJAgp04Se2UQB1J0vUfEOIMpn63cLc3S5JXDUflCWxELKDV8eiPpmUTQ==",
+        "dependencies": {}
+      }
+    }
   }
 }
