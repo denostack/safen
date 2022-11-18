@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import { assertEquals } from "testing/asserts.ts";
 import type { Equal, Expect } from "@type-challenges/utils";
 import { type ParseSchema } from "./parse_schema.ts";
@@ -30,11 +29,11 @@ type TestObject = [
     >
   >,
 ];
-
 type TestArray = [
   Expect<
     Equal<
       ParseSchema<typeof Array>,
+      // deno-lint-ignore no-explicit-any
       any[]
     >
   >,
@@ -56,6 +55,40 @@ type TestOr = [
   Expect<
     Equal<
       ParseSchema<{ hello: ["or", (typeof String | typeof Number | Point)[]] }>,
+      { hello: string | number | { x: number; y: number } }
+    >
+  >,
+];
+
+type TestDecorator = [
+  // with scalar
+  Expect<
+    Equal<ParseSchema<["decorate", typeof String, []]>, string>
+  >,
+  // with object
+  Expect<
+    Equal<
+      ParseSchema<["decorate", { foo: typeof String }, []]>,
+      { foo: string }
+    >
+  >,
+  // with array
+  Expect<
+    Equal<
+      ParseSchema<["decorate", ["array", typeof String], []]>,
+      string[]
+    >
+  >,
+  // with or
+  Expect<
+    Equal<
+      ParseSchema<
+        [
+          "decorate",
+          { hello: ["or", (typeof String | typeof Number | Point)[]] },
+          [],
+        ]
+      >,
       { hello: string | number | { x: number; y: number } }
     >
   >,

@@ -64,37 +64,54 @@ function traverse(schema: Schema) {
   fns.push("");
 
   let result = `function ${name}(d){`; // start fn
-  if (Array.isArray(schema) && schema[0] === "or") {
-    if (schema[1].length === 0) {
-      result += `return false`;
-    }
-    result += `return `;
-    result += schema[1].map((nextSchema) => {
-      const template = scalarTemplates.get(nextSchema);
+  if (Array.isArray(schema)) {
+    if (schema[0] === "or") {
+      const [_, children] = schema;
+      if (children.length === 0) {
+        result += `return false`;
+      }
+      result += `return `;
+      result += children.map((child) => {
+        const template = scalarTemplates.get(child);
+        if (template) {
+          return template[0]("d");
+        }
+        if (!schemaToIdx.has(child)) {
+          traverse(child);
+        }
+        const idx = schemaToIdx.get(child)!;
+        return `_${idx}(d)`;
+      }).join("||");
+    } else if (Array.isArray(schema) && schema[0] === "array") {
+      const [_, of] = schema;
+      result += `if(!Array.isArray(d)) return false;`;
+      result += `for(let i=0;i<d.length;i++){`;
+      const template = scalarTemplates.get(of);
       if (template) {
-        return template[0]("d");
+        result += `if (${template[1]("d[i]")}) return false;`;
+      } else {
+        if (!schemaToIdx.has(of)) {
+          traverse(of);
+        }
+        const idx = schemaToIdx.get(of)!;
+        result += `if (!_${idx}(d[i])) return false;`;
       }
-      if (!schemaToIdx.has(nextSchema)) {
-        traverse(nextSchema);
+      result += `}`;
+      result += `return true`;
+    } else if (Array.isArray(schema) && schema[0] === "decorate") {
+      const [_, of, decorators] = schema;
+      if (!schemaToIdx.has(of)) {
+        traverse(of);
       }
-      const idx = schemaToIdx.get(nextSchema)!;
-      return `_${idx}(d)`;
-    }).join("||");
-  } else if (Array.isArray(schema) && schema[0] === "array") {
-    result += `if(!Array.isArray(d)) return false;`;
-    result += `for(let i=0;i<d.length;i++){`;
-    const template = scalarTemplates.get(schema[1]);
-    if (template) {
-      result += `if (${template[1]("d[i]")}) return false;`;
-    } else {
-      if (!schemaToIdx.has(schema[1])) {
-        traverse(schema[1]);
+      const idx = schemaToIdx.get(of)!;
+      result += `if (!_${idx}(d)) return false;`;
+      for (const decorator of decorators) {
+        if (decorator.validate) {
+          result += `if (!${decorator.validate("d")}) return false;`;
+        }
       }
-      const idx = schemaToIdx.get(schema[1])!;
-      result += `if (!_${idx}(d[i])) return false;`;
+      result += `return true`;
     }
-    result += `}`;
-    result += `return true`;
   } else if (typeof schema === "object" && schema !== null) {
     const entries = Object.entries(schema);
     if (entries.length === 0) {

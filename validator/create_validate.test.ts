@@ -1,5 +1,6 @@
 import { assert, assertFalse } from "testing/asserts.ts";
-import { array, or } from "../schema/utils.ts";
+import { ip } from "../decorators/ip.ts";
+import { array, decorate, or } from "../schema/utils.ts";
 import { createValidate } from "./create_validate.ts";
 
 Deno.test("validator/create_validate, createValidate string", () => {
@@ -177,4 +178,31 @@ Deno.test("validator/create_validate, createValidate array", () => {
   assertFalse(v(true));
   assertFalse(v(null));
   assertFalse(v(undefined));
+});
+
+Deno.test("validator/create_validate, createValidate array", () => {
+  const v = createValidate(array(or([String, Number, BigInt])));
+
+  assert(v([]));
+  assert(v(["1", 1, 1n]));
+
+  assert(v(["1"]));
+  assert(v([1]));
+  assert(v([1n]));
+  assertFalse(v([true]));
+  assertFalse(v([null]));
+  assertFalse(v([undefined]));
+
+  assertFalse(v(1));
+  assertFalse(v(1n));
+  assertFalse(v(true));
+  assertFalse(v(null));
+  assertFalse(v(undefined));
+});
+
+Deno.test("validator/create_validate, createValidate decorate", () => {
+  const v = createValidate(decorate(String, ip("v4")));
+
+  assert(v("127.0.0.1"));
+  assertFalse(v("1"));
 });
