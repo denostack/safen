@@ -1,6 +1,7 @@
 import { assertEquals } from "testing/asserts.ts";
 import type { Equal, Expect } from "@type-challenges/utils";
 import { type ParseSchema } from "./parse_schema.ts";
+import { Kind } from "./schema.ts";
 
 type TestPrimitiveTypes = [
   Expect<Equal<ParseSchema<typeof String>, string>>,
@@ -40,7 +41,7 @@ type TestArray = [
   >,
   Expect<
     Equal<
-      ParseSchema<["array", typeof String]>,
+      ParseSchema<[Kind.Array, typeof String]>,
       string[]
     >
   >,
@@ -49,13 +50,15 @@ type TestArray = [
 type TestOr = [
   Expect<
     Equal<
-      ParseSchema<["or", (typeof String | typeof Number)[]]>,
+      ParseSchema<[Kind.Or, (typeof String | typeof Number)[]]>,
       string | number
     >
   >,
   Expect<
     Equal<
-      ParseSchema<{ hello: ["or", (typeof String | typeof Number | Point)[]] }>,
+      ParseSchema<
+        { hello: [Kind.Or, (typeof String | typeof Number | Point)[]] }
+      >,
       { hello: string | number | { x: number; y: number } }
     >
   >,
@@ -64,19 +67,19 @@ type TestOr = [
 type TestDecorator = [
   // with scalar
   Expect<
-    Equal<ParseSchema<["decorate", typeof String, []]>, string>
+    Equal<ParseSchema<[Kind.Decorator, typeof String, []]>, string>
   >,
   // with object
   Expect<
     Equal<
-      ParseSchema<["decorate", { foo: typeof String }, []]>,
+      ParseSchema<[Kind.Decorator, { foo: typeof String }, []]>,
       { foo: string }
     >
   >,
   // with array
   Expect<
     Equal<
-      ParseSchema<["decorate", ["array", typeof String], []]>,
+      ParseSchema<[Kind.Decorator, [Kind.Array, typeof String], []]>,
       string[]
     >
   >,
@@ -85,8 +88,8 @@ type TestDecorator = [
     Equal<
       ParseSchema<
         [
-          "decorate",
-          { hello: ["or", (typeof String | typeof Number | Point)[]] },
+          Kind.Decorator,
+          { hello: [Kind.Or, (typeof String | typeof Number | Point)[]] },
           [],
         ]
       >,

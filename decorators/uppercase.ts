@@ -1,6 +1,6 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
-export function uppercase(): SchemaDecorator<string> {
+export function uppercase(): SafenDecorator<string> {
   return {
     name: "uppercase",
     validate: (v) => `(${v}.toUpperCase() === ${v})`,

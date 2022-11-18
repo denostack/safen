@@ -1,6 +1,6 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
-export function email(): SchemaDecorator<string> {
+export function email(): SafenDecorator<string> {
   return {
     name: "email",
     validate: (v) =>

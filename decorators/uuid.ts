@@ -1,4 +1,4 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
 export const RE_UUID =
   /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i;
@@ -10,7 +10,7 @@ export const RE_UUID_V5 =
   /^[0-9A-F]{8}-[0-9A-F]{4}-5[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
 
 // ref. https://github.com/chriso/validator.js/blob/master/src/lib/isUUID.js
-export function uuid(version?: "v3" | "v4" | "v5"): SchemaDecorator<string> {
+export function uuid(version?: "v3" | "v4" | "v5"): SafenDecorator<string> {
   if (version === "v3") {
     return {
       name: "uuid(v3)",

@@ -1,6 +1,6 @@
 import { assert, assertFalse } from "testing/asserts.ts";
 import { ip } from "../decorators/ip.ts";
-import { array, decorate, or } from "../schema/utils.ts";
+import { any, array, decorate, or } from "../schema/utils.ts";
 import { createValidate } from "./create_validate.ts";
 
 Deno.test("validator/create_validate, createValidate string", () => {
@@ -124,6 +124,17 @@ Deno.test("validator/create_validate, createValidate undefined", () => {
   assertFalse(v(1n));
   assertFalse(v(true));
   assertFalse(v(null));
+});
+
+Deno.test("validator/create_validate, createValidate any", () => {
+  const v = createValidate(any());
+
+  assert(v(undefined));
+  assert(v("1"));
+  assert(v(1));
+  assert(v(1n));
+  assert(v(true));
+  assert(v(null));
 });
 
 Deno.test("validator/create_validate, createValidate object", () => {

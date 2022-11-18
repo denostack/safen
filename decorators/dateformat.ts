@@ -1,6 +1,6 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
-export function dateformat(): SchemaDecorator<string> {
+export function dateformat(): SafenDecorator<string> {
   return {
     name: "dateformat",
     validate: (v) => `!Number.isNaN(Date.parse(${v}))`,

@@ -1,5 +1,5 @@
 import { ParseSchema } from "../schema/parse_schema.ts";
-import { Schema } from "../schema/schema.ts";
+import { Kind, Schema } from "../schema/schema.ts";
 import { primitiveTemplates } from "./template.ts";
 
 const schemaToIdx = new Map<unknown, number>();
@@ -36,52 +36,63 @@ function traverse(schema: Schema) {
 
   let result = `function ${name}(d){`; // start fn
   if (Array.isArray(schema)) {
-    if (schema[0] === "or") {
-      const [_, children] = schema;
-      if (children.length === 0) {
-        throw new Error("Empty or");
+    switch (schema[0]) {
+      case Kind.Or: {
+        const [_, children] = schema;
+        if (children.length === 0) {
+          throw new Error("Empty or");
+        }
+        result += `return `;
+        result += children.map((child) => {
+          const template = primitiveTemplates.get(child);
+          if (template) {
+            return template[0]("d");
+          }
+          if (!schemaToIdx.has(child)) {
+            traverse(child);
+          }
+          const idx = schemaToIdx.get(child)!;
+          return `_${idx}(d)`;
+        }).join("||");
+        break;
       }
-      result += `return `;
-      result += children.map((child) => {
-        const template = primitiveTemplates.get(child);
+      case Kind.Array: {
+        const [_, of] = schema;
+        result += `if(!Array.isArray(d)) return false;`;
+        result += `for(let i=0;i<d.length;i++){`;
+        const template = primitiveTemplates.get(of);
         if (template) {
-          return template[0]("d");
+          result += `if (${template[1]("d[i]")}) return false;`;
+        } else {
+          if (!schemaToIdx.has(of)) {
+            traverse(of);
+          }
+          const idx = schemaToIdx.get(of)!;
+          result += `if (!_${idx}(d[i])) return false;`;
         }
-        if (!schemaToIdx.has(child)) {
-          traverse(child);
-        }
-        const idx = schemaToIdx.get(child)!;
-        return `_${idx}(d)`;
-      }).join("||");
-    } else if (Array.isArray(schema) && schema[0] === "array") {
-      const [_, of] = schema;
-      result += `if(!Array.isArray(d)) return false;`;
-      result += `for(let i=0;i<d.length;i++){`;
-      const template = primitiveTemplates.get(of);
-      if (template) {
-        result += `if (${template[1]("d[i]")}) return false;`;
-      } else {
+        result += `}`;
+        result += `return true`;
+        break;
+      }
+      case Kind.Decorator: {
+        const [_, of, decorators] = schema;
         if (!schemaToIdx.has(of)) {
           traverse(of);
         }
         const idx = schemaToIdx.get(of)!;
-        result += `if (!_${idx}(d[i])) return false;`;
-      }
-      result += `}`;
-      result += `return true`;
-    } else if (Array.isArray(schema) && schema[0] === "decorate") {
-      const [_, of, decorators] = schema;
-      if (!schemaToIdx.has(of)) {
-        traverse(of);
-      }
-      const idx = schemaToIdx.get(of)!;
-      result += `if (!_${idx}(d)) return false;`;
-      for (const decorator of decorators) {
-        if (decorator.validate) {
-          result += `if (!${decorator.validate("d")}) return false;`;
+        result += `if (!_${idx}(d)) return false;`;
+        for (const decorator of decorators) {
+          if (decorator.validate) {
+            result += `if (!${decorator.validate("d")}) return false;`;
+          }
         }
+        result += `return true`;
+        break;
       }
-      result += `return true`;
+      case Kind.Any: {
+        result += `return true`;
+        break;
+      }
     }
   } else if (typeof schema === "object" && schema !== null) {
     const entries = Object.entries(schema);

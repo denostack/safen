@@ -1,5 +1,5 @@
 import { ParseSchema } from "../schema/parse_schema.ts";
-import { Schema } from "../schema/schema.ts";
+import { Kind, Schema } from "../schema/schema.ts";
 import { InvalidValueError } from "./invalid_value_error.ts";
 import { primitiveTemplates } from "./template.ts";
 
@@ -61,69 +61,80 @@ function traverse(schema: Schema) {
 
   let result = `function ${name}(d,p){`; // start fn
   if (Array.isArray(schema)) {
-    if (schema[0] === "or") {
-      const [_, children] = schema;
-      if (children.length === 0) {
-        throw new Error("Empty or");
-      }
-      for (const child of children) {
-        const template = primitiveTemplates.get(child);
-        if (template) {
-          const [valid] = template;
-          result += `if(${valid("d")})return d;`;
-        } else {
-          if (!schemaToIdx.has(child)) {
-            traverse(child);
-          }
-          const idx = schemaToIdx.get(child)!;
-          result += `try{return _${idx}(d,p)}catch{}`;
+    switch (schema[0]) {
+      case Kind.Or: {
+        const [_, children] = schema;
+        if (children.length === 0) {
+          throw new Error("Empty or");
         }
+        for (const child of children) {
+          const template = primitiveTemplates.get(child);
+          if (template) {
+            const [valid] = template;
+            result += `if(${valid("d")})return d;`;
+          } else {
+            if (!schemaToIdx.has(child)) {
+              traverse(child);
+            }
+            const idx = schemaToIdx.get(child)!;
+            result += `try{return _${idx}(d,p)}catch{}`;
+          }
+        }
+        result += throwError("It must be one of the types.", "or");
+        break;
       }
-      result += throwError("It must be one of the types.", "or");
-    } else if (Array.isArray(schema) && schema[0] === "array") {
-      const [_, of] = schema;
-      result += `if(!Array.isArray(d))${
-        throwError("It must be a array.", "array")
-      };`;
-      result += `for(let i=0;i<d.length;i++){`;
-      const template = primitiveTemplates.get(of);
-      const nextPath = 'p+"["+i+"]"';
-      if (template) {
-        const [_, invalid, type] = template;
-        const message = `It must be a ${type}.`;
-        result += `if(${invalid("d[i]")})${
-          throwError(message, type, nextPath)
+      case Kind.Array: {
+        const [_, of] = schema;
+        result += `if(!Array.isArray(d))${
+          throwError("It must be a array.", "array")
         };`;
-      } else {
+        result += `for(let i=0;i<d.length;i++){`;
+        const template = primitiveTemplates.get(of);
+        const nextPath = 'p+"["+i+"]"';
+        if (template) {
+          const [_, invalid, type] = template;
+          const message = `It must be a ${type}.`;
+          result += `if(${invalid("d[i]")})${
+            throwError(message, type, nextPath)
+          };`;
+        } else {
+          if (!schemaToIdx.has(of)) {
+            traverse(of);
+          }
+          const idx = schemaToIdx.get(of)!;
+          result += `d[i]=_${idx}(d[i],${nextPath});`;
+        }
+        result += `}`;
+        result += `return d`;
+        break;
+      }
+      case Kind.Decorator: {
+        const [_, of, decorators] = schema;
         if (!schemaToIdx.has(of)) {
           traverse(of);
         }
         const idx = schemaToIdx.get(of)!;
-        result += `d[i]=_${idx}(d[i],${nextPath});`;
-      }
-      result += `}`;
-      result += `return d`;
-    } else if (Array.isArray(schema) && schema[0] === "decorate") {
-      const [_, of, decorators] = schema;
-      if (!schemaToIdx.has(of)) {
-        traverse(of);
-      }
-      const idx = schemaToIdx.get(of)!;
-      result += `d=_${idx}(d,p);`;
-      for (const decorator of decorators) {
-        if (decorator.validate) {
-          result += `if(!${decorator.validate("d")})${
-            throwError(
-              "This is an invalid value from decorator.",
-              `#${decorator.name}`,
-            )
-          };`;
+        result += `d=_${idx}(d,p);`;
+        for (const decorator of decorators) {
+          if (decorator.validate) {
+            result += `if(!${decorator.validate("d")})${
+              throwError(
+                "This is an invalid value from decorator.",
+                `#${decorator.name}`,
+              )
+            };`;
+          }
+          if (decorator.sanitize) {
+            result += `d=${decorator.sanitize("d")};`;
+          }
         }
-        if (decorator.sanitize) {
-          result += `d=${decorator.sanitize("d")};`;
-        }
+        result += `return d`;
+        break;
       }
-      result += `return d`;
+      case Kind.Any: {
+        result += `return d`;
+        break;
+      }
     }
   } else if (typeof schema === "object" && schema !== null) {
     const type = "object";

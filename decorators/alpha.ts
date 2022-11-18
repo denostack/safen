@@ -1,6 +1,6 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
-export function alpha(): SchemaDecorator<string> {
+export function alpha(): SafenDecorator<string> {
   return {
     name: "alpha",
     validate: (v) => `/^[a-z]+$/i.test(${v})`,

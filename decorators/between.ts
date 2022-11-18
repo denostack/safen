@@ -1,9 +1,9 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
 export function between(
   min: number | string,
   max: number | string,
-): SchemaDecorator<number | string> {
+): SafenDecorator<number | string> {
   return {
     name: `between(${min},${max})`,
     validate: (v) =>

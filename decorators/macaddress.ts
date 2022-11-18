@@ -1,6 +1,6 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
-export function macaddress(): SchemaDecorator<string> {
+export function macaddress(): SafenDecorator<string> {
   return {
     name: "macaddress",
     validate: (v) =>

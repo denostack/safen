@@ -5,7 +5,7 @@ import { lengthBetween } from "../decorators/length_between.ts";
 import { between } from "../decorators/between.ts";
 import { url } from "../decorators/url.ts";
 import { trim } from "../decorators/trim.ts";
-import { array, decorate, optional, or } from "../schema/utils.ts";
+import { any, array, decorate, optional, or } from "../schema/utils.ts";
 import { createSanitize } from "./create_sanitize.ts";
 import { InvalidValueError } from "./invalid_value_error.ts";
 
@@ -165,6 +165,16 @@ Deno.test("validator/create_sanitize, createSanitize undefined", () => {
   );
   assertEquals(e.path, "");
   assertEquals(e.reason, "undefined");
+});
+
+Deno.test("validator/create_sanitize, createSanitize any", () => {
+  const s = createSanitize(any());
+
+  assertEquals(s(undefined), undefined);
+  assertEquals(s(1), 1);
+  assertEquals(s("1"), "1");
+  assertEquals(s(true), true);
+  assertEquals(s({}), {});
 });
 
 Deno.test("validator/create_sanitize, createSanitize object", () => {

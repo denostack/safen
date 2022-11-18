@@ -1,6 +1,6 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
-export function base64(): SchemaDecorator<string> {
+export function base64(): SafenDecorator<string> {
   return {
     name: "base64",
     validate: (v) =>

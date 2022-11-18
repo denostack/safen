@@ -1,8 +1,8 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
 export function max(
   max: number | string,
-): SchemaDecorator<number | string> {
+): SafenDecorator<number | string> {
   return {
     name: `max(${max})`,
     validate: (v) => `(${v}<=${JSON.stringify(max)})`,

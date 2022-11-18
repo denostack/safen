@@ -1,8 +1,8 @@
-import { SchemaDecorator } from "../schema/schema.ts";
+import { SafenDecorator } from "../schema/schema.ts";
 
 export function min(
   min: number | string,
-): SchemaDecorator<number | string> {
+): SafenDecorator<number | string> {
   return {
     name: `min(${min})`,
     validate: (v) => `(${v}>=${JSON.stringify(min)})`,

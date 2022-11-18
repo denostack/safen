@@ -1,39 +1,49 @@
 import { ParseSchema } from "./parse_schema.ts";
 import {
+  Kind,
+  SafenDecorator,
   Schema,
-  SchemaArrayType,
-  SchemaDecorateType,
+  SchemaAny,
+  SchemaArray,
   SchemaDecorator,
-  SchemaOrType,
+  SchemaOr,
 } from "./schema.ts";
 
-export function or<T extends Schema>(types: T[]): SchemaOrType<T> {
-  return ["or", types];
+export function any(): SchemaAny {
+  return [Kind.Any];
 }
 
-export function array<T extends Schema>(of: T): SchemaArrayType<T> {
-  return ["array", of];
+export function or<T extends Schema>(types: T[]): SchemaOr<T> {
+  return [Kind.Or, types];
+}
+
+export function array<T extends Schema>(of: T): SchemaArray<T> {
+  return [Kind.Array, of];
 }
 
 export function decorate<T extends Schema>(
   of: T,
-  decorator: SchemaDecorator<ParseSchema<T>>,
-): SchemaDecorateType<T>;
+  decorator: SafenDecorator<ParseSchema<T>>,
+): SchemaDecorator<T>;
 export function decorate<T extends Schema>(
   of: T,
-  decorators: SchemaDecorator<ParseSchema<T>>[],
-): SchemaDecorateType<T>;
+  decorators: SafenDecorator<ParseSchema<T>>[],
+): SchemaDecorator<T>;
 export function decorate<T extends Schema>(
   of: T,
-  decorator: SchemaDecorator<ParseSchema<T>> | SchemaDecorator<
+  decorator: SafenDecorator<ParseSchema<T>> | SafenDecorator<
     ParseSchema<T>
   >[],
-): SchemaDecorateType<T> {
-  return ["decorate", of, Array.isArray(decorator) ? decorator : [decorator]];
+): SchemaDecorator<T> {
+  return [
+    Kind.Decorator,
+    of,
+    Array.isArray(decorator) ? decorator : [decorator],
+  ];
 }
 
 export function optional<T extends Schema>(
   of: T,
-): SchemaOrType<T | undefined> {
-  return ["or", [undefined, of]];
+): SchemaOr<T | undefined> {
+  return [Kind.Or, [undefined, of]];
 }

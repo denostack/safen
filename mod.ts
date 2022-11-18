@@ -1,14 +1,15 @@
 export { array, decorate, optional, or } from "./schema/utils.ts";
 export type {
+  Kind,
+  SafenDecorator,
   Schema,
-  SchemaArrayType,
-  SchemaDecorateType,
+  SchemaAny,
+  SchemaArray,
   SchemaDecorator,
-  SchemaEmptyType,
-  SchemaObjectType,
-  SchemaOrType,
-  SchemaPrimitiveType,
-  SchemaValueType,
+  SchemaOr,
+  SchemaSugarObject,
+  SchemaSugarPrimitive,
+  SchemaSugarValue,
 } from "./schema/schema.ts";
 export type { ParseSchema } from "./schema/parse_schema.ts";
 
@@ -21,3 +22,5 @@ export {
   createValidateSource,
 } from "./validator/create_validate.ts";
 export { InvalidValueError } from "./validator/invalid_value_error.ts";
+
+export * from "./decorators.ts";
