@@ -1,200 +1,249 @@
 import { Decorator } from "../decorator/decorator.ts";
-import { ParseSchema } from "../schema/parse_schema.ts";
-import { Kind, Schema } from "../schema/schema.ts";
+import { EstimateType } from "../ast/estimate_type.ts";
+import {
+  Ast,
+  AstLiteral,
+  AstPrimitive,
+  AstStrict,
+  AstUnion,
+  Kind,
+} from "../ast/ast.ts";
 import { InvalidValueError } from "./invalid_value_error.ts";
-import { primitiveTemplates } from "./template.ts";
+import { primitiveTypeTemplates } from "./template.ts";
+import { desugar } from "../ast/desugar.ts";
 
-const schemaToIdx = new Map<unknown, number>();
+const astToIndex = new Map<AstStrict, number>();
 let fns: string[] = [];
 const decoratorToIdx = new Map<Decorator<unknown>, number>();
-let _d: Decorator<unknown>[] = [];
+let decorators: Decorator<unknown>[] = [];
 
-function throwError(message: string, type: string, path = "p") {
-  return `throw error(${JSON.stringify(message)},${
-    JSON.stringify(type)
-  },${path})`;
+type InternalError =
+  | InternalUnionError
+  | InternalTypeError
+  | InternalDecoratorError;
+
+interface InternalUnionError {
+  type: "union";
+  path: string;
 }
 
-function traverse(schema: Schema) {
+interface InternalTypeError {
+  type: "type";
+  reason: string;
+  path: string;
+}
+
+interface InternalDecoratorError {
+  type: "decorator";
+  reason: string;
+  path: string;
+}
+
+function stringifyLiteral(value: string | number | boolean | bigint): string {
+  switch (typeof value) {
+    case "string":
+    case "number":
+    case "boolean": {
+      return JSON.stringify(value);
+    }
+    case "bigint": {
+      return `${value.toString()}n`;
+    }
+  }
+  throw new Error("Unknown literal type");
+}
+
+function throwUnionError(path = "p") {
+  return `throw {type:"union",path:${path}}`;
+}
+
+function throwTypeError(type: string, path = "p") {
+  return `throw {type:"type",reason:${JSON.stringify(type)},path:${path}}`;
+}
+
+function throwDecoratorError(reason: string, path = "p") {
+  return `throw {type:"decorator",reason:${
+    JSON.stringify(reason)
+  },path:${path}}`;
+}
+
+function invalidPrimitive(ast: AstPrimitive, value = "v", path = "p"): string {
+  const [_, invalid, type] = primitiveTypeTemplates.get(ast[1])!;
+  return `if(${invalid(value)})${throwTypeError(type, path)};`;
+}
+
+function invalidLiteral(ast: AstLiteral, value = "v", path = "p"): string {
+  const literalValue = stringifyLiteral(ast[1]);
+  return `if(${value}!==${literalValue})${throwTypeError(literalValue, path)};`;
+}
+
+function invalidUnion(
+  ast: AstUnion<AstStrict>,
+  value = "v",
+  path = "p",
+): string {
+  let result = "";
+  for (const child of ast[1]) {
+    switch (child[0]) {
+      case Kind.Primitive: {
+        const [valid] = primitiveTypeTemplates.get(child[1])!;
+        result += `if(${valid(value)})return ${value};`;
+        break;
+      }
+      case Kind.Literal: {
+        const literalValue = stringifyLiteral(child[1]);
+        result += `if(${value}===${literalValue})return ${value};`;
+        break;
+      }
+      default: {
+        if (!astToIndex.has(child)) {
+          traverse(child);
+        }
+        const idx = astToIndex.get(child)!;
+        result += `try{return _${idx}(${value},${path})}catch{}`;
+      }
+    }
+  }
+  result += `${throwUnionError(path)};`;
+  return result;
+}
+
+function invalidAst(ast: AstStrict, value = "v", path = "p"): string {
+  switch (ast[0]) {
+    case Kind.Primitive: {
+      return invalidPrimitive(ast, value, path);
+    }
+    case Kind.Literal: {
+      return invalidLiteral(ast, value, path);
+    }
+  }
+  if (!astToIndex.has(ast)) {
+    traverse(ast);
+  }
+  const idx = astToIndex.get(ast)!;
+  return `${value}=_${idx}(${value},${path});`;
+}
+
+function traverse(ast: AstStrict) {
   const idx = fns.length;
   const name = `_${idx}`;
 
-  const template = primitiveTemplates.get(schema);
-  if (template) {
-    schemaToIdx.set(schema, idx);
-    const [_, invalid, type] = template;
-    const message = `It must be a ${type}.`;
-    fns.push(
-      `function ${name}(d,p){if(${invalid("d")})${
-        throwError(message, type)
-      };return d}`,
-    );
-    return;
-  }
-
-  const schemaType = typeof schema;
-  if (
-    schemaType === "string" || schemaType === "number" ||
-    schemaType === "boolean"
-  ) {
-    schemaToIdx.set(schema, idx);
-    const type = JSON.stringify(schema);
-    const message = `It must be a ${type}.`;
-    fns.push(
-      `function ${name}(d,p){if(d!==${type})${
-        throwError(message, type)
-      };return d}`,
-    );
-    return;
-  }
-  if (schemaType === "bigint") {
-    schemaToIdx.set(schema, idx);
-    const type = `${schema!.toString()}n`;
-    const message = `It must be a ${type}.`;
-    fns.push(
-      `function ${name}(d,p){if(d!==${type})${
-        throwError(message, type)
-      };return d}`,
-    );
-    return;
-  }
-
-  schemaToIdx.set(schema, idx);
+  astToIndex.set(ast, idx);
   fns.push("");
 
-  let result = `function ${name}(d,p){`; // start fn
-  if (Array.isArray(schema)) {
-    switch (schema[0]) {
-      case Kind.Union: {
-        const [_, children] = schema;
-        if (children.length === 0) {
-          throw new Error("Empty or");
-        }
-        for (const child of children) {
-          const template = primitiveTemplates.get(child);
-          if (template) {
-            const [valid] = template;
-            result += `if(${valid("d")})return d;`;
-          } else {
-            if (!schemaToIdx.has(child)) {
-              traverse(child);
-            }
-            const idx = schemaToIdx.get(child)!;
-            result += `try{return _${idx}(d,p)}catch{}`;
-          }
-        }
-        result += throwError("It must be one of the types.", "or");
-        break;
+  switch (ast[0]) {
+    case Kind.Primitive: {
+      fns[idx] = `function ${name}(v,p){${invalidPrimitive(ast, "v")}return v}`;
+      return;
+    }
+    case Kind.Literal: {
+      fns[idx] = `function ${name}(v,p){${invalidLiteral(ast, "v")}return v}`;
+      return;
+    }
+    case Kind.Array: {
+      let result = `function ${name}(v,p){`;
+      result += `if(!Array.isArray(v))${throwTypeError("array")};`;
+      result += `for(let i=0;i<v.length;i++){`;
+      result += invalidAst(ast[1], "v[i]", 'p+"["+i+"]"');
+      result += `}return v}`;
+      fns[idx] = result;
+      return;
+    }
+    case Kind.Object: {
+      let result = `function ${name}(v,p){`;
+      result += `if(typeof v!=="object"||v===null)${throwTypeError("object")};`;
+      for (const [key, child] of Object.entries(ast[1])) {
+        result += invalidAst(
+          child,
+          `v[${JSON.stringify(key)}]`,
+          `p+${JSON.stringify("." + key)}`,
+        );
       }
-      case Kind.Array: {
-        const [_, of] = schema;
-        result += `if(!Array.isArray(d))${
-          throwError("It must be a array.", "array")
-        };`;
-        result += `for(let i=0;i<d.length;i++){`;
-        const template = primitiveTemplates.get(of);
-        const nextPath = 'p+"["+i+"]"';
-        if (template) {
-          const [_, invalid, type] = template;
-          const message = `It must be a ${type}.`;
-          result += `if(${invalid("d[i]")})${
-            throwError(message, type, nextPath)
+      result += `return v}`;
+      fns[idx] = result;
+      return;
+    }
+    case Kind.Union: {
+      const [_, children] = ast;
+      if (children.length === 0) {
+        throw new Error("Union must have at least one subtype");
+      }
+      fns[idx] = `function ${name}(v,p){${invalidUnion(ast)}}`;
+      return;
+    }
+    case Kind.Decorator: {
+      let result = `function ${name}(v,p){`;
+      result += invalidAst(ast[1]);
+      for (const decorator of ast[2]) {
+        if (!decoratorToIdx.has(decorator)) {
+          decoratorToIdx.set(decorator, decorators.length);
+          decorators.push(decorator);
+        }
+        const decoratorId = decoratorToIdx.get(decorator)!;
+        if (decorator.validate) {
+          result += `if(!_d[${decoratorId}].validate(v))${
+            throwDecoratorError(decorator.name)
           };`;
-        } else {
-          if (!schemaToIdx.has(of)) {
-            traverse(of);
-          }
-          const idx = schemaToIdx.get(of)!;
-          result += `d[i]=_${idx}(d[i],${nextPath});`;
         }
-        result += `}`;
-        result += `return d`;
-        break;
-      }
-      case Kind.Decorator: {
-        const [_, of, decorators] = schema;
-        if (!schemaToIdx.has(of)) {
-          traverse(of);
+        if (decorator.sanitize) {
+          result += `v=_d[${decoratorId}].sanitize(v);`;
         }
-        const idx = schemaToIdx.get(of)!;
-        result += `d=_${idx}(d,p);`;
-        for (const decorator of decorators) {
-          if (!decoratorToIdx.has(decorator)) {
-            decoratorToIdx.set(decorator, _d.length);
-            _d.push(decorator);
-          }
-          const decoratorId = decoratorToIdx.get(decorator)!;
-          if (decorator.validate) {
-            result += `if(!_d[${decoratorId}].validate(d))${
-              throwError(
-                "This is an invalid value from decorator.",
-                `#${decorator.name}`,
-              )
-            };`;
-          }
-          if (decorator.sanitize) {
-            result += `d=_d[${decoratorId}].sanitize(d);`;
-          }
-        }
-        result += `return d`;
-        break;
       }
-      case Kind.Any: {
-        result += `return d`;
-        break;
-      }
+      result += `return v}`;
+      fns[idx] = result;
+      return;
     }
-  } else if (typeof schema === "object" && schema !== null) {
-    const type = "object";
-    const message = `It must be a ${type}.`;
-    result += `if(typeof d!=="object"||d===null)${throwError(message, type)};`;
-    const entries = Object.entries(schema);
-    for (const [key, child] of entries) {
-      const nextValue = `d[${JSON.stringify(key)}]`;
-      const nextPath = `p+${JSON.stringify("." + key)}`;
-      const template = primitiveTemplates.get(child);
-      if (template) {
-        const [_, invalid, type] = template;
-        const message = `It must be a ${type}.`;
-        result += `if(${invalid(nextValue)})${
-          throwError(message, type, nextPath)
-        };`;
-      } else {
-        if (!schemaToIdx.has(child)) {
-          traverse(child);
-        }
-        const idx = schemaToIdx.get(child)!;
-        result += `${nextValue}=_${idx}(${nextValue},${nextPath});`;
-      }
-    }
-    result += `return d`;
-  } else {
-    throw new Error("Invalid schema");
   }
-  result += `}`; // end fn
-
-  fns[idx] = result;
+  throw new Error("Invalid ast");
 }
 
-export function createSanitizeSource(schema: Schema) {
+export function createSanitizeSource(ast: AstStrict) {
   fns = [];
-  _d = [];
-  schemaToIdx.clear();
+  decorators = [];
+  astToIndex.clear();
   decoratorToIdx.clear();
-  traverse(schema);
-  return fns.join("\n");
+  traverse(ast);
+  return {
+    source: fns.join("\n"),
+    decorators,
+  };
 }
 
-function mapCreateError(message: string, reason: string, path: string) {
-  return new InvalidValueError(message, reason, path.replace(/^\.+/, ""));
+function mapCreateError(error: InternalError) {
+  if (error.type === "decorator") {
+    const path = error.path.replace(/^\.+/, "");
+    return new InvalidValueError(
+      "This is an invalid value from decorator.",
+      `#${error.reason}`,
+      path,
+    );
+  }
+  if (error.type === "type") {
+    const path = error.path.replace(/^\.+/, "");
+    return new InvalidValueError(
+      `It must be a ${error.reason}.`,
+      `${error.reason}`,
+      path,
+    );
+  }
+  if (error.type === "union") {
+    const path = error.path.replace(/^\.+/, "");
+    return new InvalidValueError(
+      `It must be one of the types.`,
+      "union",
+      path,
+    );
+  }
+  throw new Error("Invalid error type");
 }
 
-export function createSanitize<T extends Schema>(
-  schema: T,
-): (data: unknown) => ParseSchema<T> {
+export function createSanitize<T extends Ast>(
+  ast: T,
+): (data: unknown) => EstimateType<T> {
+  const { source, decorators } = createSanitizeSource(desugar(ast));
   return new Function(
     "_d",
-    "error",
-    `${createSanitizeSource(schema)}\nreturn function(d){return _0(d,'')}`,
-  )(_d, mapCreateError);
+    "_e",
+    `${source}\nreturn function(d){try{return _0(d,'')}catch(e){throw _e(e)}}`,
+  )(decorators, mapCreateError);
 }

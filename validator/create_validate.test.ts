@@ -1,6 +1,6 @@
 import { assert, assertFalse } from "testing/asserts.ts";
+import { any, array, decorate, or, union } from "../ast/utils.ts";
 import { ip } from "../decorators/ip.ts";
-import { any, array, decorate, or } from "../schema/utils.ts";
 import { createValidate } from "./create_validate.ts";
 
 Deno.test("validator/create_validate, createValidate string", () => {
@@ -66,21 +66,21 @@ Deno.test("validator/create_validate, createValidate symbol", () => {
   assertFalse(v(undefined));
 });
 
-Deno.test("validator/create_validate, createValidate string value", () => {
+Deno.test("validator/create_validate, createValidate string literal", () => {
   const v = createValidate("something");
 
   assert(v("something"));
   assertFalse(v("unknown"));
 });
 
-Deno.test("validator/create_validate, createValidate number value", () => {
+Deno.test("validator/create_validate, createValidate number literal", () => {
   const v = createValidate(1);
 
   assert(v(1));
   assertFalse(v(0));
 });
 
-Deno.test("validator/create_validate, createValidate boolean value", () => {
+Deno.test("validator/create_validate, createValidate boolean literal", () => {
   {
     const v = createValidate(true);
 
@@ -95,7 +95,7 @@ Deno.test("validator/create_validate, createValidate boolean value", () => {
   }
 });
 
-Deno.test("validator/create_validate, createValidate bigint value", () => {
+Deno.test("validator/create_validate, createValidate bigint literal", () => {
   const v = createValidate(1n);
 
   assert(v(1n));
@@ -151,8 +151,8 @@ Deno.test("validator/create_validate, createValidate object", () => {
   assert(v({ start: { x: 1, y: 2 }, end: { x: 3, y: 4 }, empty: {} }));
 });
 
-Deno.test("validator/create_validate, createValidate or", () => {
-  const v = createValidate(or([String, Number, BigInt]));
+Deno.test("validator/create_validate, createValidate union", () => {
+  const v = createValidate(union([String, Number, BigInt]));
 
   assert(v("1"));
   assert(v(1));
@@ -184,6 +184,26 @@ Deno.test("validator/create_validate, createValidate array of any", () => {
 });
 
 Deno.test("validator/create_validate, createValidate array", () => {
+  const v = createValidate([or([String, Number, BigInt])]);
+
+  assert(v([]));
+  assert(v(["1", 1, 1n]));
+
+  assert(v(["1"]));
+  assert(v([1]));
+  assert(v([1n]));
+  assertFalse(v([true]));
+  assertFalse(v([null]));
+  assertFalse(v([undefined]));
+
+  assertFalse(v(1));
+  assertFalse(v(1n));
+  assertFalse(v(true));
+  assertFalse(v(null));
+  assertFalse(v(undefined));
+});
+
+Deno.test("validator/create_validate, createValidate array by util", () => {
   const v = createValidate(array(or([String, Number, BigInt])));
 
   assert(v([]));

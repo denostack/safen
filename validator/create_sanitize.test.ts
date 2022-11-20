@@ -4,9 +4,10 @@ import { email } from "../decorators/email.ts";
 import { ip } from "../decorators/ip.ts";
 import { lengthBetween } from "../decorators/length_between.ts";
 import { trim } from "../decorators/trim.ts";
-import { any, array, decorate, optional, or } from "../schema/utils.ts";
+import { any, array, decorate, optional, or, union } from "../ast/utils.ts";
 import { createSanitize } from "./create_sanitize.ts";
 import { InvalidValueError } from "./invalid_value_error.ts";
+import { emptyToNull } from "../decorators/emptyToNull.ts";
 
 Deno.test("validator/create_sanitize, createSanitize string", () => {
   const s = createSanitize(String);
@@ -217,9 +218,9 @@ Deno.test("validator/create_sanitize, createSanitize object", () => {
   }
 });
 
-Deno.test("validator/create_sanitize, createSanitize or", () => {
+Deno.test("validator/create_sanitize, createSanitize union", () => {
   const s = createSanitize({
-    id: or([String, { "#": String }, Number, BigInt, { _: Number }]),
+    id: union([String, { "#": String }, Number, BigInt, { _: Number }]),
   });
 
   assertEquals(s({ id: "1" }), { id: "1" });
@@ -235,7 +236,7 @@ Deno.test("validator/create_sanitize, createSanitize or", () => {
       "It must be one of the types.",
     );
     assertEquals(e.path, "id");
-    assertEquals(e.reason, "or");
+    assertEquals(e.reason, "union");
   }
 });
 
@@ -261,6 +262,21 @@ Deno.test("validator/create_sanitize, createSanitize array of any", () => {
   assertEquals(e.reason, "array");
 });
 
+Deno.test("validator/create_sanitize, createSanitize sugar array", () => {
+  const s = createSanitize({ ids: [Number] });
+
+  assertEquals(s({ ids: [] }), { ids: [] });
+  assertEquals(s({ ids: [1, 2, 3] }), { ids: [1, 2, 3] });
+
+  const e = assertThrows(
+    () => s({ ids: [1, 2, "3"] }),
+    InvalidValueError,
+    "It must be a number.",
+  );
+  assertEquals(e.path, "ids[2]");
+  assertEquals(e.reason, "number");
+});
+
 Deno.test("validator/create_sanitize, createSanitize array of primitive", () => {
   const s = createSanitize({ ids: array(Number) });
 
@@ -276,7 +292,7 @@ Deno.test("validator/create_sanitize, createSanitize array of primitive", () => 
   assertEquals(e.reason, "number");
 });
 
-Deno.test("validator/create_sanitize, createSanitize array of or", () => {
+Deno.test("validator/create_sanitize, createSanitize array of union", () => {
   const s = createSanitize(array(or([String, Number, BigInt])));
 
   assertEquals(s([]), []);
@@ -292,7 +308,7 @@ Deno.test("validator/create_sanitize, createSanitize array of or", () => {
     "It must be one of the types.",
   );
   assertEquals(e.path, "[2]");
-  assertEquals(e.reason, "or");
+  assertEquals(e.reason, "union");
 });
 
 Deno.test("validator/create_sanitize, createSanitize decorate", () => {
@@ -310,6 +326,19 @@ Deno.test("validator/create_sanitize, createSanitize decorate", () => {
   assertEquals(e.reason, "#ip");
 });
 
+Deno.test("validator/create_validate, createValidate decorate complex", () => {
+  const s = createSanitize(
+    decorate(
+      union([decorate(String, trim()), null]),
+      emptyToNull(),
+    ),
+  );
+
+  assertEquals(s("  127.0.0.1  "), "127.0.0.1");
+  assertEquals(s("    "), null);
+  assertEquals(s(null), null);
+});
+
 Deno.test("validator/create_sanitize, createSanitize complex", () => {
   const typeLat = decorate(Number, between(-90, 90));
   const typeLng = decorate(Number, between(-180, 180));
@@ -318,10 +347,10 @@ Deno.test("validator/create_sanitize, createSanitize complex", () => {
     email: decorate(String, [trim(), email()]),
     name: optional(String),
     password: decorate(String, lengthBetween(8, 20)),
-    areas: array({
+    areas: [{
       lat: typeLat,
       lng: typeLng,
-    }),
+    }],
     env: {
       ip: decorate(String, ip("v4")),
       os: {

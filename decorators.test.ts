@@ -26,7 +26,7 @@ import {
   url,
   uuid,
 } from "./decorators.ts";
-import { decorate } from "./schema/utils.ts";
+import { decorate } from "./ast/utils.ts";
 import { createSanitize } from "./validator/create_sanitize.ts";
 import { InvalidValueError } from "./validator/invalid_value_error.ts";
 
