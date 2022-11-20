@@ -1,11 +1,15 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
 export function lengthBetween(
   min: number,
   max: number,
-): SafenDecorator<string | unknown[]> {
+): Decorator<string & unknown[]> {
   return {
-    name: `lengthBetween(${min},${max})`,
-    validate: (v) => `(${v}.length&&${v}.length>=${min}&&${v}.length<=${max})`,
+    name: "lengthBetween",
+    validate(v) {
+      return typeof v.length === "number" &&
+        v.length >= min &&
+        v.length <= max;
+    },
   };
 }

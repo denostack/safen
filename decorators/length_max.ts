@@ -1,10 +1,11 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function lengthMax(
-  max: number,
-): SafenDecorator<string | unknown[]> {
+export function lengthMax(max: number): Decorator<string & unknown[]> {
   return {
-    name: `lengthMax(${max})`,
-    validate: (v) => `(${v}.length&&${v}.length<=${max})`,
+    name: "lengthMax",
+    validate(v) {
+      return typeof v.length === "number" &&
+        v.length <= max;
+    },
   };
 }

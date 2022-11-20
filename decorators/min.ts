@@ -1,10 +1,12 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function min(
-  min: number | string,
-): SafenDecorator<number | string> {
+export function min(min: number): Decorator<number>;
+export function min(min: string): Decorator<string>;
+export function min(min: number | string): Decorator<number | string> {
   return {
-    name: `min(${min})`,
-    validate: (v) => `(${v}>=${JSON.stringify(min)})`,
+    name: "min",
+    validate(v) {
+      return v >= min;
+    },
   };
 }

@@ -1,10 +1,10 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function length(
-  len: number,
-): SafenDecorator<string | unknown[]> {
+export function length(n: number): Decorator<string & unknown[]> {
   return {
-    name: `length(${len})`,
-    validate: (v) => `(${v}.length==${len})`,
+    name: "length",
+    validate(v) {
+      return v.length === n;
+    },
   };
 }

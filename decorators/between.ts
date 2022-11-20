@@ -1,12 +1,15 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
+export function between(min: number, max: number): Decorator<number>;
+export function between(min: string, max: string): Decorator<string>;
 export function between(
   min: number | string,
   max: number | string,
-): SafenDecorator<number | string> {
+): Decorator<number | string> {
   return {
-    name: `between(${min},${max})`,
-    validate: (v) =>
-      `(${v}>=${JSON.stringify(min)}&&${v}<=${JSON.stringify(max)})`,
+    name: "between",
+    validate(v) {
+      return v >= min && v <= max;
+    },
   };
 }

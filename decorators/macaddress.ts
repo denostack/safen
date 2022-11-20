@@ -1,9 +1,13 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function macaddress(): SafenDecorator<string> {
-  return {
-    name: "macaddress",
-    validate: (v) =>
-      `/^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$/.test(${v})`,
-  };
+const re = /^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$/;
+const decorator: Decorator<string> = {
+  name: "macaddress",
+  validate(v) {
+    return re.test(v);
+  },
+};
+
+export function macaddress(): Decorator<string> {
+  return decorator;
 }

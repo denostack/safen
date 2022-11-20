@@ -1,3 +1,4 @@
+import { Decorator } from "../decorator/decorator.ts";
 import { ParseSchema } from "../schema/parse_schema.ts";
 import { Kind, Schema } from "../schema/schema.ts";
 import { InvalidValueError } from "./invalid_value_error.ts";
@@ -5,6 +6,8 @@ import { primitiveTemplates } from "./template.ts";
 
 const schemaToIdx = new Map<unknown, number>();
 let fns: string[] = [];
+const decoratorToIdx = new Map<Decorator<unknown>, number>();
+let _d: Decorator<unknown>[] = [];
 
 function throwError(message: string, type: string, path = "p") {
   return `throw error(${JSON.stringify(message)},${
@@ -62,7 +65,7 @@ function traverse(schema: Schema) {
   let result = `function ${name}(d,p){`; // start fn
   if (Array.isArray(schema)) {
     switch (schema[0]) {
-      case Kind.Or: {
+      case Kind.Union: {
         const [_, children] = schema;
         if (children.length === 0) {
           throw new Error("Empty or");
@@ -116,8 +119,13 @@ function traverse(schema: Schema) {
         const idx = schemaToIdx.get(of)!;
         result += `d=_${idx}(d,p);`;
         for (const decorator of decorators) {
+          if (!decoratorToIdx.has(decorator)) {
+            decoratorToIdx.set(decorator, _d.length);
+            _d.push(decorator);
+          }
+          const decoratorId = decoratorToIdx.get(decorator)!;
           if (decorator.validate) {
-            result += `if(!${decorator.validate("d")})${
+            result += `if(!_d[${decoratorId}].validate(d))${
               throwError(
                 "This is an invalid value from decorator.",
                 `#${decorator.name}`,
@@ -125,7 +133,7 @@ function traverse(schema: Schema) {
             };`;
           }
           if (decorator.sanitize) {
-            result += `d=${decorator.sanitize("d")};`;
+            result += `d=_d[${decoratorId}].sanitize(d);`;
           }
         }
         result += `return d`;
@@ -170,7 +178,9 @@ function traverse(schema: Schema) {
 
 export function createSanitizeSource(schema: Schema) {
   fns = [];
+  _d = [];
   schemaToIdx.clear();
+  decoratorToIdx.clear();
   traverse(schema);
   return fns.join("\n");
 }
@@ -183,7 +193,8 @@ export function createSanitize<T extends Schema>(
   schema: T,
 ): (data: unknown) => ParseSchema<T> {
   return new Function(
+    "_d",
     "error",
     `${createSanitizeSource(schema)}\nreturn function(d){return _0(d,'')}`,
-  )(mapCreateError);
+  )(_d, mapCreateError);
 }

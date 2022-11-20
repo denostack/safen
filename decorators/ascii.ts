@@ -1,8 +1,13 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function ascii(): SafenDecorator<string> {
-  return {
-    name: "ascii",
-    validate: (v) => `/^[\\x00-\\x7F]+$/.test(${v})`,
-  };
+const re = /^[\x00-\x7F]+$/;
+const decorator: Decorator<string> = {
+  name: "ascii",
+  validate(v) {
+    return re.test(v);
+  },
+};
+
+export function ascii(): Decorator<string> {
+  return decorator;
 }

@@ -1,8 +1,10 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function lowercase(): SafenDecorator<string> {
+export function lowercase(): Decorator<string> {
   return {
     name: "lowercase",
-    validate: (v) => `(${v}.toLowerCase() === ${v})`,
+    validate(v) {
+      return v.toLowerCase() === v;
+    },
   };
 }

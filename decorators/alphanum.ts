@@ -1,8 +1,13 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function alphanum(): SafenDecorator<string> {
-  return {
-    name: "alphanum",
-    validate: (v) => `/^[a-z0-9]+$/i.test(${v})`,
-  };
+const re = /^[a-z0-9]+$/i;
+const decorator: Decorator<string> = {
+  name: "alphanum",
+  validate(v) {
+    return re.test(v);
+  },
+};
+
+export function alphanum(): Decorator<string> {
+  return decorator;
 }

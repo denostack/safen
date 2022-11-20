@@ -1,20 +1,20 @@
+import { Decorator } from "../decorator/decorator.ts";
 import { ParseSchema } from "./parse_schema.ts";
 import {
   Kind,
-  SafenDecorator,
   Schema,
   SchemaAny,
   SchemaArray,
   SchemaDecorator,
-  SchemaOr,
+  SchemaUnion,
 } from "./schema.ts";
 
 export function any(): SchemaAny {
   return [Kind.Any];
 }
 
-export function or<T extends Schema>(types: T[]): SchemaOr<T> {
-  return [Kind.Or, types];
+export function or<T extends Schema>(types: T[]): SchemaUnion<T> {
+  return [Kind.Union, types];
 }
 
 export function array<T extends Schema>(of: T): SchemaArray<T> {
@@ -23,15 +23,15 @@ export function array<T extends Schema>(of: T): SchemaArray<T> {
 
 export function decorate<T extends Schema>(
   of: T,
-  decorator: SafenDecorator<ParseSchema<T>>,
+  decorator: Decorator<ParseSchema<T>>,
 ): SchemaDecorator<T>;
 export function decorate<T extends Schema>(
   of: T,
-  decorators: SafenDecorator<ParseSchema<T>>[],
+  decorators: Decorator<ParseSchema<T>>[],
 ): SchemaDecorator<T>;
 export function decorate<T extends Schema>(
   of: T,
-  decorator: SafenDecorator<ParseSchema<T>> | SafenDecorator<
+  decorator: Decorator<ParseSchema<T>> | Decorator<
     ParseSchema<T>
   >[],
 ): SchemaDecorator<T> {
@@ -44,6 +44,6 @@ export function decorate<T extends Schema>(
 
 export function optional<T extends Schema>(
   of: T,
-): SchemaOr<T | undefined> {
-  return [Kind.Or, [undefined, of]];
+): SchemaUnion<T | undefined> {
+  return [Kind.Union, [undefined, of]];
 }

@@ -1,8 +1,11 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function port(): SafenDecorator<number> {
-  return {
-    name: `port`,
-    validate: (v) => `(Number.isInteger(${v})&&${v}>=0&&${v}<=65535)`,
-  };
+const decorator: Decorator<number> = {
+  name: "port",
+  validate(v) {
+    return v >= 0 && v <= 65535;
+  },
+};
+export function port(): Decorator<number> {
+  return decorator;
 }

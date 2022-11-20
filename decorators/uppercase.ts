@@ -1,8 +1,11 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function uppercase(): SafenDecorator<string> {
-  return {
-    name: "uppercase",
-    validate: (v) => `(${v}.toUpperCase() === ${v})`,
-  };
+const decorator: Decorator<string> = {
+  name: "uppercase",
+  validate(v) {
+    return v.toUpperCase() === v;
+  },
+};
+export function uppercase(): Decorator<string> {
+  return decorator;
 }

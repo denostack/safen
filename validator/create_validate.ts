@@ -1,9 +1,12 @@
+import { Decorator } from "../decorator/decorator.ts";
 import { ParseSchema } from "../schema/parse_schema.ts";
 import { Kind, Schema } from "../schema/schema.ts";
 import { primitiveTemplates } from "./template.ts";
 
 const schemaToIdx = new Map<unknown, number>();
 let fns: string[] = [];
+const decoratorToIdx = new Map<Decorator<unknown>, number>();
+let _d: Decorator<unknown>[] = [];
 
 function traverse(schema: Schema) {
   const idx = fns.length;
@@ -37,7 +40,7 @@ function traverse(schema: Schema) {
   let result = `function ${name}(d){`; // start fn
   if (Array.isArray(schema)) {
     switch (schema[0]) {
-      case Kind.Or: {
+      case Kind.Union: {
         const [_, children] = schema;
         if (children.length === 0) {
           throw new Error("Empty or");
@@ -82,8 +85,13 @@ function traverse(schema: Schema) {
         const idx = schemaToIdx.get(of)!;
         result += `if (!_${idx}(d)) return false;`;
         for (const decorator of decorators) {
+          if (!decoratorToIdx.has(decorator)) {
+            decoratorToIdx.set(decorator, _d.length);
+            _d.push(decorator);
+          }
+          const decoratorId = decoratorToIdx.get(decorator)!;
           if (decorator.validate) {
-            result += `if (!${decorator.validate("d")}) return false;`;
+            result += `if(!_d[${decoratorId}].validate(d))return false;`;
           }
         }
         result += `return true`;
@@ -124,7 +132,9 @@ function traverse(schema: Schema) {
 
 export function createValidateSource(schema: Schema) {
   fns = [];
+  _d = [];
   schemaToIdx.clear();
+  decoratorToIdx.clear();
   traverse(schema);
   return fns.join("\n");
 }
@@ -133,6 +143,7 @@ export function createValidate<T extends Schema>(
   schema: T,
 ): (data: unknown) => data is ParseSchema<T> {
   return new Function(
+    "_d",
     `${createValidateSource(schema)}\nreturn _0`,
-  )();
+  )(_d);
 }

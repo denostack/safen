@@ -50,14 +50,14 @@ type TestArray = [
 type TestOr = [
   Expect<
     Equal<
-      ParseSchema<[Kind.Or, (typeof String | typeof Number)[]]>,
+      ParseSchema<[Kind.Union, (typeof String | typeof Number)[]]>,
       string | number
     >
   >,
   Expect<
     Equal<
       ParseSchema<
-        { hello: [Kind.Or, (typeof String | typeof Number | Point)[]] }
+        { hello: [Kind.Union, (typeof String | typeof Number | Point)[]] }
       >,
       { hello: string | number | { x: number; y: number } }
     >
@@ -89,7 +89,7 @@ type TestDecorator = [
       ParseSchema<
         [
           Kind.Decorator,
-          { hello: [Kind.Or, (typeof String | typeof Number | Point)[]] },
+          { hello: [Kind.Union, (typeof String | typeof Number | Point)[]] },
           [],
         ]
       >,

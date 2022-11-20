@@ -307,7 +307,7 @@ Deno.test("validator/create_sanitize, createSanitize decorate", () => {
     "This is an invalid value from decorator.",
   );
   assertEquals(e.path, "");
-  assertEquals(e.reason, "#ip(v4)");
+  assertEquals(e.reason, "#ip");
 });
 
 Deno.test("validator/create_sanitize, createSanitize complex", () => {

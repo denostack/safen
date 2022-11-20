@@ -106,7 +106,7 @@ Deno.test("decorators, between", () => {
       InvalidValueError,
       "This is an invalid value from decorator.",
     );
-    assertEquals(e.reason, "#between(2,3)");
+    assertEquals(e.reason, "#between");
     assertThrows(
       () => {
         s1(4);
@@ -205,7 +205,7 @@ Deno.test("decorators, ip", () => {
       InvalidValueError,
       "This is an invalid value from decorator.",
     );
-    assertEquals(e.reason, "#ip(v4)");
+    assertEquals(e.reason, "#ip");
     assertThrows(
       () => {
         s2("2001:db8:0000:1:1:1:1:1");
@@ -226,7 +226,7 @@ Deno.test("decorators, ip", () => {
       InvalidValueError,
       "This is an invalid value from decorator.",
     );
-    assertEquals(e.reason, "#ip(v6)");
+    assertEquals(e.reason, "#ip");
     assertThrows(
       () => {
         s3("127.0.0.1");
@@ -264,7 +264,7 @@ Deno.test("decorators, lengthBetween", () => {
       InvalidValueError,
       "This is an invalid value from decorator.",
     );
-    assertEquals(e.reason, "#lengthBetween(2,3)");
+    assertEquals(e.reason, "#lengthBetween");
     assertThrows(
       () => {
         s1("abcd");
@@ -286,7 +286,7 @@ Deno.test("decorators, lengthBetween", () => {
       InvalidValueError,
       "This is an invalid value from decorator.",
     );
-    assertEquals(e.reason, "#lengthBetween(2,3)");
+    assertEquals(e.reason, "#lengthBetween");
     assertThrows(
       () => {
         s2([1, 2, 3, 4]);
@@ -310,7 +310,7 @@ Deno.test("decorators, lengthMax", () => {
     InvalidValueError,
     "This is an invalid value from decorator.",
   );
-  assertEquals(e.reason, "#lengthMax(3)");
+  assertEquals(e.reason, "#lengthMax");
 });
 
 Deno.test("decorators, lengthMin", () => {
@@ -325,7 +325,7 @@ Deno.test("decorators, lengthMin", () => {
     InvalidValueError,
     "This is an invalid value from decorator.",
   );
-  assertEquals(e.reason, "#lengthMin(2)");
+  assertEquals(e.reason, "#lengthMin");
 });
 
 Deno.test("decorators, length", () => {
@@ -339,7 +339,7 @@ Deno.test("decorators, length", () => {
     InvalidValueError,
     "This is an invalid value from decorator.",
   );
-  assertEquals(e.reason, "#length(2)");
+  assertEquals(e.reason, "#length");
   assertThrows(
     () => {
       s("abcd");
@@ -391,7 +391,7 @@ Deno.test("decorators, max", () => {
     InvalidValueError,
     "This is an invalid value from decorator.",
   );
-  assertEquals(e.reason, "#max(2)");
+  assertEquals(e.reason, "#max");
 });
 
 Deno.test("decorators, min", () => {
@@ -406,7 +406,7 @@ Deno.test("decorators, min", () => {
     InvalidValueError,
     "This is an invalid value from decorator.",
   );
-  assertEquals(e.reason, "#min(2)");
+  assertEquals(e.reason, "#min");
 });
 
 Deno.test("decorators, port", () => {
@@ -439,7 +439,7 @@ Deno.test("decorators, re", () => {
     InvalidValueError,
     "This is an invalid value from decorator.",
   );
-  assertEquals(e.reason, "#re(/^abc?$/i)");
+  assertEquals(e.reason, "#re");
 });
 
 Deno.test("decorators, trim", () => {
@@ -470,7 +470,7 @@ Deno.test("decorators, url", () => {
     s("http://github.com/corgidisco"),
     "http://github.com/corgidisco",
   );
-  assertEquals(s("github.com"), "github.com");
+  assertEquals(s("https://github.com"), "https://github.com");
 
   const e = assertThrows(
     () => {

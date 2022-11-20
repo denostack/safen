@@ -1,10 +1,11 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function lengthMin(
-  min: number,
-): SafenDecorator<string | unknown[]> {
+export function lengthMin(min: number): Decorator<string & unknown[]> {
   return {
-    name: `lengthMin(${min})`,
-    validate: (v) => `(${v}.length&&${v}.length>=${min})`,
+    name: "lengthMin",
+    validate(v) {
+      return typeof v.length === "number" &&
+        v.length >= min;
+    },
   };
 }

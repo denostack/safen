@@ -3,9 +3,9 @@ import {
   SchemaAny,
   SchemaArray,
   SchemaDecorator,
-  SchemaOr,
+  SchemaSugarLiteral,
   SchemaSugarObject,
-  SchemaSugarValue,
+  SchemaUnion,
 } from "./schema.ts";
 
 export type ParseSchema<T extends Schema> = T extends StringConstructor ? string
@@ -16,11 +16,11 @@ export type ParseSchema<T extends Schema> = T extends StringConstructor ? string
   // deno-lint-ignore no-explicit-any
   : T extends ArrayConstructor ? any[]
   : T extends infer U extends (null | undefined) ? U
-  : T extends infer U extends SchemaSugarValue ? U
+  : T extends infer U extends SchemaSugarLiteral ? U
   : T extends SchemaSugarObject ? { [K in keyof T]: ParseSchema<T[K]> }
   // deno-lint-ignore no-explicit-any
   : T extends SchemaAny ? any
   : T extends SchemaArray<Schema> ? ParseSchema<T[1]>[]
-  : T extends SchemaOr<Schema> ? ParseSchema<T[1][number]>
+  : T extends SchemaUnion<Schema> ? ParseSchema<T[1][number]>
   : T extends SchemaDecorator<Schema> ? ParseSchema<T[1]>
   : never;

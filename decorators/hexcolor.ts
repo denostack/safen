@@ -1,8 +1,12 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function hexcolor(): SafenDecorator<string> {
-  return {
-    name: "hexcolor",
-    validate: (v) => `/^#?([0-9A-F]{3}|[0-9A-F]{6})$/i.test(${v})`,
-  };
+const decorator: Decorator<string> = {
+  name: "hexcolor",
+  validate(v) {
+    return /^#?([0-9A-F]{3}|[0-9A-F]{6})$/i.test(v);
+  },
+};
+
+export function hexcolor(): Decorator<string> {
+  return decorator;
 }

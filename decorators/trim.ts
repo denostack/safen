@@ -1,8 +1,9 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function trim(): SafenDecorator<string> {
-  return {
-    name: "trim",
-    sanitize: (v) => `${v}.trim()`,
-  };
+const decorator: Decorator<string> = {
+  name: "trim",
+  sanitize: (v) => v.trim(),
+};
+export function trim(): Decorator<string> {
+  return decorator;
 }

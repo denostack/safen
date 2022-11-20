@@ -1,14 +1,16 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function base64(): SafenDecorator<string> {
-  return {
-    name: "base64",
-    validate: (v) =>
-      "(function(){" +
-      `var l=${v}.length;` +
-      `if(!l||l%4!==0|| /[^A-Z0-9+\\/=]/i.test(${v})){return false}` +
-      `var f=${v}.indexOf('=');` +
-      `return f===-1||f===l-1||(f===l-2&&${v}[l- 1]==='=')` +
-      "})()",
-  };
+const decorator: Decorator<string> = {
+  name: "base64",
+  validate(v) {
+    const l = v.length;
+    if (!l || l % 4 !== 0 || /[^A-Z0-9+\\/=]/i.test(v)) return false;
+    const index = v.indexOf("=");
+    return index === -1 || index === l - 1 ||
+      (index === l - 2 && v[l - 1] === "=");
+  },
+};
+
+export function base64(): Decorator<string> {
+  return decorator;
 }

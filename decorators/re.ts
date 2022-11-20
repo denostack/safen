@@ -1,8 +1,10 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function re(re: RegExp): SafenDecorator<string> {
+export function re(re: RegExp): Decorator<string> {
   return {
-    name: `re(${re})`,
-    validate: (v) => `${re}.test(${v})`,
+    name: "re",
+    validate(v) {
+      return re.test(v);
+    },
   };
 }

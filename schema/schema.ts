@@ -1,3 +1,5 @@
+import { Decorator } from "../decorator/decorator.ts";
+
 export enum Kind {
   Primitive = 1,
 
@@ -5,7 +7,7 @@ export enum Kind {
   Object = 12,
   Array = 13,
 
-  Or = 21,
+  Union = 21,
 
   Decorator = 31,
 }
@@ -13,12 +15,12 @@ export enum Kind {
 export type Schema =
   | SchemaSugarPrimitive
   | SchemaSugarObject
-  | SchemaSugarValue
+  | SchemaSugarLiteral
   | SchemaAny
   // deno-lint-ignore no-explicit-any
   | SchemaArray<any>
   // deno-lint-ignore no-explicit-any
-  | SchemaOr<any>
+  | SchemaUnion<any>
   // deno-lint-ignore no-explicit-any
   | SchemaDecorator<any>;
 
@@ -36,20 +38,14 @@ export interface SchemaSugarObject {
   [key: string]: Schema;
 }
 
-export type SchemaSugarValue = string | number | boolean | bigint;
+export type SchemaSugarLiteral = string | number | boolean | bigint;
 
 export type SchemaAny = [kind: Kind.Any];
 export type SchemaArray<T extends Schema> = [kind: Kind.Array, of: T];
-export type SchemaOr<T extends Schema> = [kind: Kind.Or, types: T[]];
+export type SchemaUnion<T extends Schema> = [kind: Kind.Union, types: T[]];
 export type SchemaDecorator<T extends Schema> = [
   kind: Kind.Decorator,
   of: T,
   // deno-lint-ignore no-explicit-any
-  decorators: SafenDecorator<any>[],
+  decorators: Decorator<any>[],
 ];
-
-export interface SafenDecorator<T> {
-  name: string;
-  validate?(v: string): string;
-  sanitize?(v: string): string;
-}

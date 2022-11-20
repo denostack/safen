@@ -1,8 +1,12 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function dateformat(): SafenDecorator<string> {
-  return {
-    name: "dateformat",
-    validate: (v) => `!Number.isNaN(Date.parse(${v}))`,
-  };
+const decorator: Decorator<string> = {
+  name: "dateformat",
+  validate(v) {
+    return !Number.isNaN(Date.parse(v));
+  },
+};
+
+export function dateformat(): Decorator<string> {
+  return decorator;
 }

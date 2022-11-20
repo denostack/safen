@@ -1,17 +1,17 @@
 export { array, decorate, optional, or } from "./schema/utils.ts";
 export type {
   Kind,
-  SafenDecorator,
   Schema,
   SchemaAny,
   SchemaArray,
   SchemaDecorator,
-  SchemaOr,
+  SchemaSugarLiteral,
   SchemaSugarObject,
   SchemaSugarPrimitive,
-  SchemaSugarValue,
+  SchemaUnion,
 } from "./schema/schema.ts";
 export type { ParseSchema } from "./schema/parse_schema.ts";
+export type { Decorator } from "./decorator/decorator.ts";
 
 export {
   createSanitize,

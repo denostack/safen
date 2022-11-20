@@ -1,9 +1,17 @@
-import { SafenDecorator } from "../schema/schema.ts";
+import { Decorator } from "../decorator/decorator.ts";
 
-export function json(): SafenDecorator<string> {
-  return {
-    name: `json`,
-    validate: (v) =>
-      `(function(){try{JSON.parse(${v});return true}catch(e){}return false})()`,
-  };
+const decorator: Decorator<string> = {
+  name: "json",
+  validate(v) {
+    try {
+      JSON.parse(v);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+};
+
+export function json(): Decorator<string> {
+  return decorator;
 }
