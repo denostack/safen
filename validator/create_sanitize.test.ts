@@ -326,7 +326,7 @@ Deno.test("validator/create_sanitize, createSanitize decorate", () => {
   assertEquals(e.reason, "#ip");
 });
 
-Deno.test("validator/create_validate, createValidate decorate complex", () => {
+Deno.test("validator/create_sanitize, createSanitize decorate complex", () => {
   const s = createSanitize(
     decorate(
       union([decorate(String, trim()), null]),

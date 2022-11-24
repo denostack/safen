@@ -6,6 +6,7 @@ export { between } from "./decorators/between.ts";
 export { creditcard } from "./decorators/creditcard.ts";
 export { dateformat } from "./decorators/dateformat.ts";
 export { email } from "./decorators/email.ts";
+export { emptyToNull } from "./decorators/emptyToNull.ts";
 export { hexcolor } from "./decorators/hexcolor.ts";
 export { ip } from "./decorators/ip.ts";
 export { json } from "./decorators/json.ts";

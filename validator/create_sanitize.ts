@@ -1,16 +1,20 @@
-import { Decorator } from "../decorator/decorator.ts";
-import { EstimateType } from "../ast/estimate_type.ts";
 import {
   Ast,
   AstLiteral,
   AstPrimitive,
   AstStrict,
-  AstUnion,
   Kind,
+  PrimitiveType,
 } from "../ast/ast.ts";
-import { InvalidValueError } from "./invalid_value_error.ts";
-import { primitiveTypeTemplates } from "./template.ts";
 import { desugar } from "../ast/desugar.ts";
+import { EstimateType } from "../ast/estimate_type.ts";
+import { Decorator } from "../decorator/decorator.ts";
+import {
+  condLiteral,
+  condPrimitive,
+  stringifyLiteral,
+} from "./create_validate.ts";
+import { InvalidValueError } from "./invalid_value_error.ts";
 
 const astToIndex = new Map<AstStrict, number>();
 let fns: string[] = [];
@@ -39,76 +43,60 @@ interface InternalDecoratorError {
   path: string;
 }
 
-function stringifyLiteral(value: string | number | boolean | bigint): string {
-  switch (typeof value) {
-    case "string":
-    case "number":
-    case "boolean": {
-      return JSON.stringify(value);
-    }
-    case "bigint": {
-      return `${value.toString()}n`;
-    }
-  }
-  throw new Error("Unknown literal type");
-}
-
 function throwUnionError(path = "p") {
-  return `throw {type:"union",path:${path}}`;
+  return `throw{type:"union",path:${path}}`;
 }
 
 function throwTypeError(type: string, path = "p") {
-  return `throw {type:"type",reason:${JSON.stringify(type)},path:${path}}`;
+  return `throw{type:"type",reason:${JSON.stringify(type)},path:${path}}`;
 }
 
 function throwDecoratorError(reason: string, path = "p") {
-  return `throw {type:"decorator",reason:${
+  return `throw{type:"decorator",reason:${
     JSON.stringify(reason)
   },path:${path}}`;
 }
 
 function invalidPrimitive(ast: AstPrimitive, value = "v", path = "p"): string {
-  const [_, invalid, type] = primitiveTypeTemplates.get(ast[1])!;
-  return `if(${invalid(value)})${throwTypeError(type, path)};`;
+  switch (ast[1]) {
+    case PrimitiveType.Any: {
+      return "";
+    }
+    case PrimitiveType.Null: {
+      return `if(${value}!==null)${throwTypeError("null", path)};`;
+    }
+    case PrimitiveType.Undefined: {
+      return `if(typeof ${value}!=="undefined")${
+        throwTypeError("undefined", path)
+      };`;
+    }
+    case PrimitiveType.String: {
+      return `if(typeof ${value}!=="string")${throwTypeError("string", path)};`;
+    }
+    case PrimitiveType.Number: {
+      return `if(typeof ${value}!=="number")${throwTypeError("number", path)};`;
+    }
+    case PrimitiveType.Boolean: {
+      return `if(typeof ${value}!=="boolean")${
+        throwTypeError("boolean", path)
+      };`;
+    }
+    case PrimitiveType.BigInt: {
+      return `if(typeof ${value}!=="bigint")${throwTypeError("bigint", path)};`;
+    }
+    case PrimitiveType.Symbol: {
+      return `if(typeof ${value}!=="symbol")${throwTypeError("symbol", path)};`;
+    }
+  }
+  throw new Error("unsupported primitive type");
 }
 
-function invalidLiteral(ast: AstLiteral, value = "v", path = "p"): string {
+function invalidLiteral(ast: AstLiteral, value: string, path = "p"): string {
   const literalValue = stringifyLiteral(ast[1]);
   return `if(${value}!==${literalValue})${throwTypeError(literalValue, path)};`;
 }
 
-function invalidUnion(
-  ast: AstUnion<AstStrict>,
-  value = "v",
-  path = "p",
-): string {
-  let result = "";
-  for (const child of ast[1]) {
-    switch (child[0]) {
-      case Kind.Primitive: {
-        const [valid] = primitiveTypeTemplates.get(child[1])!;
-        result += `if(${valid(value)})return ${value};`;
-        break;
-      }
-      case Kind.Literal: {
-        const literalValue = stringifyLiteral(child[1]);
-        result += `if(${value}===${literalValue})return ${value};`;
-        break;
-      }
-      default: {
-        if (!astToIndex.has(child)) {
-          traverse(child);
-        }
-        const idx = astToIndex.get(child)!;
-        result += `try{return _${idx}(${value},${path})}catch{}`;
-      }
-    }
-  }
-  result += `${throwUnionError(path)};`;
-  return result;
-}
-
-function invalidAst(ast: AstStrict, value = "v", path = "p"): string {
+function invalidAst(ast: AstStrict, value: string, path = "p"): string {
   switch (ast[0]) {
     case Kind.Primitive: {
       return invalidPrimitive(ast, value, path);
@@ -168,12 +156,34 @@ function traverse(ast: AstStrict) {
       if (children.length === 0) {
         throw new Error("Union must have at least one subtype");
       }
-      fns[idx] = `function ${name}(v,p){${invalidUnion(ast)}}`;
+      let result = `function ${name}(v,p){`;
+      for (const child of ast[1]) {
+        switch (child[0]) {
+          case Kind.Primitive: {
+            result += `if(${condPrimitive(child, 1, "v")})return v;`;
+            break;
+          }
+          case Kind.Literal: {
+            result += `if(${condLiteral(child, 1, "v")})return v;`;
+            break;
+          }
+          default: {
+            if (!astToIndex.has(child)) {
+              traverse(child);
+            }
+            const idx = astToIndex.get(child)!;
+            result += `try{return _${idx}(v,p)}catch{}`;
+          }
+        }
+      }
+      result += `${throwUnionError("p")};`;
+      result += `}`;
+      fns[idx] = result;
       return;
     }
     case Kind.Decorator: {
       let result = `function ${name}(v,p){`;
-      result += invalidAst(ast[1]);
+      result += invalidAst(ast[1], "v");
       for (const decorator of ast[2]) {
         if (!decoratorToIdx.has(decorator)) {
           decoratorToIdx.set(decorator, decorators.length);

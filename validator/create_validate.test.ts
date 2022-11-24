@@ -1,6 +1,11 @@
+import { between } from "../decorators/between.ts";
+import { email } from "../decorators/email.ts";
+import { lengthBetween } from "../decorators/length_between.ts";
 import { assert, assertFalse } from "testing/asserts.ts";
-import { any, array, decorate, or, union } from "../ast/utils.ts";
+import { any, array, decorate, optional, or, union } from "../ast/utils.ts";
+import { emptyToNull } from "../decorators/emptyToNull.ts";
 import { ip } from "../decorators/ip.ts";
+import { trim } from "../decorators/trim.ts";
 import { createValidate } from "./create_validate.ts";
 
 Deno.test("validator/create_validate, createValidate string", () => {
@@ -248,4 +253,76 @@ Deno.test("validator/create_validate, createValidate decorate", () => {
 
   assert(v("127.0.0.1"));
   assertFalse(v("1"));
+});
+
+Deno.test("validator/create_validate, createValidate decorate complex", () => {
+  const v = createValidate(
+    decorate(
+      union([decorate(String, trim()), null]),
+      emptyToNull(),
+    ),
+  );
+
+  assert(v("  127.0.0.1  "));
+  assert(v("    "));
+  assert(v(null));
+});
+
+Deno.test("validator/create_validate, createValidate complex", () => {
+  const typeLat = decorate(Number, between(-90, 90));
+  const typeLng = decorate(Number, between(-180, 180));
+  const v = createValidate({
+    id: Number,
+    email: decorate(String, [trim(), email()]),
+    name: optional(String),
+    password: decorate(String, lengthBetween(8, 20)),
+    areas: [{
+      lat: typeLat,
+      lng: typeLng,
+    }],
+    env: {
+      ip: decorate(String, ip("v4")),
+      os: {
+        name: or([
+          "window" as const,
+          "osx" as const,
+          "android" as const,
+          "iphone" as const,
+        ]),
+        version: String,
+      },
+      browser: {
+        name: or([
+          "chrome" as const,
+          "firefox" as const,
+          "edge" as const,
+          "ie" as const,
+        ]),
+        version: String,
+      },
+    },
+  });
+
+  assert(
+    v({
+      id: 30,
+      email: "       wan2land@gmail.com     ",
+      name: "wan2land",
+      password: "12345678",
+      areas: [
+        { lat: 0, lng: 0 },
+      ],
+      env: {
+        ip: "127.0.0.1",
+        os: {
+          name: "osx",
+          version: "10.13.1",
+        },
+        browser: {
+          name: "chrome",
+          version: "62.0.3202.94",
+        },
+      },
+    }),
+  );
 });
