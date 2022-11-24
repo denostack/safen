@@ -1,4 +1,4 @@
-export { array, decorate, optional, or } from "./ast/utils.ts";
+export { any, array, decorate, optional, or, union } from "./ast/utils.ts";
 export type {
   Ast,
   AstArray,

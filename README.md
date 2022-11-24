@@ -34,77 +34,17 @@ https://user-images.githubusercontent.com/4086535/203831205-8b3481cb-bb8d-4f3c-9
 **Deno**
 
 ```ts
-import {
-  createValidate,
-  decorate,
-  email,
-  ip,
-  lengthBetween,
-  or,
-  trim,
-} from "https://deno.land/x/safen/mod.ts";
-
-const typeLat = decorate(Number, between(-90, 90));
-const typeLng = decorate(Number, between(-180, 180));
+import { createValidate, union } from "https://deno.land/x/safen/mod.ts";
 
 const v = createValidate({
   id: Number,
-  email: decorate(String, [trim(), email()]),
-  name: optional(String),
-  password: decorate(String, lengthBetween(8, 20)),
-  areas: array({
-    lat: typeLat,
-    lng: typeLng,
-  }),
-  env: {
-    ip: decorate(String, ip("v4")),
-    os: {
-      name: or([
-        "window" as const,
-        "osx" as const,
-        "android" as const,
-        "iphone" as const,
-      ]),
-      version: String,
-    },
-    browser: {
-      name: or([
-        "chrome" as const,
-        "firefox" as const,
-        "edge" as const,
-        "ie" as const,
-      ]),
-      version: String,
-    },
-  },
+  // rule..
 });
 
 const input = {} as unknown; // some unknown value
 
 if (v(input)) {
-  /* now input type is below:
-  {
-    id: number;
-    email: string;
-    name: string | undefined;
-    password: string;
-    areas: {
-        lat: number;
-        lng: number;
-    }[];
-    env: {
-        ip: string;
-        os: {
-            name: any;
-            version: string;
-        };
-        browser: {
-            name: any;
-            version: string;
-        };
-    };
-  }
-  */
+  // :-)
 }
 ```
 
@@ -116,45 +56,87 @@ npm install safen
 
 ### Validate
 
-TODO
+validate returns boolean and assert throws Exception.
+
+```ts
+const v = createValidate({
+  id: Number,
+  name: String,
+});
+// v(data: unknown): data is { id: number, name: string }
+
+const input = {} as unknown; // some unknown value
+
+if (v(input)) {
+  // safe input!
+}
+```
 
 ### Sanitize
 
-TODO
+```ts
+const s = createSanitize({
+  id: Number,
+  name: decorate(String, trim()),
+});
+// s(data: unknown): { id: number, name: string }
 
-## Syntax
-
-TODO
+s({ id: 10, name: "  wan2land     " }); // return { id: 10, name: "wan2land" }
+s({ id: 10 }); // exception!
+```
 
 ## Decorator
 
-| Decorator                      | Validate | Sanitize | Type               | Description                                                                         | Example                                          |
-| ------------------------------ | -------- | -------- | ------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------ |
-| **alpha**                      | ✅        |          | `string`           | contains only letters([a-zA-Z]).                                                    | `alpha`                                          |
-| **alphanum**                   | ✅        |          | `string`           | contains only letters and numbers([a-zA-Z0-9])                                      | `alphanum`                                       |
-| **ascii**                      | ✅        |          | `string`           | contains only ascii characters.                                                     | `ascii`                                          |
-| **base64**                     | ✅        |          | `string`           | Base64.                                                                             | `base64`                                         |
-| **between({min},{max})**       | ✅        |          | `string`, `number` | value is between `{min}` and `{max}`.                                               | `between("aaa","zzz")`, `between(1,100)`         |
-| **creditcard**                 | ✅        |          | `string`           | valid Credit Card number. cf. `0000-0000-0000-0000`                                 | `creditcard`                                     |
-| **dateformat**                 | ✅        |          | `string`           | valid Date string(RFC2822, ISO8601). cf. `2018-12-25`, `12/25/2018`, `Dec 25, 2018` | `dateformat`                                     |
-| **email**                      | ✅        |          | `string`           | valid E-mail string.                                                                | `email`                                          |
-| **hexcolor**                   | ✅        |          | `string`           | valid Hex Color string. cf. `#ffffff`                                               | `hexcolor`                                       |
-| **ip({version = all})**        | ✅        |          | `string`           | valid UUID.<br />version is one of `all`(default), `v4`, and `v6`.                  | `ip`, `ip("v4")`, `ip("v6")`                     |
-| **json**                       | ✅        |          | `string`           | valid JSON.                                                                         | `json`                                           |
-| **length({size})**             | ✅        |          | `string`, `any[]`  | length is `{size}`.                                                                 | `length(16)`                                     |
-| **lengthBetween({min},{max})** | ✅        |          | `string`, `any[]`  | length is between `{min}` and `{max}`.                                              | `lengthBetween(4,20)`                            |
-| **lengthMax({max})**           | ✅        |          | `string`, `any[]`  | length is less than `{max}`.                                                        | `lengthMax(20)`                                  |
-| **lengthMin({min})**           | ✅        |          | `string`, `any[]`  | length is greater than `{min}`.                                                     | `lengthMin(4)`                                   |
-| **lowercase**                  | ✅        |          | `string`           | lowercase.                                                                          | `lowercase`                                      |
-| **macaddress**                 | ✅        |          | `string`           | valid Mac Address.                                                                  | `macaddress`                                     |
-| **max({max})**                 | ✅        |          | `string`, `number` | value is less than {min}.                                                           | `max(5)`                                         |
-| **min({min})**                 | ✅        |          | `string`, `number` | value is greater than {max}.                                                        | `min(3)`                                         |
-| **port**                       | ✅        |          | `number`           | valid PORT(0-65535).                                                                | `port`                                           |
-| **re**                         | ✅        |          | `string`           | match RegExp.                                                                       | `re(/.+/)`                                       |
-| **trim**                       |          | ✅        | `string`           | trim.                                                                               | `trim`                                           |
-| **uppercase**                  | ✅        |          | `string`           | uppercase.                                                                          | `uppercase`                                      |
-| **url**                        | ✅        |          | `string`           | valid URL.                                                                          | `url`                                            |
-| **uuid({version = all})**      | ✅        |          | `string`           | valid UUID.<br />version is one of `all`(default), `v3`, `v4`, and `v5`.            | `uuid`, `uuid("v3")`, `uuid("v4")`, `uuid("v5")` |
+```ts
+const s = createSanitize({
+  name: decorate(
+    union([
+      decorate(String, trim()),
+      null,
+    ]),
+    emptyToNull(),
+  ),
+});
+
+s("   hello   "); // return "hello"
+s("      "); // return null
+s(null); // return null
+```
+
+| Decorator                 | Validate | Transform | Type               | Description                                                                         |
+| ------------------------- | -------- | --------- | ------------------ | ----------------------------------------------------------------------------------- |
+| `alpha`                   | ✅        |           | `string`           | contains only letters([a-zA-Z]).                                                    |
+| `alphanum`                | ✅        |           | `string`           | contains only letters and numbers([a-zA-Z0-9])                                      |
+| `ascii`                   | ✅        |           | `string`           | contains only ascii characters.                                                     |
+| `base64`                  | ✅        |           | `string`           | Base64.                                                                             |
+| `between(min, max)`       | ✅        |           | `string`, `number` | value is between `{min}` and `{max}`. (ex) `between("aaa","zzz")`, `between(1,100)` |
+| `ceil`                    |          | ✅         | `number`           | Math.ceil. (ref. `floor`, `round`)                                                  |
+| `creditcard`              | ✅        |           | `string`           | valid Credit Card number. cf. `0000-0000-0000-0000`                                 |
+| `dateformat`              | ✅        |           | `string`           | valid Date string(RFC2822, ISO8601). cf. `2018-12-25`, `12/25/2018`, `Dec 25, 2018` |
+| `email`                   | ✅        |           | `string`           | valid E-mail string.                                                                |
+| `emptyToNull`             |          | ✅         | `string or null`   | empty string(`""`) to null                                                          |
+| `floor`                   |          | ✅         | `number`           | Math.floor. (ref. `ceil`, `round`)                                                  |
+| `hexcolor`                | ✅        |           | `string`           | valid Hex Color string. cf. `#ffffff`                                               |
+| `ip(version = null)`      | ✅        |           | `string`           | valid UUID.<br />version is one of `null`(both, default), `v4`, and `v6`.           |
+| `json`                    | ✅        |           | `string`           | valid JSON.                                                                         |
+| `length(size)`            | ✅        |           | `string`, `any[]`  | length is `{size}`.                                                                 |
+| `lengthBetween(min, max)` | ✅        |           | `string`, `any[]`  | length is between `{min}` and `{max}`.                                              |
+| `lengthMax(max)`          | ✅        |           | `string`, `any[]`  | length is less than `{max}`.                                                        |
+| `lengthMin(min)`          | ✅        |           | `string`, `any[]`  | length is greater than `{min}`.                                                     |
+| `lowercase`               | ✅        |           | `string`           | lowercase.                                                                          |
+| `macaddress`              | ✅        |           | `string`           | valid Mac Address.                                                                  |
+| `max(max)`                | ✅        |           | `string`, `number` | value is less than `{min}`.                                                         |
+| `min(min)`                | ✅        |           | `string`, `number` | value is greater than `{max}`.                                                      |
+| `port`                    | ✅        |           | `number`           | valid PORT(0-65535).                                                                |
+| `re`                      | ✅        |           | `string`           | match RegExp.                                                                       |
+| `round`                   |          | ✅         | `number`           | Math.round. (ref. `ceil`, `floor`)                                                  |
+| `stringify`               |          | ✅         | `string`           | cast to string                                                                      |
+| `toLower`                 |          | ✅         | `string`           | change to lower case.                                                               |
+| `toUpper`                 |          | ✅         | `string`           | change to upper case.                                                               |
+| `trim`                    |          | ✅         | `string`           | trim.                                                                               |
+| `uppercase`               | ✅        |           | `string`           | uppercase.                                                                          |
+| `url`                     | ✅        |           | `string`           | valid URL.                                                                          |
+| `uuid(version = null)`    | ✅        |           | `string`           | valid UUID.<br />version is one of `null`(default), `v3`, `v4`, and `v5`.           |
 
 ## Custom Decorator
 
@@ -167,6 +149,7 @@ Using another library? Safen is lot easier to use.
 ```ts
 const typeLat = decorate(Number, between(-90, 90));
 const typeLng = decorate(Number, between(-180, 180));
+
 const s = createSanitize({
   username: optional(decorate(String, [
     trim(),
@@ -182,7 +165,7 @@ const s = createSanitize({
     referer: decorate(String, url()),
     ip: decorate(String, ip("v4")),
     os: {
-      name: or([
+      name: union([
         "window" as const,
         "osx" as const,
         "android" as const,
@@ -191,7 +174,7 @@ const s = createSanitize({
       version: String,
     },
     browser: {
-      name: or([
+      name: union([
         "chrome" as const,
         "firefox" as const,
         "edge" as const,
