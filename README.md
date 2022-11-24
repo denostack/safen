@@ -9,23 +9,10 @@
   <img alt="Language Typescript" src="https://img.shields.io/badge/language-Typescript-007acc.svg?style=flat-square" />
 </p>
 
-Super Fast Object Validator<br />for Javascript(& Typescript).
+Super Fast Validator & Sanitizer Library for Typescript.
 
 Safen supports the syntax similar to the type script interface. This makes it
 easy to create validation rules.
-
-- [How to use](#how-to-use)
-  - [Setup](#setup)
-  - [`validate` method](#validate-method)
-  - [`assert` method](#assert-method)
-- [Syntax](#syntax)
-- [Custom Tester](#custom-tester)
-- [Support Validators](#support-validators)
-  - [Type Validations](#type-validations)
-  - [Other Validations](#other-validations)
-- [Comparison](#comparison)
-  - [Compare with JSON Schema](#compare-with-json-schema)
-  - [Compare with JOI](#compare-with-joi)
 
 ## Usage
 

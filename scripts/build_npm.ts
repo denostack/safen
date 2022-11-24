@@ -14,7 +14,7 @@ await build({
   },
   test: false,
   compilerOptions: {
-    lib: ["es2021"],
+    lib: ["es2021", "dom"],
   },
   package: {
     name: "safen",
@@ -24,11 +24,11 @@ await build({
       "validation",
       "validator",
       "validate",
+      "sanitizer",
+      "sanitize",
       "assert",
       "check",
-      "interface",
       "type",
-      "safen",
       "schema",
       "jsonschema",
       "joi",
