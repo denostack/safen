@@ -29,6 +29,8 @@ easy to create validation rules.
 
 ## Usage
 
+https://user-images.githubusercontent.com/4086535/203831205-8b3481cb-bb8d-4f3c-9876-e41adb6855fd.mp4
+
 **Deno**
 
 ```ts
