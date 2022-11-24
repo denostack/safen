@@ -7,7 +7,7 @@ const user = generateRandomUser();
 
 Deno.bench({
   name: "Safen Object",
-  group: "object",
+  group: "validate",
   ignore: !safen.isUser(user),
   baseline: true,
 }, () => {
@@ -16,7 +16,7 @@ Deno.bench({
 
 Deno.bench({
   name: "Safen(& Generate) Object",
-  group: "object",
+  group: "validate",
   ignore: !safen.generateAndIsUser(user),
 }, () => {
   safen.generateAndIsUser(user);
@@ -24,7 +24,7 @@ Deno.bench({
 
 Deno.bench({
   name: "Zod Object",
-  group: "object",
+  group: "validate",
   ignore: !zod.isUser(user),
 }, () => {
   zod.isUser(user);
@@ -32,7 +32,7 @@ Deno.bench({
 
 Deno.bench({
   name: "TypeBox Object",
-  group: "object",
+  group: "validate",
   ignore: !typebox.isUser(user),
 }, () => {
   typebox.isUser(user);
@@ -40,7 +40,7 @@ Deno.bench({
 
 Deno.bench({
   name: "TypeBox(& Generate) Object",
-  group: "object",
+  group: "validate",
   ignore: !typebox.generateAndIsUser(user),
 }, () => {
   typebox.generateAndIsUser(user);
