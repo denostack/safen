@@ -3,7 +3,7 @@ import { email } from "../decorators/email.ts";
 import { lengthBetween } from "../decorators/length_between.ts";
 import { assert, assertFalse } from "testing/asserts.ts";
 import { any, array, decorate, optional, or, union } from "../ast/utils.ts";
-import { emptyToNull } from "../decorators/emptyToNull.ts";
+import { emptyToNull } from "../decorators/empty_to_null.ts";
 import { ip } from "../decorators/ip.ts";
 import { trim } from "../decorators/trim.ts";
 import { createValidate } from "./create_validate.ts";

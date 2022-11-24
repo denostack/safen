@@ -142,18 +142,25 @@ function traverse(ast: AstStrict) {
     }
     case Kind.Decorator: {
       let result = `function ${name}(v){`;
-      result += `if(${condRoot(ast[1], 0, "v")})return false;`;
-      for (const decorator of ast[2]) {
+      const pairs = ast[2].map((decorator): [number, Decorator<unknown>] => {
         if (!decoratorToIdx.has(decorator)) {
           decoratorToIdx.set(decorator, decorators.length);
           decorators.push(decorator);
         }
-        const decoratorId = decoratorToIdx.get(decorator)!;
-        if (decorator.validate) {
-          result += `if(!_d[${decoratorId}].validate(v))return false;`;
+        return [decoratorToIdx.get(decorator)!, decorator];
+      });
+      for (const [dId, decorator] of pairs) {
+        if (decorator.preprocess) {
+          result += `v=_d[${dId}].preprocess(v);`;
         }
-        if (decorator.sanitize) {
-          result += `v=_d[${decoratorId}].sanitize(v);`;
+      }
+      result += `if(${condRoot(ast[1], 0, "v")})return false;`;
+      for (const [dId, decorator] of pairs) {
+        if (decorator.validate) {
+          result += `if(!_d[${dId}].validate(v))return false;`;
+        }
+        if (decorator.transform) {
+          result += `v=_d[${dId}].transform(v);`;
         }
       }
       result += `return true`;

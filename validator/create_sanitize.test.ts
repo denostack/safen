@@ -7,7 +7,7 @@ import { trim } from "../decorators/trim.ts";
 import { any, array, decorate, optional, or, union } from "../ast/utils.ts";
 import { createSanitize } from "./create_sanitize.ts";
 import { InvalidValueError } from "./invalid_value_error.ts";
-import { emptyToNull } from "../decorators/emptyToNull.ts";
+import { emptyToNull } from "../decorators/empty_to_null.ts";
 
 Deno.test("validator/create_sanitize, createSanitize string", () => {
   const s = createSanitize(String);

@@ -1,9 +1,11 @@
 import { Decorator } from "../decorator/decorator.ts";
 
 const decorator: Decorator<string> = {
-  name: "trim",
-  transform: (v) => v.trim(),
+  name: "toUpper",
+  transform(v) {
+    return v.toUpperCase();
+  },
 };
-export function trim(): Decorator<string> {
+export function toUpper(): Decorator<string> {
   return decorator;
 }

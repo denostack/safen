@@ -5,9 +5,12 @@ import {
   ascii,
   base64,
   between,
+  ceil,
   creditcard,
   dateformat,
   email,
+  emptyToNull,
+  floor,
   hexcolor,
   ip,
   json,
@@ -21,12 +24,16 @@ import {
   min,
   port,
   re,
+  round,
+  stringify,
+  toLower,
+  toUpper,
   trim,
   uppercase,
   url,
   uuid,
 } from "./decorators.ts";
-import { decorate } from "./ast/utils.ts";
+import { decorate, union } from "./ast/utils.ts";
 import { createSanitize } from "./validator/create_sanitize.ts";
 import { InvalidValueError } from "./validator/invalid_value_error.ts";
 
@@ -117,6 +124,16 @@ Deno.test("decorators, between", () => {
   }
 });
 
+Deno.test("decorators, ceil", () => {
+  const s1 = createSanitize(decorate(Number, ceil()));
+
+  assertEquals(s1(2.1), 3);
+  assertEquals(s1(2.9), 3);
+
+  assertEquals(s1(-2.1), -2);
+  assertEquals(s1(-2.9), -2);
+});
+
 Deno.test("decorators, creditcard", () => {
   const s = createSanitize(decorate(String, creditcard()));
 
@@ -162,6 +179,24 @@ Deno.test("decorators, email", () => {
     "This is an invalid value from decorator.",
   );
   assertEquals(e.reason, "#email");
+});
+
+Deno.test("decorators, emptyToNull", () => {
+  const s = createSanitize(decorate(union([String, null]), emptyToNull()));
+
+  assertEquals(s("empty"), "empty");
+  assertEquals(s(""), null);
+  assertEquals(s(null), null);
+});
+
+Deno.test("decorators, floor", () => {
+  const s1 = createSanitize(decorate(Number, floor()));
+
+  assertEquals(s1(2.1), 2);
+  assertEquals(s1(2.9), 2);
+
+  assertEquals(s1(-2.1), -3);
+  assertEquals(s1(-2.9), -3);
 });
 
 Deno.test("decorators, hexcolor", () => {
@@ -440,6 +475,42 @@ Deno.test("decorators, re", () => {
     "This is an invalid value from decorator.",
   );
   assertEquals(e.reason, "#re");
+});
+
+Deno.test("decorators, round", () => {
+  const s1 = createSanitize(decorate(Number, round()));
+
+  assertEquals(s1(2.1), 2);
+  assertEquals(s1(2.9), 3);
+
+  assertEquals(s1(-2.1), -2);
+  assertEquals(s1(-2.9), -3);
+});
+
+Deno.test("decorators, stringify", () => {
+  const s = createSanitize(decorate(String, stringify()));
+
+  assertEquals(s("abcdef"), "abcdef");
+  assertEquals(s(3030), "3030");
+  assertEquals(s(123n), "123");
+  assertEquals(s(true), "true");
+  assertEquals(s(false), "false");
+
+  // object, JSON.stringify
+  assertEquals(s({ foo: "wow" }), '{"foo":"wow"}');
+  assertEquals(s([{ foo: "wow" }]), '[{"foo":"wow"}]');
+});
+
+Deno.test("decorators, toLower", () => {
+  const s = createSanitize(decorate(String, toLower()));
+
+  assertEquals(s("aBcDeF"), "abcdef");
+});
+
+Deno.test("decorators, toUpper", () => {
+  const s = createSanitize(decorate(String, toUpper()));
+
+  assertEquals(s("aBcDeF"), "ABCDEF");
 });
 
 Deno.test("decorators, trim", () => {

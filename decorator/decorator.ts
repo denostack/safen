@@ -1,5 +1,6 @@
 export interface Decorator<T> {
   name: string;
+  preprocess?(v: unknown): T;
   validate?(v: T): boolean;
-  sanitize?(v: T): T;
+  transform?(v: T): T;
 }
