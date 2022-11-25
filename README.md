@@ -14,26 +14,9 @@ Super Fast Validator & Sanitizer Library for Typescript.
 Safen supports the syntax similar to the type script interface. This makes it
 easy to create validation rules.
 
-## Usage
-
 https://user-images.githubusercontent.com/4086535/203831205-8b3481cb-bb8d-4f3c-9876-e41adb6855fd.mp4
 
-**Deno**
-
-```ts
-import { createValidate, union } from "https://deno.land/x/safen/mod.ts";
-
-const v = createValidate({
-  id: Number,
-  // rule..
-});
-
-const input = {} as unknown; // some unknown value
-
-if (v(input)) {
-  // :-)
-}
-```
+## Installation
 
 **Node**
 
@@ -41,54 +24,130 @@ if (v(input)) {
 npm install safen
 ```
 
-### Validate
-
-validate returns boolean and assert throws Exception.
+**Deno**
 
 ```ts
-const v = createValidate({
-  id: Number,
-  name: String,
-});
-// v(data: unknown): data is { id: number, name: string }
+import {
+  createSanitize,
+  createValidate,
+} from "https://deno.land/x/safen/mod.ts";
+```
 
-const input = {} as unknown; // some unknown value
+## Basic Usage
 
-if (v(input)) {
-  // safe input!
+**Create Validate Fn**
+
+```ts
+import { createValidate } from "https://deno.land/x/safen/mod.ts";
+
+const validate = createValidate(String); // now, validate: (data: unknown) => data is string
+
+const input = {} as unknown;
+if (validate(input)) {
+  // now input is string!
 }
 ```
 
-### Sanitize
+**Create Sanitize Fn**
 
 ```ts
-const s = createSanitize({
-  id: Number,
-  name: decorate(String, trim()),
-});
-// s(data: unknown): { id: number, name: string }
+import { createSanitize } from "https://deno.land/x/safen/mod.ts";
 
-s({ id: 10, name: "  wan2land     " }); // return { id: 10, name: "wan2land" }
-s({ id: 10 }); // exception!
+const sanitize = createSanitize(String); // now, sanitize: (data: unknown) => string
+
+const input = {} as unknown; // some unknown value
+
+sanitize("something" as unknown); // return "something"
+sanitize(null as unknown); // throw InvalidValueError
+```
+
+## Types
+
+```ts
+// Primitive Types
+const v = createValidate(String); // (data: unknown) => data is string
+const v = createValidate(Number); // (data: unknown) => data is number
+const v = createValidate(Boolean); // (data: unknown) => data is boolean
+const v = createValidate(BigInt); // (data: unknown) => data is bigint
+const v = createValidate(Symbol); // (data: unknown) => data is symbol
+
+// Literal Types
+const v = createValidate("foo"); // (data: unknown) => data is "foo"
+const v = createValidate(1024); // (data: unknown) => data is 1024
+const v = createValidate(true); // (data: unknown) => data is true
+const v = createValidate(2048n); // (data: unknown) => data is 2048n
+const v = createValidate(null); // (data: unknown) => data is null
+const v = createValidate(undefined); // (data: unknown) => data is undefined
+
+// Special
+const v = createValidate(any()); // (data: unknown) => data is any
+const v = createValidate(Array); // (data: unknown) => data is any[]
+
+// Object
+const Point = { x: Number, y: Number };
+const v = createValidate({ p1: Point, p2: Point }); // (data: unknown) => data is { p1: { x: number, y: number }, p2: { x: number, y: number } }
+
+// Union
+const v = createValidate(union([String, Number])); // (data: unknown) => data is string | number
+
+// Array
+const v = createValidate([String]); // (data: unknown) => data is string[]
+const v = createValidate([union([String, Number])]); // (data: unknown) => data is (string | number)[]
 ```
 
 ## Decorator
 
+Decorators do not affect type inference, but do affect additional validation and
+data transformation.
+
+**Step1. Basic Sanitize**
+
 ```ts
-const s = createSanitize({
-  name: decorate(
+const s = createSanitize(union([
+  String,
+  null,
+]));
+
+s("hello world!"); // return "hello world!"
+s("  hello world!  "); // return "  hello world!  "
+s("    "); // return "    "
+s(null); // return null
+```
+
+**Step2. Add trim decorator**
+
+```ts
+const s = createSanitize(union([
+  decorate(String, trim()),
+  null,
+]));
+
+s("hello world!"); // return "hello world!"
+s("  hello world!  "); // return "hello world!"
+s("    "); // return ""
+s(null); // return null
+```
+
+**Step3. Add emptyToNull decorator**
+
+```ts
+const s = createSanitize(
+  decorate(
     union([
       decorate(String, trim()),
       null,
     ]),
     emptyToNull(),
   ),
-});
+);
 
-s("   hello   "); // return "hello"
-s("      "); // return null
+s("hello world!"); // return "hello world!"
+s("  hello world!  "); // return "hello world!"
+s("    "); // return null
 s(null); // return null
 ```
+
+### Defined Decorators
 
 | Decorator                 | Validate | Transform | Type               | Description                                                                         |
 | ------------------------- | -------- | --------- | ------------------ | ----------------------------------------------------------------------------------- |
@@ -129,198 +188,11 @@ s(null); // return null
 
 TODO
 
-## Comparison
+## Benchmark
 
-Using another library? Safen is lot easier to use.
+Please see [benchmark results](.benchmark).
 
-```ts
-const typeLat = decorate(Number, between(-90, 90));
-const typeLng = decorate(Number, between(-180, 180));
-
-const s = createSanitize({
-  username: optional(decorate(String, [
-    trim(),
-    email(),
-    lengthBetween(12, 100),
-  ])),
-  password: decorate(String, lengthBetween(8, 20)),
-  areas: array({
-    lat: typeLat,
-    lng: typeLng,
-  }),
-  env: {
-    referer: decorate(String, url()),
-    ip: decorate(String, ip("v4")),
-    os: {
-      name: union([
-        "window" as const,
-        "osx" as const,
-        "android" as const,
-        "iphone" as const,
-      ]),
-      version: String,
-    },
-    browser: {
-      name: union([
-        "chrome" as const,
-        "firefox" as const,
-        "edge" as const,
-        "ie" as const,
-      ]),
-      version: String,
-    },
-  },
-});
-```
-
-### Compare with JSON Schema
-
-<p>
-  <details>
-    <summary>Show JSON Schema Source</summary>
-
-```json
-{
-  "definitions": {},
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "required": [
-    "username",
-    "areas",
-    "env"
-  ],
-  "properties": {
-    "username": {
-      "type": ["string", "null"],
-      "format": "email",
-      "minLength": 12,
-      "maxLength": 100
-    },
-    "password": {
-      "type": "string",
-      "minLength": 8,
-      "maxLength": 20
-    },
-    "areas": {
-      "type": ["array", "null"],
-      "items": {
-        "type": "object",
-        "required": [
-          "lat",
-          "lng"
-        ],
-        "properties": {
-          "lat": {
-            "type": "integer",
-            "minimum": -90,
-            "maximum": 90
-          },
-          "lng": {
-            "type": "integer",
-            "minimum": -180,
-            "maximum": 180
-          }
-        }
-      }
-    },
-    "env": {
-      "type": "object",
-      "required": [
-        "referer",
-        "ip",
-        "os",
-        "browser"
-      ],
-      "properties": {
-        "referer": {
-          "type": "string",
-          "format": "uri"
-        },
-        "ip": {
-          "type": "string",
-          "format": "ipv4"
-        },
-        "os": {
-          "type": "object",
-          "required": [
-            "name",
-            "version"
-          ],
-          "properties": {
-            "name": {
-              "type": "string",
-              "enum": ["window", "osx", "android", "iphone"]
-            },
-            "version": {
-              "type": "string",
-              "pattern": "^(.*)$"
-            }
-          }
-        },
-        "browser": {
-          "type": "object",
-          "required": [
-            "name",
-            "version"
-          ],
-          "properties": {
-            "name": {
-              "type": "string",
-              "enum": ["chrome", "firefox", "edge", "ie"]
-            },
-            "version": {
-              "type": "string",
-              "pattern": "^(.*)$"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-</details>
-</p>
-
-### Compare with JOI
-
-[JOI](https://github.com/hapijs/joi) is the most popular object schema
-validation library.
-
-<p>
-  <details>
-    <summary>Show JOI Source</summary>
-
-```js
-Joi.object().keys({
-  username: Joi.string().required().allow(null).email().min(12).max(100),
-  password: Joi.string().min(8).max(20),
-  areas: Joi.array().required().allow(null).min(1).items(
-    Joi.object().keys({
-      lat: Joi.number().required().min(-90).max(90),
-      lng: Joi.number().required().min(-180).max(180),
-    }),
-  ),
-  env: Joi.object().required().keys({
-    referer: Joi.string().uri().required(),
-    ip: Joi.string().required().ip({ version: ["ipv4"] }),
-    os: Joi.object().required().keys({
-      name: Joi.any().required().only("window", "osx", "android", "iphone"),
-      version: Joi.string().required(),
-    }),
-    browser: Joi.object().required().keys({
-      name: Joi.any().required().only("chrome", "firefox", "edge", "ie"),
-      version: Joi.string().required(),
-    }),
-  }),
-});
-```
-
-</details>
-</p>
-
-## Old Versions
+## Old Version Docs
 
 - [1.x](https://github.com/denostack/safen/tree/1.x)
 - [2.x](https://github.com/denostack/safen/tree/1.x)
