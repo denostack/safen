@@ -2,6 +2,7 @@ import { generateRandomUser } from "./stubs/user.ts";
 import * as zod from "./stubs/validate_zod.ts";
 import * as safen from "./stubs/validate_safen.ts";
 import * as typebox from "./stubs/validate_typebox.ts";
+import * as ajv from "./stubs/validate_ajv.ts";
 
 const user = generateRandomUser();
 
@@ -15,7 +16,7 @@ Deno.bench({
 });
 
 Deno.bench({
-  name: "Safen(& Generate) Object",
+  name: "Safen(w/ Validate Creation) Object",
   group: "validate",
   ignore: !safen.generateAndIsUser(user),
 }, () => {
@@ -31,6 +32,22 @@ Deno.bench({
 });
 
 Deno.bench({
+  name: "Ajv Object",
+  group: "validate",
+  ignore: !ajv.isUser(user),
+}, () => {
+  ajv.isUser(user);
+});
+
+Deno.bench({
+  name: "Ajv(w/ Validate Creation) Object",
+  group: "validate",
+  ignore: !ajv.generateAndIsUser(user),
+}, () => {
+  ajv.generateAndIsUser(user);
+});
+
+Deno.bench({
   name: "TypeBox Object",
   group: "validate",
   ignore: !typebox.isUser(user),
@@ -39,7 +56,7 @@ Deno.bench({
 });
 
 Deno.bench({
-  name: "TypeBox(& Generate) Object",
+  name: "TypeBox(w/ Validate Creation) Object",
   group: "validate",
   ignore: !typebox.generateAndIsUser(user),
 }, () => {
