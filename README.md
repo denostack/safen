@@ -1,15 +1,20 @@
 # Safen
 
+<a href="https://github.com/denostack"><img src="https://raw.githubusercontent.com/denostack/images/main/logo.svg" width="240" /></a>
+
 <p>
-  <a href="https://github.com/denostack/safen/actions"><img alt="Build" src="https://img.shields.io/github/workflow/status/denostack/safen/CI?style=flat-square" /></a>
+  <a href="https://github.com/denostack/safen/actions"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/denostack/safen/ci.yml?branch=main&logo=github&style=flat-square" /></a>
   <a href="https://codecov.io/gh/denostack/safen"><img alt="Coverage" src="https://img.shields.io/codecov/c/gh/denostack/safen?style=flat-square" /></a>
-  <a href="https://npmcharts.com/compare/safen?minimal=true"><img alt="Downloads" src="https://img.shields.io/npm/dt/safen.svg?style=flat-square" /></a>
-  <a href="https://www.npmjs.com/package/safen"><img alt="Version" src="https://img.shields.io/npm/v/safen.svg?style=flat-square" /></a>
-  <a href="https://www.npmjs.com/package/safen"><img alt="License" src="https://img.shields.io/npm/l/safen.svg?style=flat-square" /></a>
+  <img alt="License" src="https://img.shields.io/npm/l/safen.svg?style=flat-square" />
   <img alt="Language Typescript" src="https://img.shields.io/badge/language-Typescript-007acc.svg?style=flat-square" />
+  <br />
+  <a href="https://deno.land/x/safen"><img alt="deno.land/x/safen" src="https://img.shields.io/badge/dynamic/json?url=https://api.github.com/repos/denostack/safen/tags&query=$[0].name&display_name=tag&label=deno.land/x/safen@&style=flat-square&logo=deno&labelColor=000&color=777" /></a>
+  <a href="https://www.npmjs.com/package/safen"><img alt="Version" src="https://img.shields.io/npm/v/safen.svg?style=flat-square&logo=npm" /></a>
+  <a href="https://npmcharts.com/compare/safen?minimal=true"><img alt="Downloads" src="https://img.shields.io/npm/dt/safen.svg?style=flat-square" /></a>
 </p>
 
-Super Fast Validator & Sanitizer Library for Typescript.
+Safen is a top-performing validation and sanitization library with easy type
+inference.
 
 Safen supports the syntax similar to the type script interface. This makes it
 easy to create validation rules.
