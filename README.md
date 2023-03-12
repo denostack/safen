@@ -33,8 +33,8 @@ npm install safen
 
 ```ts
 import {
-  createSanitize,
-  createValidate,
+  s, // sanitize,
+  v, // validate,
 } from "https://deno.land/x/safen/mod.ts";
 ```
 
@@ -43,9 +43,9 @@ import {
 **Create Validate Fn**
 
 ```ts
-import { createValidate } from "https://deno.land/x/safen/mod.ts";
+import { v } from "https://deno.land/x/safen/mod.ts";
 
-const validate = createValidate(String); // now, validate: (data: unknown) => data is string
+const validate = v(String); // now, validate: (data: unknown) => data is string
 
 const input = {} as unknown;
 if (validate(input)) {
@@ -56,9 +56,9 @@ if (validate(input)) {
 **Create Sanitize Fn**
 
 ```ts
-import { createSanitize } from "https://deno.land/x/safen/mod.ts";
+import { s } from "https://deno.land/x/safen/mod.ts";
 
-const sanitize = createSanitize(String); // now, sanitize: (data: unknown) => string
+const sanitize = s(String); // now, sanitize: (data: unknown) => string
 
 const input = {} as unknown; // some unknown value
 
@@ -70,34 +70,34 @@ sanitize(null as unknown); // throw InvalidValueError
 
 ```ts
 // Primitive Types
-const v = createValidate(String); // (data: unknown) => data is string
-const v = createValidate(Number); // (data: unknown) => data is number
-const v = createValidate(Boolean); // (data: unknown) => data is boolean
-const v = createValidate(BigInt); // (data: unknown) => data is bigint
-const v = createValidate(Symbol); // (data: unknown) => data is symbol
+const validate = v(String); // (data: unknown) => data is string
+const validate = v(Number); // (data: unknown) => data is number
+const validate = v(Boolean); // (data: unknown) => data is boolean
+const validate = v(BigInt); // (data: unknown) => data is bigint
+const validate = v(Symbol); // (data: unknown) => data is symbol
 
 // Literal Types
-const v = createValidate("foo"); // (data: unknown) => data is "foo"
-const v = createValidate(1024); // (data: unknown) => data is 1024
-const v = createValidate(true); // (data: unknown) => data is true
-const v = createValidate(2048n); // (data: unknown) => data is 2048n
-const v = createValidate(null); // (data: unknown) => data is null
-const v = createValidate(undefined); // (data: unknown) => data is undefined
+const validate = v("foo"); // (data: unknown) => data is "foo"
+const validate = v(1024); // (data: unknown) => data is 1024
+const validate = v(true); // (data: unknown) => data is true
+const validate = v(2048n); // (data: unknown) => data is 2048n
+const validate = v(null); // (data: unknown) => data is null
+const validate = v(undefined); // (data: unknown) => data is undefined
 
 // Special
-const v = createValidate(any()); // (data: unknown) => data is any
-const v = createValidate(Array); // (data: unknown) => data is any[]
+const validate = v(v.any()); // (data: unknown) => data is any
+const validate = v(Array); // (data: unknown) => data is any[]
 
 // Object
 const Point = { x: Number, y: Number };
-const v = createValidate({ p1: Point, p2: Point }); // (data: unknown) => data is { p1: { x: number, y: number }, p2: { x: number, y: number } }
+const validate = v({ p1: Point, p2: Point }); // (data: unknown) => data is { p1: { x: number, y: number }, p2: { x: number, y: number } }
 
 // Union
-const v = createValidate(union([String, Number])); // (data: unknown) => data is string | number
+const validate = v(v.union([String, Number])); // (data: unknown) => data is string | number
 
 // Array
-const v = createValidate([String]); // (data: unknown) => data is string[]
-const v = createValidate([union([String, Number])]); // (data: unknown) => data is (string | number)[]
+const validate = v([String]); // (data: unknown) => data is string[]
+const validate = v([v.union([String, Number])]); // (data: unknown) => data is (string | number)[]
 ```
 
 ## Decorator
@@ -108,86 +108,86 @@ data transformation.
 **Step1. Basic Sanitize**
 
 ```ts
-const s = createSanitize(union([
+const sanitize = s(s.union([
   String,
   null,
 ]));
 
-s("hello world!"); // return "hello world!"
-s("  hello world!  "); // return "  hello world!  "
-s("    "); // return "    "
-s(null); // return null
+sanitize("hello world!"); // return "hello world!"
+sanitize("  hello world!  "); // return "  hello world!  "
+sanitize("    "); // return "    "
+sanitize(null); // return null
 ```
 
 **Step2. Add trim decorator**
 
 ```ts
-const s = createSanitize(union([
-  decorate(String, trim()),
+const sanitize = s(s.union([
+  s.decorate(String, (d) => d.trim()),
   null,
 ]));
 
-s("hello world!"); // return "hello world!"
-s("  hello world!  "); // return "hello world!"
-s("    "); // return ""
-s(null); // return null
+sanitize("hello world!"); // return "hello world!"
+sanitize("  hello world!  "); // return "hello world!"
+sanitize("    "); // return ""
+sanitize(null); // return null
 ```
 
 **Step3. Add emptyToNull decorator**
 
 ```ts
-const s = createSanitize(
-  decorate(
-    union([
-      decorate(String, trim()),
+const sanitize = s(
+  s.decorate(
+    s.union([
+      s.decorate(String, (d) => d.trim()),
       null,
     ]),
-    emptyToNull(),
+    (d) => d.emptyToNull(),
   ),
 );
 
-s("hello world!"); // return "hello world!"
-s("  hello world!  "); // return "hello world!"
-s("    "); // return null
-s(null); // return null
+sanitize("hello world!"); // return "hello world!"
+sanitize("  hello world!  "); // return "hello world!"
+sanitize("    "); // return null
+sanitize(null); // return null
 ```
 
 ### Defined Decorators
 
 | Decorator                 | Validate | Transform | Type               | Description                                                                         |
 | ------------------------- | -------- | --------- | ------------------ | ----------------------------------------------------------------------------------- |
-| `alpha`                   | ✅        |           | `string`           | contains only letters([a-zA-Z]).                                                    |
-| `alphanum`                | ✅        |           | `string`           | contains only letters and numbers([a-zA-Z0-9])                                      |
-| `ascii`                   | ✅        |           | `string`           | contains only ascii characters.                                                     |
-| `base64`                  | ✅        |           | `string`           | Base64.                                                                             |
-| `between(min, max)`       | ✅        |           | `string`, `number` | value is between `{min}` and `{max}`. (ex) `between("aaa","zzz")`, `between(1,100)` |
-| `ceil`                    |          | ✅         | `number`           | Math.ceil. (ref. `floor`, `round`)                                                  |
-| `creditcard`              | ✅        |           | `string`           | valid Credit Card number. cf. `0000-0000-0000-0000`                                 |
-| `dateformat`              | ✅        |           | `string`           | valid Date string(RFC2822, ISO8601). cf. `2018-12-25`, `12/25/2018`, `Dec 25, 2018` |
-| `email`                   | ✅        |           | `string`           | valid E-mail string.                                                                |
-| `emptyToNull`             |          | ✅         | `string or null`   | empty string(`""`) to null                                                          |
-| `floor`                   |          | ✅         | `number`           | Math.floor. (ref. `ceil`, `round`)                                                  |
-| `hexcolor`                | ✅        |           | `string`           | valid Hex Color string. cf. `#ffffff`                                               |
-| `ip(version = null)`      | ✅        |           | `string`           | valid UUID.<br />version is one of `null`(both, default), `v4`, and `v6`.           |
-| `json`                    | ✅        |           | `string`           | valid JSON.                                                                         |
-| `length(size)`            | ✅        |           | `string`, `any[]`  | length is `{size}`.                                                                 |
-| `lengthBetween(min, max)` | ✅        |           | `string`, `any[]`  | length is between `{min}` and `{max}`.                                              |
-| `lengthMax(max)`          | ✅        |           | `string`, `any[]`  | length is less than `{max}`.                                                        |
-| `lengthMin(min)`          | ✅        |           | `string`, `any[]`  | length is greater than `{min}`.                                                     |
-| `lowercase`               | ✅        |           | `string`           | lowercase.                                                                          |
-| `macaddress`              | ✅        |           | `string`           | valid Mac Address.                                                                  |
-| `max(max)`                | ✅        |           | `string`, `number` | value is less than `{min}`.                                                         |
-| `min(min)`                | ✅        |           | `string`, `number` | value is greater than `{max}`.                                                      |
-| `port`                    | ✅        |           | `number`           | valid PORT(0-65535).                                                                |
-| `re`                      | ✅        |           | `string`           | match RegExp.                                                                       |
-| `round`                   |          | ✅         | `number`           | Math.round. (ref. `ceil`, `floor`)                                                  |
-| `stringify`               |          | ✅         | `string`           | cast to string                                                                      |
-| `toLower`                 |          | ✅         | `string`           | change to lower case.                                                               |
-| `toUpper`                 |          | ✅         | `string`           | change to upper case.                                                               |
-| `trim`                    |          | ✅         | `string`           | trim.                                                                               |
-| `uppercase`               | ✅        |           | `string`           | uppercase.                                                                          |
-| `url`                     | ✅        |           | `string`           | valid URL.                                                                          |
-| `uuid(version = null)`    | ✅        |           | `string`           | valid UUID.<br />version is one of `null`(default), `v3`, `v4`, and `v5`.           |
+| `alpha`                   | ✅       |           | `string`           | contains only letters([a-zA-Z]).                                                    |
+| `alphanum`                | ✅       |           | `string`           | contains only letters and numbers([a-zA-Z0-9])                                      |
+| `ascii`                   | ✅       |           | `string`           | contains only ascii characters.                                                     |
+| `base64`                  | ✅       |           | `string`           | Base64.                                                                             |
+| `between(min, max)`       | ✅       |           | `string`, `number` | value is between `{min}` and `{max}`. (ex) `between("aaa","zzz")`, `between(1,100)` |
+| `ceil`                    |          | ✅        | `number`           | Math.ceil. (ref. `floor`, `round`)                                                  |
+| `creditcard`              | ✅       |           | `string`           | valid Credit Card number. cf. `0000-0000-0000-0000`                                 |
+| `dateformat`              | ✅       |           | `string`           | valid Date string(RFC2822, ISO8601). cf. `2018-12-25`, `12/25/2018`, `Dec 25, 2018` |
+| `email`                   | ✅       |           | `string`           | valid E-mail string.                                                                |
+| `emptyToNull`             |          | ✅        | `string or null`   | empty string(`""`) to null                                                          |
+| `floor`                   |          | ✅        | `number`           | Math.floor. (ref. `ceil`, `round`)                                                  |
+| `hexcolor`                | ✅       |           | `string`           | valid Hex Color string. cf. `#ffffff`                                               |
+| `ip(version = null)`      | ✅       |           | `string`           | valid UUID.<br />version is one of `null`(both, default), `v4`, and `v6`.           |
+| `json`                    | ✅       |           | `string`           | valid JSON.                                                                         |
+| `length(size)`            | ✅       |           | `string`, `any[]`  | length is `{size}`.                                                                 |
+| `lengthBetween(min, max)` | ✅       |           | `string`, `any[]`  | length is between `{min}` and `{max}`.                                              |
+| `lengthMax(max)`          | ✅       |           | `string`, `any[]`  | length is less than `{max}`.                                                        |
+| `lengthMin(min)`          | ✅       |           | `string`, `any[]`  | length is greater than `{min}`.                                                     |
+| `lowercase`               | ✅       |           | `string`           | lowercase.                                                                          |
+| `macaddress`              | ✅       |           | `string`           | valid Mac Address.                                                                  |
+| `max(max)`                | ✅       |           | `string`, `number` | value is less than `{min}`.                                                         |
+| `min(min)`                | ✅       |           | `string`, `number` | value is greater than `{max}`.                                                      |
+| `port`                    | ✅       |           | `number`           | valid PORT(0-65535).                                                                |
+| `re`                      | ✅       |           | `string`           | match RegExp.                                                                       |
+| `round`                   |          | ✅        | `number`           | Math.round. (ref. `ceil`, `floor`)                                                  |
+| `stringify`               |          | ✅        | `string`           | cast to string                                                                      |
+| `toLower`                 |          | ✅        | `string`           | change to lower case.                                                               |
+| `toUpper`                 |          | ✅        | `string`           | change to upper case.                                                               |
+| `trim`                    |          | ✅        | `string`           | trim.                                                                               |
+| `uppercase`               | ✅       |           | `string`           | uppercase.                                                                          |
+| `url`                     | ✅       |           | `string`           | valid URL.                                                                          |
+| `uuid(version = null)`    | ✅       |           | `string`           | valid UUID.<br />version is one of `null`(default), `v3`, `v4`, and `v5`.           |
 
 ## Custom Decorator
 

@@ -23,4 +23,5 @@ export { createSanitize } from "./validator/create_sanitize.ts";
 export { createValidate } from "./validator/create_validate.ts";
 export { InvalidValueError } from "./validator/invalid_value_error.ts";
 
-export * from "./decorators.ts";
+export { d, type PredefinedDecorators } from "./decorators.ts";
+export { type DecoratorFactory, s, v } from "./short.ts";

@@ -1,5 +1,10 @@
 import { assertEquals, assertThrows } from "testing/asserts.ts";
-import {
+import { d } from "./decorators.ts";
+import { decorate, union } from "./ast/utils.ts";
+import { createSanitize } from "./validator/create_sanitize.ts";
+import { InvalidValueError } from "./validator/invalid_value_error.ts";
+
+const {
   alpha,
   alphanum,
   ascii,
@@ -32,10 +37,7 @@ import {
   uppercase,
   url,
   uuid,
-} from "./decorators.ts";
-import { decorate, union } from "./ast/utils.ts";
-import { createSanitize } from "./validator/create_sanitize.ts";
-import { InvalidValueError } from "./validator/invalid_value_error.ts";
+} = d;
 
 Deno.test("decorators, alpha", () => {
   const s = createSanitize(decorate(String, alpha()));

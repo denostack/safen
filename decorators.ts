@@ -1,32 +1,69 @@
-export { alpha } from "./decorators/alpha.ts";
-export { alphanum } from "./decorators/alphanum.ts";
-export { ascii } from "./decorators/ascii.ts";
-export { base64 } from "./decorators/base64.ts";
-export { between } from "./decorators/between.ts";
-export { ceil } from "./decorators/ceil.ts";
-export { creditcard } from "./decorators/creditcard.ts";
-export { dateformat } from "./decorators/dateformat.ts";
-export { email } from "./decorators/email.ts";
-export { emptyToNull } from "./decorators/empty_to_null.ts";
-export { floor } from "./decorators/floor.ts";
-export { hexcolor } from "./decorators/hexcolor.ts";
-export { ip } from "./decorators/ip.ts";
-export { json } from "./decorators/json.ts";
-export { lengthBetween } from "./decorators/length_between.ts";
-export { lengthMax } from "./decorators/length_max.ts";
-export { lengthMin } from "./decorators/length_min.ts";
-export { length } from "./decorators/length.ts";
-export { lowercase } from "./decorators/lowercase.ts";
-export { macaddress } from "./decorators/macaddress.ts";
-export { min } from "./decorators/min.ts";
-export { max } from "./decorators/max.ts";
-export { port } from "./decorators/port.ts";
-export { re } from "./decorators/re.ts";
-export { round } from "./decorators/round.ts";
-export { stringify } from "./decorators/stringify.ts";
-export { toLower } from "./decorators/to_lower.ts";
-export { toUpper } from "./decorators/to_upper.ts";
-export { trim } from "./decorators/trim.ts";
-export { uppercase } from "./decorators/uppercase.ts";
-export { url } from "./decorators/url.ts";
-export { uuid } from "./decorators/uuid.ts";
+import { alpha } from "./decorators/alpha.ts";
+import { alphanum } from "./decorators/alphanum.ts";
+import { ascii } from "./decorators/ascii.ts";
+import { base64 } from "./decorators/base64.ts";
+import { between } from "./decorators/between.ts";
+import { ceil } from "./decorators/ceil.ts";
+import { creditcard } from "./decorators/creditcard.ts";
+import { dateformat } from "./decorators/dateformat.ts";
+import { email } from "./decorators/email.ts";
+import { emptyToNull } from "./decorators/empty_to_null.ts";
+import { floor } from "./decorators/floor.ts";
+import { hexcolor } from "./decorators/hexcolor.ts";
+import { ip } from "./decorators/ip.ts";
+import { json } from "./decorators/json.ts";
+import { lengthBetween } from "./decorators/length_between.ts";
+import { lengthMax } from "./decorators/length_max.ts";
+import { lengthMin } from "./decorators/length_min.ts";
+import { length } from "./decorators/length.ts";
+import { lowercase } from "./decorators/lowercase.ts";
+import { macaddress } from "./decorators/macaddress.ts";
+import { min } from "./decorators/min.ts";
+import { max } from "./decorators/max.ts";
+import { port } from "./decorators/port.ts";
+import { re } from "./decorators/re.ts";
+import { round } from "./decorators/round.ts";
+import { stringify } from "./decorators/stringify.ts";
+import { toLower } from "./decorators/to_lower.ts";
+import { toUpper } from "./decorators/to_upper.ts";
+import { trim } from "./decorators/trim.ts";
+import { uppercase } from "./decorators/uppercase.ts";
+import { url } from "./decorators/url.ts";
+import { uuid } from "./decorators/uuid.ts";
+
+export const d = {
+  alpha,
+  alphanum,
+  ascii,
+  base64,
+  between,
+  ceil,
+  creditcard,
+  dateformat,
+  email,
+  emptyToNull,
+  floor,
+  hexcolor,
+  ip,
+  json,
+  lengthBetween,
+  lengthMax,
+  lengthMin,
+  length,
+  lowercase,
+  macaddress,
+  min,
+  max,
+  port,
+  re,
+  round,
+  stringify,
+  toLower,
+  toUpper,
+  trim,
+  uppercase,
+  url,
+  uuid,
+};
+
+export type PredefinedDecorators = typeof d;
