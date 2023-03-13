@@ -1,7 +1,7 @@
 {
   "imports": {
-    "dnt/": "https://deno.land/x/dnt@0.31.0/",
-    "testing/": "https://deno.land/std@0.161.0/testing/",
+    "dnt/": "https://deno.land/x/dnt@0.33.0/",
+    "testing/": "https://deno.land/std@0.179.0/testing/",
     "@type-challenges/utils": "https://esm.sh/@type-challenges/utils@0.1.1/index.d.ts"
   },
   "tasks": {
