@@ -13,11 +13,9 @@
   <a href="https://npmcharts.com/compare/safen?minimal=true"><img alt="Downloads" src="https://img.shields.io/npm/dt/safen.svg?style=flat-square" /></a>
 </p>
 
-Safen is a top-performing validation and sanitization library with easy type
-inference.
-
-Safen supports the syntax similar to the type script interface. This makes it
-easy to create validation rules.
+Safen is a high-performance validation and sanitization library with easy type
+inference. Its syntax is similar to TypeScript interface, making it easy to
+create validation rules.
 
 https://user-images.githubusercontent.com/4086535/203831205-8b3481cb-bb8d-4f3c-9876-e41adb6855fd.mp4
 
@@ -191,7 +189,49 @@ sanitize(null); // return null
 
 ## Custom Decorator
 
-TODO
+```mermaid
+graph LR;
+  A[input] -->|type = unknown| B{cast};
+  B -->|type = T| C{validate};
+  C -->|true| D{transform};
+  C -->|false| E[error];
+  D --> F[output];
+```
+
+```ts
+interface Decorator<T> {
+  name: string;
+  cast?(v: unknown): T;
+  validate?(v: T): boolean;
+  transform?(v: T): T;
+}
+```
+
+The `cast` function is invoked at the beginning of the data processing pipeline,
+before the `validate` and `transform` functions. The purpose of the `cast`
+function is to ensure that the data is in the right type before being processed
+further.
+
+This is an example of a cast-only function:
+
+```ts
+const decorator: Decorator<string> = {
+  name: "json_string",
+  cast: (v) => JSON.stringify(v),
+};
+```
+
+Once the data has been casted, the `validate` function is called to verify the
+content and format of the data. This function ensures that the data is valid and
+meets the specified criteria before being processed further.
+
+The `transform` function, on the other hand, is invoked only after the
+validation function returns a `true` result. The `transform` function then
+processes the data according to the specified rules and criteria.
+
+Therefore, the `cast`, `validate`, and `transform` functions work together to
+ensure that the data is in the right format, is valid, and is properly
+processed.
 
 ## Benchmark
 
