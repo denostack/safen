@@ -1,4 +1,6 @@
 .npm
 
+deno.lock
+
 examples/**/package-lock.json
 examples/**/node_modules
