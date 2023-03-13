@@ -191,8 +191,8 @@ function traverse(ast: AstStrict) {
         return [decoratorToIdx.get(decorator)!, decorator];
       });
       for (const [dId, decorator] of pairs) {
-        if (decorator.preprocess) {
-          result += `v=_d[${dId}].preprocess(v);`;
+        if (decorator.cast) {
+          result += `v=_d[${dId}].cast(v);`;
         }
       }
       result += invalidAst(ast[1], "v");
