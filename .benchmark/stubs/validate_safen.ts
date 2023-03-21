@@ -1,4 +1,4 @@
-import { array, createValidate, decorate, email, or } from "../../mod.ts";
+import { v } from "../../mod.ts";
 
 const DateType = {
   timestamp: Number,
@@ -6,35 +6,35 @@ const DateType = {
 };
 
 const CommentType = {
-  id: or([Number, String]),
+  id: v.union([Number, String]),
   contents: String,
   createdAt: DateType,
 };
 
 const ArticleType = {
-  id: or([Number, String]),
+  id: v.union([Number, String]),
   title: String,
   content: String,
-  comments: array(CommentType),
+  comments: v.array(CommentType),
   updatedAt: DateType,
   createdAt: DateType,
 };
 
 const UserType = {
-  id: or([Number, String]),
-  email: decorate(String, email()),
+  id: v.union([Number, String]),
+  email: v.decorate(String, (d) => d.email()),
   name: String,
-  articles: array(ArticleType),
-  comments: array(CommentType),
+  articles: v.array(ArticleType),
+  comments: v.array(CommentType),
   location: String,
   createdAt: DateType,
 };
 
-const v = createValidate(UserType);
+const validate = v(UserType);
 export function isUser(user: unknown) {
-  return v(user);
+  return validate(user);
 }
 
 export function generateAndIsUser(user: unknown) {
-  return createValidate(UserType)(user);
+  return v(UserType)(user);
 }
