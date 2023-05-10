@@ -1,6 +1,4 @@
-# Safen
-
-<a href="https://github.com/denostack"><img src="https://raw.githubusercontent.com/denostack/images/main/logo.svg" width="240" /></a>
+# Safen <a href="https://github.com/denostack"><img src="https://raw.githubusercontent.com/denostack/images/main/logo.svg" width="160" align="right" /></a>
 
 <p>
   <a href="https://github.com/denostack/safen/actions"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/denostack/safen/ci.yml?branch=main&logo=github&style=flat-square" /></a>
