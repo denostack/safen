@@ -29,8 +29,8 @@ npm install safen
 
 ```ts
 import {
-  s, // sanitize,
-  v, // validate,
+  s, // create sanitize,
+  v, // create validate,
 } from "https://deno.land/x/safen/mod.ts";
 ```
 
