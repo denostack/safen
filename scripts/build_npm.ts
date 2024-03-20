@@ -1,8 +1,11 @@
 import { build, emptyDir } from "dnt/mod.ts";
 
-const cmd = Deno.run({ cmd: ["git", "describe", "--tags"], stdout: "piped" });
-const version = new TextDecoder().decode(await cmd.output()).trim();
-cmd.close();
+const cmd = new Deno.Command(Deno.execPath(), {
+  args: ["git", "describe", "--tags"],
+  stdout: "piped",
+});
+const { stdout } = await cmd.output();
+const version = new TextDecoder().decode(stdout).trim();
 
 await emptyDir("./.npm");
 
@@ -14,7 +17,7 @@ await build({
   },
   test: false,
   compilerOptions: {
-    lib: ["es2021", "dom"],
+    lib: ["ES2021", "DOM"],
   },
   package: {
     name: "safen",

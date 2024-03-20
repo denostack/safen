@@ -1,4 +1,4 @@
-import { assert, assertFalse } from "testing/asserts.ts";
+import { assert, assertFalse } from "assert/mod.ts";
 import { v } from "./short.ts";
 
 Deno.test("short, validation, decorate", () => {

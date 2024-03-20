@@ -1,4 +1,4 @@
-import { assertEquals, assertThrows } from "testing/asserts.ts";
+import { assertEquals, assertThrows } from "assert/mod.ts";
 import { d } from "./decorators.ts";
 import { decorate, union } from "./ast/utils.ts";
 import { createSanitize } from "./validator/create_sanitize.ts";

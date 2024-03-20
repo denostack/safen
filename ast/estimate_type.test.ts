@@ -1,4 +1,4 @@
-import { assertEquals } from "testing/asserts.ts";
+import { assertEquals } from "assert/mod.ts";
 import type { Equal, Expect } from "@type-challenges/utils";
 import { type EstimateType } from "./estimate_type.ts";
 import { Kind } from "./ast.ts";

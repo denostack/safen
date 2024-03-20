@@ -1,15 +1,15 @@
 {
   "imports": {
-    "dnt/": "https://deno.land/x/dnt@0.33.0/",
-    "testing/": "https://deno.land/std@0.179.0/testing/",
-    "@type-challenges/utils": "https://esm.sh/@type-challenges/utils@0.1.1/index.d.ts"
+    "dnt/": "https://deno.land/x/dnt@0.40.0/",
+    "assert/": "https://deno.land/std@0.220.1/assert/",
+    "@type-challenges/utils": "npm:@type-challenges/utils@0.1.1/index.d.ts"
   },
   "tasks": {
     "test": "deno task test:unit && deno task test:lint && deno task test:format && deno task test:types",
     "test:unit": "deno test -A --unstable",
-    "test:lint": "deno lint",
-    "test:format": "deno fmt --check",
-    "test:types": "find . -name '*.ts' | xargs deno check --unstable",
+    "test:lint": "deno lint --ignore=.npm",
+    "test:format": "deno fmt --check --ignore=.npm",
+    "test:types": "find . -name '*.ts' -not -path './.npm/*' | xargs deno check",
     "build:npm": "deno run -A scripts/build_npm.ts"
   }
 }

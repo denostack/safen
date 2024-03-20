@@ -1,4 +1,4 @@
-import { assertEquals } from "testing/asserts.ts";
+import { assertEquals } from "assert/mod.ts";
 import { desugar } from "./desugar.ts";
 import { Kind, PrimitiveType } from "./ast.ts";
 

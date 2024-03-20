@@ -1,4 +1,4 @@
-import { assertEquals, assertThrows } from "testing/asserts.ts";
+import { assertEquals, assertThrows } from "assert/mod.ts";
 import { between } from "../decorators/between.ts";
 import { email } from "../decorators/email.ts";
 import { ip } from "../decorators/ip.ts";
